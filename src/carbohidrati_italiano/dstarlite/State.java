@@ -19,10 +19,12 @@ package carbohidrati_italiano.dstarlite;
  *
  */
 
+@SuppressWarnings({ "serial", "rawtypes" })
 public class State implements Comparable, java.io.Serializable
 {
 	public int x=0;
 	public int y=0;
+	@SuppressWarnings("unchecked")
 	public Pair<Double, Double> k = new Pair(0.0,0.0);
 
 

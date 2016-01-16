@@ -26,6 +26,7 @@ import java.util.PriorityQueue;
  * WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  *
  */
+@SuppressWarnings("serial")
 public class DStarLite implements java.io.Serializable{
 
 	//Private Member variables
@@ -285,6 +286,7 @@ public class DStarLite implements java.io.Serializable{
 	 * 8-way graph this list contains all of a cells neighbours. Unless
 	 * the cell is occupied, in which case it has no successors.
 	 */
+	@SuppressWarnings({ "unchecked", "rawtypes" })
 	private LinkedList<State> getSucc(State u)
 	{
 		LinkedList<State> s = new LinkedList<State>();
@@ -319,6 +321,7 @@ public class DStarLite implements java.io.Serializable{
 	 * this is for an 8-way connected graph, the list contains all the
 	 * neighbours for state u. Occupied neighbours are not added to the list
 	 */
+	@SuppressWarnings({ "rawtypes", "unchecked" })
 	private LinkedList<State> getPred(State u)
 	{
 		LinkedList<State> s = new LinkedList<State>();
@@ -369,6 +372,7 @@ public class DStarLite implements java.io.Serializable{
 	 * too much. Also, it frees up a good deal of memory we are probably not
 	 * going to use.
 	 */
+	@SuppressWarnings({ "unchecked", "rawtypes" })
 	public void updateGoal(int x, int y)
 	{
 		List<Pair<ipoint2, Double> > toAdd = new ArrayList<Pair<ipoint2, Double> >();
@@ -610,6 +614,7 @@ public class DStarLite implements java.io.Serializable{
 	}
 }
 
+@SuppressWarnings("serial")
 class CellInfo implements java.io.Serializable
 {
 	public double g=0;
