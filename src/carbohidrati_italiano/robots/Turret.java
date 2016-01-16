@@ -14,8 +14,6 @@ public class Turret extends RobotBase {
             RobotType.GUARD, RobotType.GUARD, RobotType.VIPER, RobotType.TURRET};
     
     int myAttackRange = 0;
-    Team myTeam;
-    Team enemyTeam;
 
 	@Override
 	public void doWork(RobotController rc) throws Exception {
@@ -43,8 +41,6 @@ public class Turret extends RobotBase {
 
 	@Override
 	public void init(RobotController rc) throws Exception {
-	    myTeam = rc.getTeam();
-	    enemyTeam = myTeam.opponent();
 	    myAttackRange = rc.getType().attackRadiusSquared;
 	}
 

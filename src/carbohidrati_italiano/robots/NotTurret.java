@@ -18,8 +18,6 @@ public class NotTurret extends RobotBase {
     
     Random rand;
     int myAttackRange = 0;
-    Team myTeam;
-    Team enemyTeam;
 
 	@Override
 	public void doWork(RobotController rc) throws Exception {
@@ -73,8 +71,6 @@ public class NotTurret extends RobotBase {
 	@Override
 	public void init(RobotController rc) throws Exception {
 		rand = new Random(rc.getID());
-	    myTeam = rc.getTeam();
-	    enemyTeam = myTeam.opponent();
 	    myAttackRange = rc.getType().attackRadiusSquared;
 	}
 
