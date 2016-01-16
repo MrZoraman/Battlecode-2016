@@ -5,6 +5,8 @@ import battlecode.common.RobotController;
 
 public abstract class RobotBase {
 	
+	RobotBase() { }
+	
 	public abstract void doWork(RobotController rc) throws Exception;
 	public abstract void init(RobotController rc) throws Exception;
 	
