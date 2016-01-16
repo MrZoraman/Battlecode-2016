@@ -1,7 +1,5 @@
 package carbohidrati_italiano.robots;
 
-import java.util.Random;
-
 import battlecode.common.Direction;
 import battlecode.common.RobotController;
 import battlecode.common.RobotInfo;
@@ -15,7 +13,6 @@ public class Turret extends RobotBase {
     RobotType[] robotTypes = {RobotType.SCOUT, RobotType.SOLDIER, RobotType.SOLDIER, RobotType.SOLDIER,
             RobotType.GUARD, RobotType.GUARD, RobotType.VIPER, RobotType.TURRET};
     
-    Random rand;
     int myAttackRange = 0;
     Team myTeam;
     Team enemyTeam;
@@ -46,7 +43,6 @@ public class Turret extends RobotBase {
 
 	@Override
 	public void init(RobotController rc) throws Exception {
-		rand = new Random(rc.getID());
 	    myTeam = rc.getTeam();
 	    enemyTeam = myTeam.opponent();
 	    myAttackRange = rc.getType().attackRadiusSquared;
