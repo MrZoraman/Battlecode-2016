@@ -8,7 +8,7 @@ public class Guard extends RobotBase{
 
 
 	public Guard() {
-		super(new ProtectArchonGoal());
+		super(new InitialGoal());
 	}
 
 	@Override

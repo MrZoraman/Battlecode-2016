@@ -5,59 +5,24 @@ import java.util.Random;
 import battlecode.common.Direction;
 import battlecode.common.MapLocation;
 import battlecode.common.RobotController;
-import battlecode.common.Signal;
 import carbohidrati_italiano.Globals;
 import carbohidrati_italiano.Utils;
 import carbohidrati_italiano.robots.Goal;
 import carbohidrati_italiano.robots.RobotBase;
-import carbohidrati_italiano.robots.Signals;
 
-public class ProtectArchonGoal implements Goal {
+public class PatrolAroundArchonGoal implements Goal {
 	
-	private int archonId = -1;
+	private final Random rand = new Random();
+	private final int archonId;
 	
-	private Random rand = new Random();
-
+	public PatrolAroundArchonGoal(int archonId) {
+		this.archonId = archonId;
+	}
+	
 	@Override
 	public Goal achieveGoal(RobotController rc, RobotBase robot) throws Exception {
-		Signal[] signals = rc.emptySignalQueue();
-		
-		for(Signal s : signals) {
-			int[] messages = s.getMessage();
-			if(messages == null) {
-				continue;
-			}
-			
-			Signals id = Signals.toSignal(messages[0]);
-			if(id == null) {
-				continue;
-			}
-			
-			switch(id) {
-			case THIS_IS_MY_ID:
-				if(archonId < 0) {
-					archonId = messages[1];
-					rc.setIndicatorString(1, "My Archon is at: " + archonId);
-				}
-				break;
-			default:
-				continue;
-			}
-		}
-		
-		patrol(rc);
-		
-		return null;
-	}
-
-	@Override
-	public String getName() {
-		return "Protect Archon";
-	}
-	
-	private void patrol(RobotController rc) throws Exception {
 		if(!rc.isCoreReady()) {
-			return;
+			return null;
 		}
 		
 		//where am I?
@@ -77,7 +42,7 @@ public class ProtectArchonGoal implements Goal {
 				dir = Utils.nextOrdinal(dir);
 				dirTries++;
 				if(dirTries > 8) {
-					return;
+					return null;
 				}
 			}
 		} else if(distance < 12) {
@@ -88,7 +53,7 @@ public class ProtectArchonGoal implements Goal {
 				dir = Utils.nextOrdinal(dir);
 				dirTries++;
 				if(dirTries > 8) {
-					return;
+					return null;
 				}
 			}
 		} else {
@@ -101,11 +66,18 @@ public class ProtectArchonGoal implements Goal {
 				dir.rotateRight().rotateRight();
 			}
 			if(!rc.canMove(dir)) {
-				return;
+				return null;
 			}
 		}
 		
 		//time to move!
 		rc.move(dir);
+		return null;
 	}
+
+	@Override
+	public String getName() {
+		return "Patrollin'";
+	}
+
 }
