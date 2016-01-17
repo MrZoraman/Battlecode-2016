@@ -1,4 +1,4 @@
-package carbohidrati_italiano.robots;
+package carbohidrati_italiano.robots.archon;
 
 import java.util.Random;
 
@@ -9,6 +9,8 @@ import battlecode.common.RobotController;
 import battlecode.common.RobotType;
 import battlecode.common.Signal;
 import battlecode.common.Team;
+import carbohidrati_italiano.dstarlite.DStarLite;
+import carbohidrati_italiano.robots.RobotBase;
 
 public class Archon extends RobotBase {
 	
@@ -19,19 +21,27 @@ public class Archon extends RobotBase {
     
     int myAttackRange = 0;
     
+    private boolean headArchon = false;
+    
 	@Override
 	public void doWork(RobotController rc) throws Exception {
 	}
 
 	@Override
 	public void init(RobotController rc) throws Exception {
-		MapLocation headArchonLocation = rc.getInitialArchonLocations(myTeam)[0];
+		MapLocation[] archons = rc.getInitialArchonLocations(myTeam);
 		MapLocation myLocation = rc.getLocation();
 		
-		if(myLocation.equals(headArchonLocation)) {
-			rc.setIndicatorString(0, "I am the head archon!");
-		} else {
-			rc.setIndicatorString(0, "I am NOT the head archon :(");
+		if(myLocation.equals(archons[0])) {
+			headArchon = true;
+		}
+		
+		if(headArchon) {
+			//start at one, because the head archon is at index 0 (that's me!)
+			for(int ii = 1; ii < archons.length; ii++) {
+				DStarLite pf = new DStarLite();
+				
+			}
 		}
 		
 	}
