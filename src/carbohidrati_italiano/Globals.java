@@ -27,4 +27,6 @@ public class Globals {
         RobotType.VIPER,
         RobotType.TURRET
 	};
+	
+	public static final int GUARD_ATTACK_ROAM_RANGE = 14;
 }

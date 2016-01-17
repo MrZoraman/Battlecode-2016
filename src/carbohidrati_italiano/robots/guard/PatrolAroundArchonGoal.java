@@ -1,13 +1,12 @@
 package carbohidrati_italiano.robots.guard;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Random;
 
 import battlecode.common.Direction;
 import battlecode.common.MapLocation;
 import battlecode.common.RobotController;
 import battlecode.common.RobotInfo;
+import battlecode.common.Team;
 import carbohidrati_italiano.Globals;
 import carbohidrati_italiano.Utils;
 import carbohidrati_italiano.robots.Goal;
@@ -27,6 +26,9 @@ public class PatrolAroundArchonGoal implements Goal {
 	@Override
 	public Goal achieveGoal(RobotController rc, RobotBase robot) throws Exception {
 		
+		//where is my archon?
+		archonLocation = rc.senseRobot(archonId).location;
+		
 		if(findBaddies(rc)) {
 			return new GuardDefenseGoal(archonLocation, archonId);
 		}
@@ -44,8 +46,14 @@ public class PatrolAroundArchonGoal implements Goal {
 	private boolean findBaddies(RobotController rc) {
 		RobotInfo[] robots = rc.senseHostileRobots(rc.getLocation(), 24);
 		
-		if(robots.length > 0) {
-			return true;
+		MapLocation myLocation = rc.getLocation();
+		
+		for(RobotInfo ri : robots) {
+			if(ri.team == Team.ZOMBIE) {
+				return true;
+			} else if(myLocation.distanceSquaredTo(ri.location) < Globals.GUARD_ATTACK_ROAM_RANGE) {
+				return true;
+			}
 		}
 		
 		return false;
@@ -57,8 +65,6 @@ public class PatrolAroundArchonGoal implements Goal {
 		}
 		//where am I?
 		MapLocation currentLocation = rc.getLocation();
-		//where is my archon?
-		archonLocation = rc.senseRobot(archonId).location;
 		//how far away is it from me?
 		double distance = archonLocation.distanceSquaredTo(currentLocation);
 		//what direction do I want to go?		

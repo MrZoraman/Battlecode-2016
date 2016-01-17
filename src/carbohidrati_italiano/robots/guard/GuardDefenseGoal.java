@@ -8,12 +8,16 @@ import battlecode.common.MapLocation;
 import battlecode.common.RobotController;
 import battlecode.common.RobotInfo;
 import battlecode.common.Team;
+import carbohidrati_italiano.Globals;
 import carbohidrati_italiano.robots.Goal;
 import carbohidrati_italiano.robots.RobotBase;
 
 public class GuardDefenseGoal implements Goal {
 	
 	public GuardDefenseGoal(MapLocation archonLocation, int archonId) {
+		if(archonLocation == null) {
+			throw new IllegalStateException("archonlocation can't be null!");
+		}
 		this.archonLocation = archonLocation;
 		this.archonId = archonId;
 	}
@@ -39,9 +43,11 @@ public class GuardDefenseGoal implements Goal {
 		}
 		
 		if(zombies.size() > 0) {
-			defend(rc, zombies);
+			rc.setIndicatorString(1, "defending against zombies!");
+			defend(rc, zombies, false);
 		} else if (opponents.size() > 0) {
-			defend(rc, opponents);
+			rc.setIndicatorString(1, "defending against the opponent!");
+			defend(rc, opponents, true);
 		} else {
 			return new ReturnToArchonGoal(archonLocation, archonId);
 		}
@@ -54,7 +60,7 @@ public class GuardDefenseGoal implements Goal {
 		return "Defending the archon!";
 	}
 	
-	private void defend(RobotController rc, List<RobotInfo> baddies) throws Exception {
+	private void defend(RobotController rc, List<RobotInfo> baddies, boolean opponent) throws Exception {
 		double closestBaddieDistance = Double.MAX_VALUE;
 		RobotInfo closestBaddie = null;
 		
@@ -85,7 +91,5 @@ public class GuardDefenseGoal implements Goal {
 				}
 			}
 		}
-		
-		
 	}
 }
