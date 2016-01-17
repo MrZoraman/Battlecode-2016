@@ -88,7 +88,7 @@ public class BeginningBuildGoal implements Goal {
 		
 		rc.setIndicatorString(2, "closest archon distance: " + closestArchonDistance);
 		
-		if (closestArchonDistance < 8) {
+		if (closestArchonDistance < 16) {
 			return 3;
 		} else if (closestArchonDistance < 120) {
 			return 4;
