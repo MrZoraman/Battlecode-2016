@@ -70,7 +70,8 @@ public class PatrolAroundArchonGoal implements Goal {
 		//what direction do I want to go?		
 		Direction dir = null;
 		
-		if(distance < 6) {
+		if(distance < 4) {
+			rc.setIndicatorString(2, "too close!");
 			//too close!
 			dir = archonLocation.directionTo(currentLocation);
 			int dirTries = 0;
@@ -82,6 +83,7 @@ public class PatrolAroundArchonGoal implements Goal {
 				}
 			}
 		} else if(distance < 12) {
+			rc.setIndicatorString(2, "I have breathing room!");
 			//I have breathing room
 			dir = Globals.movableDirections[rand.nextInt(Globals.movableDirections.length - 1)];
 			int dirTries = 0;
@@ -89,12 +91,24 @@ public class PatrolAroundArchonGoal implements Goal {
 				dir = Utils.nextOrdinal(dir);
 				dirTries++;
 				if(dirTries > 8) {
+					System.out.println("uh oh!");
 					return;
 				}
 			}
 		} else {
+			rc.setIndicatorString(2, "too far away!");
 			//too far away!
 			dir = currentLocation.directionTo(archonLocation);
+//			int num = rand.nextInt(3);
+//			switch(num) {
+//			case 0:
+//				dir.rotateLeft();
+//				break;
+//			case 1:
+//				dir.rotateRight();
+//				break;
+//			}
+			
 			if(!rc.canMove(dir)) {
 				dir.rotateLeft();
 			}
