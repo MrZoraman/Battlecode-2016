@@ -10,4 +10,9 @@ public class EmptyGoal implements Goal {
 		return null;
 	}
 
+	@Override
+	public String getName() {
+		return "Empty Goal";
+	}
+
 }

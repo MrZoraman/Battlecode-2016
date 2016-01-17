@@ -21,11 +21,13 @@ public abstract class RobotBase{
 		try {
 			myTeam = rc.getTeam();
 			enemyTeam = myTeam.opponent();
+			updateGoalString(rc, currentGoal);
 			init(rc);
 			while(true) {
 				Goal newGoal = currentGoal.achieveGoal(rc, this);
 				if(newGoal != null) {
 					currentGoal = newGoal;
+					updateGoalString(rc, newGoal);
 				}
 				Clock.yield();
 			}
@@ -34,5 +36,9 @@ public abstract class RobotBase{
 		}
 		
 		System.out.println("Uh oh! I've exited!");
+	}
+	
+	private void updateGoalString(RobotController rc, Goal goal) {
+		rc.setIndicatorString(0, "Goal: " + goal.getName());
 	}
 }

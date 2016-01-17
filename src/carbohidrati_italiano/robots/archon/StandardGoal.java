@@ -12,4 +12,9 @@ public class StandardGoal implements Goal {
 		return null;
 	}
 
+	@Override
+	public String getName() {
+		return "Standard Goal";
+	}
+
 }

@@ -11,7 +11,7 @@ import carbohidrati_italiano.robots.RobotBase;
 
 public class BeginningBuildGoal implements Goal {
 	
-	private static final int GUARDS_TO_MAKE = 3;
+	private static final int GUARDS_TO_MAKE = 5;
 	
 	private boolean hasScout = false;
 	private int guardsMade = 0;
@@ -34,7 +34,7 @@ public class BeginningBuildGoal implements Goal {
 		}
 		
 		if(guardsMade < GUARDS_TO_MAKE) {
-			if(rc.hasBuildRequirements(RobotType.GUARD)) {
+			if(!rc.hasBuildRequirements(RobotType.GUARD)) {
 				return null;
 			}
 			
@@ -50,6 +50,11 @@ public class BeginningBuildGoal implements Goal {
 		
 		
 		return new EmptyGoal();
+	}
+
+	@Override
+	public String getName() {
+		return "Beginning Build Goal";
 	}
 
 }

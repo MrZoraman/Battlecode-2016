@@ -19,7 +19,7 @@ public class ArchonUtils {
 	
 	public static Direction findPlaceAndBuild(RobotController rc, RobotType type) throws Exception {
 		for(Direction dir : Globals.movableDirections) {
-			if(safeBuild(rc, RobotType.SCOUT, dir)) {
+			if(safeBuild(rc, type, dir)) {
 				return dir;
 			}
 		}
