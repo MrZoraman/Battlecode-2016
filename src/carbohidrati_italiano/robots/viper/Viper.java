@@ -1,10 +1,12 @@
-package carbohidrati_italiano.robots;
+package carbohidrati_italiano.robots.viper;
 
 import battlecode.common.RobotController;
+import carbohidrati_italiano.robots.Goal;
+import carbohidrati_italiano.robots.RobotBase;
 
-public class Scout extends RobotBase{
+public class Viper extends RobotBase{
 
-	public Scout(Goal initialGoal) {
+	public Viper(Goal initialGoal) {
 		super(initialGoal);
 		// TODO Auto-generated constructor stub
 	}

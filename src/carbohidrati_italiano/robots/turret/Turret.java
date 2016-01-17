@@ -1,10 +1,12 @@
-package carbohidrati_italiano.robots;
+package carbohidrati_italiano.robots.turret;
 
 import battlecode.common.Direction;
 import battlecode.common.RobotController;
 import battlecode.common.RobotInfo;
 import battlecode.common.RobotType;
 import battlecode.common.Team;
+import carbohidrati_italiano.robots.Goal;
+import carbohidrati_italiano.robots.RobotBase;
 
 public class Turret extends RobotBase {
 	

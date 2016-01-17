@@ -5,6 +5,11 @@ import java.util.Map;
 
 import battlecode.common.RobotType;
 import carbohidrati_italiano.robots.archon.Archon;
+import carbohidrati_italiano.robots.guard.Guard;
+import carbohidrati_italiano.robots.scout.Scout;
+import carbohidrati_italiano.robots.soldier.Soldier;
+import carbohidrati_italiano.robots.turret.Turret;
+import carbohidrati_italiano.robots.viper.Viper;
 
 import static battlecode.common.RobotType.*;
 
