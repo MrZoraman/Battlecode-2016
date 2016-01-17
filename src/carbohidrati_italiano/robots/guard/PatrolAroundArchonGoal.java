@@ -1,10 +1,14 @@
 package carbohidrati_italiano.robots.guard;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Random;
 
 import battlecode.common.Direction;
 import battlecode.common.MapLocation;
 import battlecode.common.RobotController;
+import battlecode.common.RobotInfo;
+import battlecode.common.Team;
 import carbohidrati_italiano.Globals;
 import carbohidrati_italiano.Utils;
 import carbohidrati_italiano.robots.Goal;
@@ -21,10 +25,35 @@ public class PatrolAroundArchonGoal implements Goal {
 	
 	@Override
 	public Goal achieveGoal(RobotController rc, RobotBase robot) throws Exception {
-		if(!rc.isCoreReady()) {
-			return null;
+		
+		if(findBaddies(rc)) {
+			return new GuardDefenseGoal();
 		}
 		
+		move(rc);
+		
+		return null;
+	}
+
+	@Override
+	public String getName() {
+		return "Patrollin'";
+	}
+	
+	private boolean findBaddies(RobotController rc) {
+		RobotInfo[] robots = rc.senseHostileRobots(rc.getLocation(), 24);
+		
+		if(robots.length > 0) {
+			return true;
+		}
+		
+		return false;
+	}
+	
+	private void move(RobotController rc) throws Exception {
+		if(!rc.isCoreReady()) {
+			return;
+		}
 		//where am I?
 		MapLocation currentLocation = rc.getLocation();
 		//where is my archon?
@@ -42,7 +71,7 @@ public class PatrolAroundArchonGoal implements Goal {
 				dir = Utils.nextOrdinal(dir);
 				dirTries++;
 				if(dirTries > 8) {
-					return null;
+					return;
 				}
 			}
 		} else if(distance < 12) {
@@ -53,7 +82,7 @@ public class PatrolAroundArchonGoal implements Goal {
 				dir = Utils.nextOrdinal(dir);
 				dirTries++;
 				if(dirTries > 8) {
-					return null;
+					return;
 				}
 			}
 		} else {
@@ -66,18 +95,13 @@ public class PatrolAroundArchonGoal implements Goal {
 				dir.rotateRight().rotateRight();
 			}
 			if(!rc.canMove(dir)) {
-				return null;
+				return;
 			}
 		}
 		
 		//time to move!
 		rc.move(dir);
-		return null;
-	}
-
-	@Override
-	public String getName() {
-		return "Patrollin'";
+		return;
 	}
 
 }
