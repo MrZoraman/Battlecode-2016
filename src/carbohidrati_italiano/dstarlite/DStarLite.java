@@ -585,33 +585,33 @@ public class DStarLite implements java.io.Serializable{
 	}
 
 
-	public static void main(String[] args)
-	{
-		DStarLite pf = new DStarLite();
-		pf.init(0,1,3,1);
-		pf.updateCell(2, 1, -1);
-		pf.updateCell(2, 0, -1);
-		pf.updateCell(2, 2, -1);
-		pf.updateCell(3, 0, -1);
-
-		System.out.println("Start node: (0,1)");
-		System.out.println("End node: (3,1)");
-
-		//Time the replanning
-		long begin = System.currentTimeMillis();
-		pf.replan();
-		pf.updateGoal(3, 2);
-		long end = System.currentTimeMillis();
-
-		System.out.println("Time: " + (end-begin) + "ms");
-
-		List<State> path = pf.getPath();
-		for (State i : path)
-		{
-			System.out.println("x: " + i.x + " y: " + i.y);
-		}
-
-	}
+//	public static void main(String[] args)
+//	{
+//		DStarLite pf = new DStarLite();
+//		pf.init(0,1,3,1);
+//		pf.updateCell(2, 1, -1);
+//		pf.updateCell(2, 0, -1);
+//		pf.updateCell(2, 2, -1);
+//		pf.updateCell(3, 0, -1);
+//
+//		System.out.println("Start node: (0,1)");
+//		System.out.println("End node: (3,1)");
+//
+//		//Time the replanning
+//		long begin = System.currentTimeMillis();
+//		pf.replan();
+//		pf.updateGoal(3, 2);
+//		long end = System.currentTimeMillis();
+//
+//		System.out.println("Time: " + (end-begin) + "ms");
+//
+//		List<State> path = pf.getPath();
+//		for (State i : path)
+//		{
+//			System.out.println("x: " + i.x + " y: " + i.y);
+//		}
+//
+//	}
 }
 
 @SuppressWarnings("serial")
