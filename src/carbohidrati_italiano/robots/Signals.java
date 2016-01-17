@@ -5,7 +5,7 @@ import java.util.Map;
 
 public enum Signals {
 	
-	HERE_I_AM(1);
+	THIS_IS_MY_ID(1);
 	
 	private static Map<Integer, Signals> signalsMap = new HashMap<>();
 	

@@ -8,6 +8,7 @@ import carbohidrati_italiano.Utils;
 import carbohidrati_italiano.robots.EmptyGoal;
 import carbohidrati_italiano.robots.Goal;
 import carbohidrati_italiano.robots.RobotBase;
+import carbohidrati_italiano.robots.Signals;
 
 public class BeginningBuildGoal implements Goal {
 	
@@ -30,6 +31,11 @@ public class BeginningBuildGoal implements Goal {
 				return null;
 			} else {
 				//uh oh, the archon is trapped!
+				return new Goal() {
+					@Override public String getName() {
+						return "Trapped!";
+					}
+				};
 			}
 		}
 		
@@ -41,6 +47,7 @@ public class BeginningBuildGoal implements Goal {
 			Direction guardBuilt = ArchonUtils.findPlaceAndBuild(rc, RobotType.GUARD);
 			if(guardBuilt != null) {
 				guardsMade++;
+				rc.broadcastMessageSignal(Signals.THIS_IS_MY_ID.getValue(), rc.getID(), 2);
 				return null;
 			} else {
 				//no more room for guards
