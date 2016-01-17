@@ -1,6 +1,7 @@
 package carbohidrati_italiano.robots.archon;
 
 import battlecode.common.Direction;
+import battlecode.common.MapLocation;
 import battlecode.common.RobotController;
 import battlecode.common.RobotType;
 import carbohidrati_italiano.Globals;
@@ -12,7 +13,7 @@ import carbohidrati_italiano.robots.Signals;
 
 public class BeginningBuildGoal implements Goal {
 	
-	private static final int GUARDS_TO_MAKE = 5;
+	private int guardsToMake = -1;
 	
 	private boolean hasScout = false;
 	private int guardsMade = 0;
@@ -22,6 +23,12 @@ public class BeginningBuildGoal implements Goal {
 		if(!rc.isCoreReady()) {
 			return null;
 		}
+		
+		if(guardsToMake < 0) {
+			guardsToMake = calculateGuardsToMake(rc);
+			rc.setIndicatorString(1, "I am making " + guardsToMake + " gaurds.");
+		}
+		
 		
 		if(!hasScout) {
 			Direction scoutBuilt = ArchonUtils.findPlaceAndBuild(rc, RobotType.SCOUT);
@@ -39,7 +46,7 @@ public class BeginningBuildGoal implements Goal {
 			}
 		}
 		
-		if(guardsMade < GUARDS_TO_MAKE) {
+		if(guardsMade < guardsToMake) {
 			if(!rc.hasBuildRequirements(RobotType.GUARD)) {
 				return null;
 			}
@@ -62,6 +69,34 @@ public class BeginningBuildGoal implements Goal {
 	@Override
 	public String getName() {
 		return "Beginning Build Goal";
+	}
+	
+	private int calculateGuardsToMake(RobotController rc) {
+		MapLocation[] archons = rc.getInitialArchonLocations(rc.getTeam());
+		MapLocation myLocation = rc.getLocation();
+		
+		double closestArchonDistance = Double.MAX_VALUE;
+		
+		for(MapLocation archonLoc : archons) {
+			if(archonLoc.equals(myLocation)) {
+				continue;
+			}
+			
+			double distance = myLocation.distanceSquaredTo(archonLoc);
+			if(distance < closestArchonDistance) {
+				closestArchonDistance = distance;
+			}
+		}
+		
+		rc.setIndicatorString(2, "closest archon distance: " + closestArchonDistance);
+		
+		if (closestArchonDistance < 8) {
+			return 3;
+		} else if (closestArchonDistance < 120) {
+			return 4;
+		} else {
+			return 5;
+		}
 	}
 
 }
