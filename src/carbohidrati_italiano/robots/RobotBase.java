@@ -20,12 +20,13 @@ public abstract class RobotBase{
 	protected Team enemyTeam;
 	
 	private Goal currentGoal;
-	private final boolean updatePathFinder;
 	
 	private final DStarLite pf = new DStarLite();
 	
 	public final void run(RobotController rc) {
 		try {
+			MapLocation myLocation = rc.getLocation();
+			pf.init(myLocation.x, myLocation.y, myLocation.x, myLocation.y);
 			myTeam = rc.getTeam();
 			enemyTeam = myTeam.opponent();
 			updateGoalString(rc, currentGoal);

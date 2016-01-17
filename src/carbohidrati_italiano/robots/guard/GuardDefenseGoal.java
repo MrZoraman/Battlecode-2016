@@ -8,11 +8,18 @@ import battlecode.common.MapLocation;
 import battlecode.common.RobotController;
 import battlecode.common.RobotInfo;
 import battlecode.common.Team;
-import carbohidrati_italiano.robots.EmptyGoal;
 import carbohidrati_italiano.robots.Goal;
 import carbohidrati_italiano.robots.RobotBase;
 
 public class GuardDefenseGoal implements Goal {
+	
+	public GuardDefenseGoal(MapLocation archonLocation, int archonId) {
+		this.archonLocation = archonLocation;
+		this.archonId = archonId;
+	}
+	
+	private final MapLocation archonLocation;
+	private final int archonId;
 	
 	@Override
 	public Goal achieveGoal(RobotController rc, RobotBase robot) throws Exception {
@@ -36,7 +43,7 @@ public class GuardDefenseGoal implements Goal {
 		} else if (opponents.size() > 0) {
 			defend(rc, opponents);
 		} else {
-			return new EmptyGoal();
+			return new ReturnToArchonGoal(archonLocation, archonId);
 		}
 		
 		return null;
