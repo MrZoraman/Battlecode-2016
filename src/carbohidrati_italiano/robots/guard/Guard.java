@@ -7,9 +7,8 @@ import carbohidrati_italiano.robots.RobotBase;
 public class Guard extends RobotBase{
 
 
-	public Guard(Goal initialGoal) {
-		super(initialGoal);
-		// TODO Auto-generated constructor stub
+	public Guard() {
+		super(new ProtectArchonGoal());
 	}
 
 	@Override

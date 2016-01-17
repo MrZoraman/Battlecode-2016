@@ -18,7 +18,7 @@ public class RobotFactory {
 	
 	static {
 		robots.put(ARCHON, new Archon());
-		robots.put(GUARD, new Guard(new EmptyGoal()));
+		robots.put(GUARD, new Guard());
 		robots.put(SCOUT, new Scout(new EmptyGoal()));
 		robots.put(SOLDIER, new Soldier(new EmptyGoal()));
 		robots.put(TTM, new NotTurret(new EmptyGoal()));
