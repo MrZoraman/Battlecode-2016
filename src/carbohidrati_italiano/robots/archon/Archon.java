@@ -8,7 +8,7 @@ import carbohidrati_italiano.robots.RobotBase;
 public class Archon extends RobotBase {
 	
 	public Archon() {
-		super(new StandardGoal());
+		super(new BeginningBuildGoal());
 	}
     
     int myAttackRange = 0;
