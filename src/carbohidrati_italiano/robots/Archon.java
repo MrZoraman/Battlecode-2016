@@ -4,6 +4,7 @@ import java.util.Random;
 
 import battlecode.common.Direction;
 import battlecode.common.GameConstants;
+import battlecode.common.MapLocation;
 import battlecode.common.RobotController;
 import battlecode.common.RobotType;
 import battlecode.common.Signal;
@@ -16,17 +17,23 @@ public class Archon extends RobotBase {
     RobotType[] robotTypes = {RobotType.SCOUT, RobotType.SOLDIER, RobotType.SOLDIER, RobotType.SOLDIER,
             RobotType.GUARD, RobotType.GUARD, RobotType.VIPER, RobotType.TURRET};
     
-    Random rand;
     int myAttackRange = 0;
     
 	@Override
 	public void doWork(RobotController rc) throws Exception {
-		
 	}
 
 	@Override
 	public void init(RobotController rc) throws Exception {
-	    rand = new Random(rc.getID());
+		MapLocation headArchonLocation = rc.getInitialArchonLocations(myTeam)[0];
+		MapLocation myLocation = rc.getLocation();
+		
+		if(myLocation.equals(headArchonLocation)) {
+			rc.setIndicatorString(0, "I am the head archon!");
+		} else {
+			rc.setIndicatorString(0, "I am NOT the head archon :(");
+		}
+		
 	}
 
 }
