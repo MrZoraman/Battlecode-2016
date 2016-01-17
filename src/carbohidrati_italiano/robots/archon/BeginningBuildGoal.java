@@ -4,8 +4,6 @@ import battlecode.common.Direction;
 import battlecode.common.MapLocation;
 import battlecode.common.RobotController;
 import battlecode.common.RobotType;
-import carbohidrati_italiano.Globals;
-import carbohidrati_italiano.Utils;
 import carbohidrati_italiano.robots.EmptyGoal;
 import carbohidrati_italiano.robots.Goal;
 import carbohidrati_italiano.robots.RobotBase;
