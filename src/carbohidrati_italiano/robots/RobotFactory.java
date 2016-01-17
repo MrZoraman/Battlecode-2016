@@ -13,12 +13,12 @@ public class RobotFactory {
 	
 	static {
 		robots.put(ARCHON, new Archon());
-		robots.put(GUARD, new Guard());
-		robots.put(SCOUT, new Scout());
-		robots.put(SOLDIER, new Soldier());
-		robots.put(TTM, new NotTurret());
-		robots.put(TURRET, new Turret());
-		robots.put(VIPER, new Viper());
+		robots.put(GUARD, new Guard(new EmptyGoal()));
+		robots.put(SCOUT, new Scout(new EmptyGoal()));
+		robots.put(SOLDIER, new Soldier(new EmptyGoal()));
+		robots.put(TTM, new NotTurret(new EmptyGoal()));
+		robots.put(TURRET, new Turret(new EmptyGoal()));
+		robots.put(VIPER, new Viper(new EmptyGoal()));
 	}
 	
 	public static RobotBase getRobot(RobotType type) {

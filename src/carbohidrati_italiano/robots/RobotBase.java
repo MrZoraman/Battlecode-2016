@@ -4,15 +4,18 @@ import battlecode.common.Clock;
 import battlecode.common.RobotController;
 import battlecode.common.Team;
 
-public abstract class RobotBase {
+public abstract class RobotBase{
 	
-	RobotBase() { }
+	public RobotBase(Goal initialGoal) {
+		currentGoal = initialGoal;
+	}
 	
-	public abstract void doWork(RobotController rc) throws Exception;
-	public abstract void init(RobotController rc) throws Exception;
+	protected void init(RobotController rc) throws Exception { };
 	
 	protected Team myTeam;
 	protected Team enemyTeam;
+	
+	private Goal currentGoal;
 	
 	public final void run(RobotController rc) {
 		try {
@@ -20,11 +23,16 @@ public abstract class RobotBase {
 			enemyTeam = myTeam.opponent();
 			init(rc);
 			while(true) {
-				doWork(rc);
+				Goal newGoal = currentGoal.achieveGoal(rc, this);
+				if(newGoal != null) {
+					currentGoal = newGoal;
+				}
 				Clock.yield();
 			}
 		} catch (Exception e) {
-			
+			e.printStackTrace();
 		}
+		
+		System.out.println("Uh oh! I've exited!");
 	}
 }

@@ -4,9 +4,10 @@ import battlecode.common.RobotController;
 
 public class Guard extends RobotBase{
 
-	@Override
-	public void doWork(RobotController rc) throws Exception {
-		
+
+	public Guard(Goal initialGoal) {
+		super(initialGoal);
+		// TODO Auto-generated constructor stub
 	}
 
 	@Override
