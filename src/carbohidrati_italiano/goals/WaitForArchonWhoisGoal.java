@@ -1,17 +1,24 @@
-package carbohidrati_italiano.robots.guard;
+package carbohidrati_italiano.goals;
 
 import battlecode.common.RobotController;
 import battlecode.common.Signal;
-import carbohidrati_italiano.robots.Goal;
-import carbohidrati_italiano.robots.RobotBase;
+import carbohidrati_italiano.robots.Robot;
 import carbohidrati_italiano.robots.Signals;
 
-public class InitialGoal implements Goal {
+public class WaitForArchonWhoisGoal implements Goal {
 	
 	private int archonId = -1;
+	
+	private final int senseRange;
+	private final int opponentAggressionRange;
+	
+	public WaitForArchonWhoisGoal(int senseRange, int opponentAggressionRange) {
+		this.senseRange = senseRange;
+		this.opponentAggressionRange = opponentAggressionRange;
+	}
 
 	@Override
-	public Goal achieveGoal(RobotController rc, RobotBase robot) throws Exception {
+	public Goal achieveGoal(RobotController rc, Robot robot) throws Exception {
 		Signal[] signals = rc.emptySignalQueue();
 		
 		for(Signal s : signals) {
@@ -37,7 +44,7 @@ public class InitialGoal implements Goal {
 			}
 		}
 		
-		return new PatrolAroundArchonGoal(archonId);
+		return new PatrolAroundArchonGoal(archonId, senseRange, opponentAggressionRange);
 	}
 
 	@Override

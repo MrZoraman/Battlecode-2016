@@ -1,4 +1,4 @@
-package carbohidrati_italiano.robots.guard;
+package carbohidrati_italiano.goals;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -9,26 +9,27 @@ import battlecode.common.RobotInfo;
 import battlecode.common.Team;
 import carbohidrati_italiano.pathfinding.PathFindResult;
 import carbohidrati_italiano.pathfinding.PathFinder;
-import carbohidrati_italiano.robots.Goal;
-import carbohidrati_italiano.robots.RobotBase;
+import carbohidrati_italiano.robots.Robot;
 
-public class GuardDefenseGoal implements Goal {
+public class DefenseGoal implements Goal {
 	
-	public GuardDefenseGoal(MapLocation archonLocation, int archonId) {
+	public DefenseGoal(MapLocation archonLocation, int archonId, int senseDistance) {
 		if(archonLocation == null) {
 			throw new IllegalStateException("archonlocation can't be null!");
 		}
 		this.archonLocation = archonLocation;
 		this.archonId = archonId;
+		this.senseDistance = senseDistance;
 	}
 	
 	private final MapLocation archonLocation;
 	private final int archonId;
 	private final PathFinder pathFinder = new PathFinder();
+	private final int senseDistance;
 	
 	@Override
-	public Goal achieveGoal(RobotController rc, RobotBase robot) throws Exception {
-		RobotInfo[] robots = rc.senseHostileRobots(rc.getLocation(), 24);
+	public Goal achieveGoal(RobotController rc, Robot robot) throws Exception {
+		RobotInfo[] robots = rc.senseHostileRobots(rc.getLocation(), senseDistance);
 		
 		Team enemyTeam = rc.getTeam().opponent();
 		

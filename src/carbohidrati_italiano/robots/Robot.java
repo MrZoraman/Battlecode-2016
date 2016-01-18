@@ -3,14 +3,13 @@ package carbohidrati_italiano.robots;
 import battlecode.common.Clock;
 import battlecode.common.RobotController;
 import battlecode.common.Team;
+import carbohidrati_italiano.goals.Goal;
 
-public abstract class RobotBase{
+public class Robot{
 	
-	public RobotBase(Goal initialGoal) {
+	public Robot(Goal initialGoal) {
 		currentGoal = initialGoal;
 	}
-	
-	protected void init(RobotController rc) throws Exception { };
 	
 	protected Team myTeam;
 	protected Team enemyTeam;
@@ -22,7 +21,6 @@ public abstract class RobotBase{
 			myTeam = rc.getTeam();
 			enemyTeam = myTeam.opponent();
 			updateGoalString(rc, currentGoal);
-			init(rc);
 			while(true) {
 				Goal newGoal = currentGoal.achieveGoal(rc, this);
 				if(newGoal != null) {

@@ -1,4 +1,4 @@
-package carbohidrati_italiano.robots.archon;
+package carbohidrati_italiano.goals.archon;
 
 import battlecode.common.Direction;
 import battlecode.common.RobotController;

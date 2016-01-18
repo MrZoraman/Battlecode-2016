@@ -1,4 +1,4 @@
-package carbohidrati_italiano.robots.guard;
+package carbohidrati_italiano.goals;
 
 import java.util.Random;
 
@@ -8,28 +8,31 @@ import battlecode.common.RobotController;
 import battlecode.common.RobotInfo;
 import battlecode.common.Team;
 import carbohidrati_italiano.Globals;
-import carbohidrati_italiano.robots.Goal;
-import carbohidrati_italiano.robots.RobotBase;
+import carbohidrati_italiano.robots.Robot;
 
 public class PatrolAroundArchonGoal implements Goal {
 	
 	private final Random rand = new Random();
 	private final int archonId;
+	private final int senseDistance;
+	private final int opponentAggressionRange;
 	
 	private MapLocation archonLocation;
 	
-	public PatrolAroundArchonGoal(int archonId) {
+	public PatrolAroundArchonGoal(int archonId, int senseDistance, int opponentAggressionRange) {
 		this.archonId = archonId;
+		this.senseDistance = senseDistance;
+		this.opponentAggressionRange = opponentAggressionRange;
 	}
 	
 	@Override
-	public Goal achieveGoal(RobotController rc, RobotBase robot) throws Exception {
+	public Goal achieveGoal(RobotController rc, Robot robot) throws Exception {
 		
 		//where is my archon?
 		archonLocation = rc.senseRobot(archonId).location;
 		
 		if(findBaddies(rc)) {
-			return new GuardDefenseGoal(archonLocation, archonId);
+			return new DefenseGoal(archonLocation, archonId, senseDistance);
 		}
 		
 		move(rc);
@@ -43,14 +46,14 @@ public class PatrolAroundArchonGoal implements Goal {
 	}
 	
 	private boolean findBaddies(RobotController rc) {
-		RobotInfo[] robots = rc.senseHostileRobots(rc.getLocation(), 24);
+		RobotInfo[] robots = rc.senseHostileRobots(rc.getLocation(), senseDistance);
 		
 		MapLocation myLocation = rc.getLocation();
 		
 		for(RobotInfo ri : robots) {
 			if(ri.team == Team.ZOMBIE) {
 				return true;
-			} else if(myLocation.distanceSquaredTo(ri.location) < Globals.GUARD_ATTACK_ROAM_RANGE) {
+			} else if(myLocation.distanceSquaredTo(ri.location) < opponentAggressionRange) {
 				return true;
 			}
 		}

@@ -1,7 +1,7 @@
 package carbohidrati_italiano;
 
 import battlecode.common.RobotController;
-import carbohidrati_italiano.robots.RobotBase;
+import carbohidrati_italiano.robots.Robot;
 import carbohidrati_italiano.robots.RobotFactory;
 
 public class RobotPlayer {
@@ -11,7 +11,7 @@ public class RobotPlayer {
      * If this method returns, the robot dies!
      **/
     public static void run(RobotController rc) {
-        RobotBase robot = RobotFactory.getRobot(rc.getType());
+        Robot robot = RobotFactory.getRobot(rc.getType());
         if(robot != null) {
         	robot.run(rc);
         }

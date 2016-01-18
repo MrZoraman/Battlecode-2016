@@ -28,5 +28,7 @@ public class Globals {
         RobotType.TURRET
 	};
 	
-	public static final int GUARD_ATTACK_ROAM_RANGE = 14;
+	public static final int GUARD_AGGRESSION_RANGE = 14;
+	
+	
 }

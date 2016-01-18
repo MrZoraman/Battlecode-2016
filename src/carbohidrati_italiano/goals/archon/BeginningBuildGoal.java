@@ -1,12 +1,12 @@
-package carbohidrati_italiano.robots.archon;
+package carbohidrati_italiano.goals.archon;
 
 import battlecode.common.Direction;
 import battlecode.common.MapLocation;
 import battlecode.common.RobotController;
 import battlecode.common.RobotType;
-import carbohidrati_italiano.robots.EmptyGoal;
-import carbohidrati_italiano.robots.Goal;
-import carbohidrati_italiano.robots.RobotBase;
+import carbohidrati_italiano.goals.EmptyGoal;
+import carbohidrati_italiano.goals.Goal;
+import carbohidrati_italiano.robots.Robot;
 import carbohidrati_italiano.robots.Signals;
 
 public class BeginningBuildGoal implements Goal {
@@ -19,7 +19,7 @@ public class BeginningBuildGoal implements Goal {
 	private Direction lastPlacedDir = Direction.NORTH;
 
 	@Override
-	public Goal achieveGoal(RobotController rc, RobotBase robot) throws Exception {
+	public Goal achieveGoal(RobotController rc, Robot robot) throws Exception {
 		if(!rc.isCoreReady()) {
 			return null;
 		}
