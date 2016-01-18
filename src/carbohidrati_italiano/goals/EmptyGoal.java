@@ -3,11 +3,14 @@ package carbohidrati_italiano.goals;
 import battlecode.common.RobotController;
 import carbohidrati_italiano.robots.Robot;
 
-public class EmptyGoal implements Goal {
+public class EmptyGoal extends Goal {
+
+	public EmptyGoal() {
+		super(null);
+	}
 
 	@Override
 	public Goal achieveGoal(RobotController rc, Robot robot) throws Exception {
-		// TODO Auto-generated method stub
 		return null;
 	}
 

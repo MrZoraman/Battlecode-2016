@@ -12,27 +12,18 @@ import carbohidrati_italiano.Globals;
 import carbohidrati_italiano.pathfinding.ArchonLocateResult;
 import carbohidrati_italiano.pathfinding.PathFindResult;
 import carbohidrati_italiano.pathfinding.PathFindUtils;
-import carbohidrati_italiano.pathfinding.PathFinder;
 import carbohidrati_italiano.robots.Robot;
+import carbohidrati_italiano.robots.RobotMemory;
 
-public class PatrolAroundArchonGoal implements Goal {
-	
+public class PatrolAroundArchonGoal extends Goal {
 	private final Random rand = new Random();
-	private final int archonId;
-	private final int opponentAggressionRange;
-	private final PathFinder pathFinder = new PathFinder();
-	private final int patrolRadius;
 	
-	private MapLocation lastKnownArchonLocation;
 	private MapLocation whereIWantToGo = null;
 	
 	private int directionIndex = -1;
 	
-	public PatrolAroundArchonGoal(int archonId, MapLocation lastKnownArchonLocation, int opponentAggressionRange, int patrolRadius) {
-		this.archonId = archonId;
-		this.opponentAggressionRange = opponentAggressionRange;
-		this.lastKnownArchonLocation = lastKnownArchonLocation;
-		this.patrolRadius = patrolRadius;
+	public PatrolAroundArchonGoal(RobotMemory memory) {
+		super(memory);
 		pathFinder.setRouteMovesUntilFail(4);
 	}
 	
@@ -40,19 +31,19 @@ public class PatrolAroundArchonGoal implements Goal {
 	public Goal achieveGoal(RobotController rc, Robot robot) throws Exception {
 		RobotInfo[] nearbyRobots = rc.senseNearbyRobots(rc.getType().sensorRadiusSquared);
 		
-		ArchonLocateResult alr = PathFindUtils.findArchonLocation(rc, archonId, nearbyRobots, lastKnownArchonLocation);
+		ArchonLocateResult alr = PathFindUtils.findArchonLocation(rc, memory.getArchonId(), nearbyRobots, memory.getLastKnownArchonLocation());
 		
 		if(alr.foundTheArchon()) {
-			lastKnownArchonLocation = alr.getLocation();
+			memory.setLastKnownArchonLocation(alr.getLocation());
 		}
 		
 		if(findBaddies(rc, nearbyRobots)) {
-			return new DefenseGoal(lastKnownArchonLocation, archonId, opponentAggressionRange, patrolRadius);
+			return new DefenseGoal(memory);
 		}
 		
 		//if the archon is out of my sensor range, go back to the archon
 		if(rc.getLocation().distanceSquaredTo(alr.getLocation()) > rc.getType().sensorRadiusSquared) {
-			return new ReturnToArchonGoal(lastKnownArchonLocation, archonId, opponentAggressionRange, patrolRadius);
+			return new ReturnToArchonGoal(memory);
 		}
 		
 		move(rc, alr.getLocation());
@@ -75,7 +66,7 @@ public class PatrolAroundArchonGoal implements Goal {
 					continue;
 				}
 				return true;
-			} else if(ri.team != myTeam && myLocation.distanceSquaredTo(ri.location) < opponentAggressionRange) {
+			} else if(ri.team != myTeam && myLocation.distanceSquaredTo(ri.location) < memory.getOpponentAggressionRange()) {
 				return true;
 			}
 		}
@@ -130,7 +121,7 @@ public class PatrolAroundArchonGoal implements Goal {
 		}
 		Direction dir = Globals.movableDirections[directionIndex];
 		//int radius = dir.isDiagonal() ? PATROL_RADIUS - 4 : PATROL_RADIUS;		//TODO: magic number!
-		whereIWantToGo = archonLocation.add(dir, patrolRadius + rand.nextInt(3) - 1);	//TODO: magic number!
+		whereIWantToGo = archonLocation.add(dir, memory.getPatrolRadius() + rand.nextInt(3) - 1);	//TODO: magic number!
 		pathFinder.reset();
 	}
 }

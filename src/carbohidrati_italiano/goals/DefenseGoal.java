@@ -8,23 +8,14 @@ import battlecode.common.RobotController;
 import battlecode.common.RobotInfo;
 import battlecode.common.Team;
 import carbohidrati_italiano.pathfinding.PathFindResult;
-import carbohidrati_italiano.pathfinding.PathFinder;
 import carbohidrati_italiano.robots.Robot;
+import carbohidrati_italiano.robots.RobotMemory;
 
-public class DefenseGoal implements Goal {
+public class DefenseGoal extends Goal {
 	
-	public DefenseGoal(MapLocation lastKnownArchonLocation, int archonId, int opponentAggressionRange, int patrolRadius) {
-		this.lastKnownArchonLocation = lastKnownArchonLocation;
-		this.archonId = archonId;
-		this.opponentAggressionRange = opponentAggressionRange;
-		this.patrolRadius = patrolRadius;
+	public DefenseGoal(RobotMemory memory) {
+		super(memory);
 	}
-	
-	private final MapLocation lastKnownArchonLocation;
-	private final int archonId;
-	private final PathFinder pathFinder = new PathFinder();
-	private final int opponentAggressionRange;
-	private final int patrolRadius;
 	
 	@Override
 	public Goal achieveGoal(RobotController rc, Robot robot) throws Exception {
@@ -50,7 +41,7 @@ public class DefenseGoal implements Goal {
 			rc.setIndicatorString(1, "defending against the opponent!");
 			defend(rc, opponents);
 		} else {
-			return new ReturnToArchonGoal(lastKnownArchonLocation, archonId, opponentAggressionRange, patrolRadius);
+			return new ReturnToArchonGoal(memory);
 		}
 		
 		return null;

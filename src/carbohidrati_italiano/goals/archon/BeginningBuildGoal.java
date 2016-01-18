@@ -7,10 +7,15 @@ import battlecode.common.RobotType;
 import carbohidrati_italiano.goals.EmptyGoal;
 import carbohidrati_italiano.goals.Goal;
 import carbohidrati_italiano.robots.Robot;
+import carbohidrati_italiano.robots.RobotMemory;
 import carbohidrati_italiano.robots.Signals;
 
-public class BeginningBuildGoal implements Goal {
+public class BeginningBuildGoal extends Goal {
 	
+	public BeginningBuildGoal() {
+		super(new RobotMemory(0, 0, 0));
+	}
+
 	private int guardsToMake = -1;
 	
 	private boolean hasScout = false;
@@ -39,11 +44,7 @@ public class BeginningBuildGoal implements Goal {
 				return null;
 			} else {
 				//uh oh, the archon is trapped!
-				return new Goal() {
-					@Override public String getName() {
-						return "Trapped!";
-					}
-				};
+				return new EmptyGoal();
 			}
 		}
 		

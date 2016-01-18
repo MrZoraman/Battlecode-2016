@@ -1,38 +1,27 @@
 package carbohidrati_italiano.goals;
 
-import battlecode.common.MapLocation;
 import battlecode.common.RobotController;
 import battlecode.common.RobotInfo;
 import carbohidrati_italiano.pathfinding.ArchonLocateResult;
 import carbohidrati_italiano.pathfinding.PathFindResult;
 import carbohidrati_italiano.pathfinding.PathFindUtils;
-import carbohidrati_italiano.pathfinding.PathFinder;
 import carbohidrati_italiano.robots.Robot;
+import carbohidrati_italiano.robots.RobotMemory;
 
-public class ReturnToArchonGoal implements Goal {
+public class ReturnToArchonGoal extends Goal {
 	
-	private final int archonId;
-	private final int opponentAggressionRange;
-	private final PathFinder pathFinder = new PathFinder();
-	private final int patrolRadius;
-	
-	private MapLocation lastKnownArchonLocation;
-	
-	public ReturnToArchonGoal(MapLocation lastKnownArchonLocation, int archonId, int opponentAggressionRange, int patrolRadius) {
-		this.lastKnownArchonLocation = lastKnownArchonLocation;
-		this.archonId = archonId;
-		this.opponentAggressionRange = opponentAggressionRange;
-		this.patrolRadius = patrolRadius;
+	public ReturnToArchonGoal(RobotMemory memory) {
+		super(memory);
 	}
 	
 	@Override
 	public Goal achieveGoal(RobotController rc, Robot robot) throws Exception {
 		RobotInfo[] nearbyRobots = rc.senseNearbyRobots(rc.getType().sensorRadiusSquared);
 		
-		ArchonLocateResult alr = PathFindUtils.findArchonLocation(rc, archonId, nearbyRobots, lastKnownArchonLocation);
+		ArchonLocateResult alr = PathFindUtils.findArchonLocation(rc, memory.getArchonId(), nearbyRobots, memory.getLastKnownArchonLocation());
 		
 		if(alr.foundTheArchon()) {
-			lastKnownArchonLocation = alr.getLocation();
+			memory.setLastKnownArchonLocation(alr.getLocation());
 		}
 		
 		
@@ -42,8 +31,8 @@ public class ReturnToArchonGoal implements Goal {
 		}
 		
 		for(RobotInfo ri : nearbyRobots) {
-			if(ri.ID == archonId) {
-				return new PatrolAroundArchonGoal(archonId, lastKnownArchonLocation, opponentAggressionRange, patrolRadius);
+			if(ri.ID == memory.getArchonId()) {
+				return new PatrolAroundArchonGoal(memory);
 			}
 		}
 		

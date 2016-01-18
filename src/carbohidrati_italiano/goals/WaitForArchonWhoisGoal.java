@@ -6,18 +6,15 @@ import battlecode.common.Signal;
 import carbohidrati_italiano.pathfinding.ArchonLocateResult;
 import carbohidrati_italiano.pathfinding.PathFindUtils;
 import carbohidrati_italiano.robots.Robot;
+import carbohidrati_italiano.robots.RobotMemory;
 import carbohidrati_italiano.robots.Signals;
 
-public class WaitForArchonWhoisGoal implements Goal {
+public class WaitForArchonWhoisGoal extends Goal {
 	
 	private int archonId = -1;
 	
-	private final int opponentAggressionRange;
-	private final int patrolRadius;
-	
 	public WaitForArchonWhoisGoal(int opponentAggressionRange, int patrolRadius) {
-		this.opponentAggressionRange = opponentAggressionRange;
-		this.patrolRadius = patrolRadius;
+		super(new RobotMemory(-1, opponentAggressionRange, patrolRadius));
 	}
 
 	@Override
@@ -50,7 +47,9 @@ public class WaitForArchonWhoisGoal implements Goal {
 		RobotInfo[] nearbyRobots = rc.senseNearbyRobots(4);
 		ArchonLocateResult alr = PathFindUtils.findArchonLocation(rc, archonId, nearbyRobots, null);
 		
-		return new PatrolAroundArchonGoal(archonId, alr.getLocation(), opponentAggressionRange, patrolRadius);
+		RobotMemory mem = new RobotMemory(archonId, memory.getOpponentAggressionRange(), memory.getPatrolRadius());
+		mem.setLastKnownArchonLocation(alr.getLocation());
+		return new PatrolAroundArchonGoal(mem);
 	}
 
 	@Override
