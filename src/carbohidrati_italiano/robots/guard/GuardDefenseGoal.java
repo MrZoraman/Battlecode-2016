@@ -44,10 +44,10 @@ public class GuardDefenseGoal implements Goal {
 		
 		if(zombies.size() > 0) {
 			rc.setIndicatorString(1, "defending against zombies!");
-			defend(rc, zombies, false);
+			defend(rc, zombies);
 		} else if (opponents.size() > 0) {
 			rc.setIndicatorString(1, "defending against the opponent!");
-			defend(rc, opponents, true);
+			defend(rc, opponents);
 		} else {
 			return new ReturnToArchonGoal(archonLocation, archonId);
 		}
@@ -60,7 +60,7 @@ public class GuardDefenseGoal implements Goal {
 		return "Defending the archon!";
 	}
 	
-	private void defend(RobotController rc, List<RobotInfo> baddies, boolean opponent) throws Exception {
+	private void defend(RobotController rc, List<RobotInfo> baddies) throws Exception {
 		double closestBaddieDistance = Double.MAX_VALUE;
 		RobotInfo closestBaddie = null;
 		
