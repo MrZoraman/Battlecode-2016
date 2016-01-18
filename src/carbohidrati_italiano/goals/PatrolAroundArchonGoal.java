@@ -50,7 +50,7 @@ public class PatrolAroundArchonGoal implements Goal {
 		
 		//if the archon is out of my sensor range, go back to the archon
 		if(rc.getLocation().distanceSquaredTo(alr.getLocation()) > rc.getType().sensorRadiusSquared) {
-			return new ReturnToArchonGoal();
+			return new ReturnToArchonGoal(lastKnownArchonLocation, archonId, opponentAggressionRange);
 		}
 		
 		move(rc, alr.getLocation());
@@ -100,7 +100,7 @@ public class PatrolAroundArchonGoal implements Goal {
 		}
 		
 		PathFindResult result = pathFinder.move(rc, whereIWantToGo);
-		if(result != PathFindResult.SUCCESS || result != PathFindResult.CORE_DELAY) {	//TODO: smarter decision making here
+		if(result != PathFindResult.SUCCESS && result != PathFindResult.CORE_DELAY) {	//TODO: smarter decision making here
 			pathFinder.reset();
 		}
 	}

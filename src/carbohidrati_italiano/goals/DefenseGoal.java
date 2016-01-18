@@ -13,19 +13,20 @@ import carbohidrati_italiano.robots.Robot;
 
 public class DefenseGoal implements Goal {
 	
-	public DefenseGoal(MapLocation lastKnownArchonLocation, int archonId) {
+	public DefenseGoal(MapLocation lastKnownArchonLocation, int archonId, int opponentAggressionRange) {
 		this.lastKnownArchonLocation = lastKnownArchonLocation;
 		this.archonId = archonId;
+		this.opponentAggressionRange = opponentAggressionRange;
 	}
 	
 	private final MapLocation lastKnownArchonLocation;
 	private final int archonId;
 	private final PathFinder pathFinder = new PathFinder();
+	private final int  opponentAggressionRange;
 	
 	@Override
 	public Goal achieveGoal(RobotController rc, Robot robot) throws Exception {
-		int sensorRadiusSquared = rc.getType().sensorRadiusSquared;
-		RobotInfo[] robots = rc.senseHostileRobots(rc.getLocation(), sensorRadiusSquared);
+		RobotInfo[] robots = rc.senseHostileRobots(rc.getLocation(), rc.getType().sensorRadiusSquared);
 		
 		Team enemyTeam = rc.getTeam().opponent();
 		
@@ -47,7 +48,7 @@ public class DefenseGoal implements Goal {
 			rc.setIndicatorString(1, "defending against the opponent!");
 			defend(rc, opponents);
 		} else {
-			return new ReturnToArchonGoal(lastKnownArchonLocation, archonId, sensorRadiusSquared);
+			return new ReturnToArchonGoal(lastKnownArchonLocation, archonId, opponentAggressionRange);
 		}
 		
 		return null;
@@ -83,7 +84,7 @@ public class DefenseGoal implements Goal {
 			}
 		} else {
 			PathFindResult result = pathFinder.move(rc, closestBaddie.location);
-			if(result != PathFindResult.SUCCESS) {
+			if(result != PathFindResult.SUCCESS && result != PathFindResult.CORE_DELAY) {
 				pathFinder.reset();
 			}
 		}
