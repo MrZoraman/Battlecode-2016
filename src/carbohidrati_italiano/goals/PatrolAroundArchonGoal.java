@@ -8,32 +8,52 @@ import battlecode.common.RobotController;
 import battlecode.common.RobotInfo;
 import battlecode.common.Team;
 import carbohidrati_italiano.Globals;
+import carbohidrati_italiano.pathfinding.ArchonLocateResult;
+import carbohidrati_italiano.pathfinding.PathFindResult;
+import carbohidrati_italiano.pathfinding.PathFindUtils;
+import carbohidrati_italiano.pathfinding.PathFinder;
 import carbohidrati_italiano.robots.Robot;
 
 public class PatrolAroundArchonGoal implements Goal {
 	
+	private static final int PATROL_RADIUS = 14;
+	
 	private final Random rand = new Random();
 	private final int archonId;
 	private final int opponentAggressionRange;
+	private final PathFinder pathFinder = new PathFinder();
 	
-	private MapLocation archonLocation;
+	private MapLocation lastKnownArchonLocation;
+	private MapLocation whereIWantToGo = null;
 	
-	public PatrolAroundArchonGoal(int archonId, int opponentAggressionRange) {
+	private int directionIndex = -1;
+	
+	public PatrolAroundArchonGoal(int archonId, MapLocation lastKnownArchonLocation, int opponentAggressionRange) {
 		this.archonId = archonId;
 		this.opponentAggressionRange = opponentAggressionRange;
+		this.lastKnownArchonLocation = lastKnownArchonLocation;
 	}
 	
 	@Override
 	public Goal achieveGoal(RobotController rc, Robot robot) throws Exception {
+		RobotInfo[] nearbyRobots = rc.senseNearbyRobots(rc.getType().sensorRadiusSquared);
 		
-		//where is my archon?
-		archonLocation = rc.senseRobot(archonId).location;
+		ArchonLocateResult alr = PathFindUtils.findArchonLocation(rc, archonId, nearbyRobots, lastKnownArchonLocation);
 		
-		if(findBaddies(rc)) {
-			return new DefenseGoal(archonLocation, archonId);
+		if(alr.foundTheArchon()) {
+			lastKnownArchonLocation = alr.getLocation();
 		}
 		
-		move(rc);
+		if(findBaddies(rc, nearbyRobots)) {
+			return new DefenseGoal(lastKnownArchonLocation, archonId);
+		}
+		
+		//if the archon is out of my sensor range, go back to the archon
+		if(rc.getLocation().distanceSquaredTo(alr.getLocation()) > rc.getType().sensorRadiusSquared) {
+			return new ReturnToArchonGoal();
+		}
+		
+		move(rc, alr.getLocation());
 		
 		return null;
 	}
@@ -43,12 +63,10 @@ public class PatrolAroundArchonGoal implements Goal {
 		return "Patrollin'";
 	}
 	
-	private boolean findBaddies(RobotController rc) {
-		RobotInfo[] robots = rc.senseHostileRobots(rc.getLocation(), rc.getType().sensorRadiusSquared);
-		
+	private boolean findBaddies(RobotController rc, RobotInfo[] nearbyRobots) {
 		MapLocation myLocation = rc.getLocation();
 		
-		for(RobotInfo ri : robots) {
+		for(RobotInfo ri : nearbyRobots) {
 			if(ri.team == Team.ZOMBIE) {
 				return true;
 			} else if(myLocation.distanceSquaredTo(ri.location) < opponentAggressionRange) {
@@ -59,70 +77,31 @@ public class PatrolAroundArchonGoal implements Goal {
 		return false;
 	}
 	
-	private void move(RobotController rc) throws Exception {
+	private void move(RobotController rc, MapLocation archonLocation) throws Exception {
 		if(!rc.isCoreReady()) {
 			return;
 		}
+
 		//where am I?
-		MapLocation currentLocation = rc.getLocation();
-		//how far away is it from me?
-		double distance = archonLocation.distanceSquaredTo(currentLocation);
-		//what direction do I want to go?		
-		Direction dir = null;
+		MapLocation myLocation = rc.getLocation();
 		
-		if(distance < 4) {
-			rc.setIndicatorString(2, "too close!");
-			//too close!
-			dir = archonLocation.directionTo(currentLocation);
-			int dirTries = 0;
-			while(!rc.canMove(dir)) {
-				dir = dir.rotateRight();
-				dirTries++;
-				if(dirTries > 8) {
-					return;
-				}
+		if(whereIWantToGo == null || myLocation.distanceSquaredTo(whereIWantToGo) < 2) {	//TODO: magic number!
+			//time to figure out a new place to go
+			if(directionIndex < 0) {
+				directionIndex = rand.nextInt(8);
+			} else {
+				directionIndex++;
+				directionIndex = directionIndex % 8;
 			}
-		} else if(distance < 12) {
-			rc.setIndicatorString(2, "I have breathing room!");
-			//I have breathing room
-			dir = Globals.movableDirections[rand.nextInt(Globals.movableDirections.length - 1)];
-			int dirTries = 0;
-			while(!rc.canMove(dir)) {
-				dir = dir.rotateRight();
-				dirTries++;
-				if(dirTries > 8) {
-					System.out.println("uh oh!");
-					return;
-				}
-			}
-		} else {
-			rc.setIndicatorString(2, "too far away!");
-			//too far away!
-			dir = currentLocation.directionTo(archonLocation);
-//			int num = rand.nextInt(3);
-//			switch(num) {
-//			case 0:
-//				dir.rotateLeft();
-//				break;
-//			case 1:
-//				dir.rotateRight();
-//				break;
-//			}
-			
-			if(!rc.canMove(dir)) {
-				dir.rotateLeft();
-			}
-			if(!rc.canMove(dir)) {
-				dir.rotateRight().rotateRight();
-			}
-			if(!rc.canMove(dir)) {
-				return;
-			}
+			Direction dir = Globals.movableDirections[directionIndex];
+			int radius = dir.isDiagonal() ? PATROL_RADIUS - 4 : PATROL_RADIUS;		//TODO: magic number!
+			whereIWantToGo = archonLocation.add(dir, radius + rand.nextInt(3) - 1);	//TODO: magic number!
+			pathFinder.reset();
 		}
 		
-		//time to move!
-		rc.move(dir);
-		return;
+		PathFindResult result = pathFinder.move(rc, whereIWantToGo);
+		if(result != PathFindResult.SUCCESS || result != PathFindResult.CORE_DELAY) {	//TODO: smarter decision making here
+			pathFinder.reset();
+		}
 	}
-
 }

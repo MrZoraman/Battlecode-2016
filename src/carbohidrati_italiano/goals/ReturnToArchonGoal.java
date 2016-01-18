@@ -23,6 +23,11 @@ public class ReturnToArchonGoal implements Goal {
 	
 	@Override
 	public Goal achieveGoal(RobotController rc, Robot robot) throws Exception {
+		if(archonLocation == null) {
+			//I'm lost!
+		}
+		
+		
 		PathFindResult result = pathFinder.move(rc, archonLocation);
 		if(result != PathFindResult.SUCCESS) {
 			pathFinder.reset();

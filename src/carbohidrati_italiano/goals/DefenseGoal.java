@@ -13,15 +13,12 @@ import carbohidrati_italiano.robots.Robot;
 
 public class DefenseGoal implements Goal {
 	
-	public DefenseGoal(MapLocation archonLocation, int archonId) {
-		if(archonLocation == null) {
-			throw new IllegalStateException("archonlocation can't be null!");
-		}
-		this.archonLocation = archonLocation;
+	public DefenseGoal(MapLocation lastKnownArchonLocation, int archonId) {
+		this.lastKnownArchonLocation = lastKnownArchonLocation;
 		this.archonId = archonId;
 	}
 	
-	private final MapLocation archonLocation;
+	private final MapLocation lastKnownArchonLocation;
 	private final int archonId;
 	private final PathFinder pathFinder = new PathFinder();
 	
@@ -50,7 +47,7 @@ public class DefenseGoal implements Goal {
 			rc.setIndicatorString(1, "defending against the opponent!");
 			defend(rc, opponents);
 		} else {
-			return new ReturnToArchonGoal(archonLocation, archonId, sensorRadiusSquared);
+			return new ReturnToArchonGoal(lastKnownArchonLocation, archonId, sensorRadiusSquared);
 		}
 		
 		return null;

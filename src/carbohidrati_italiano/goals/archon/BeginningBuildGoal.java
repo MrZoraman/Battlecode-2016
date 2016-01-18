@@ -48,11 +48,11 @@ public class BeginningBuildGoal implements Goal {
 		}
 		
 		if(guardsMade < guardsToMake) {
-			if(!rc.hasBuildRequirements(RobotType.GUARD)) {
+			if(!rc.hasBuildRequirements(RobotType.SOLDIER)) {
 				return null;
 			}
 			
-			Direction guardDir = ArchonUtils.findPlaceAndBuild(rc, lastPlacedDir, RobotType.GUARD);
+			Direction guardDir = ArchonUtils.findPlaceAndBuild(rc, lastPlacedDir, RobotType.SOLDIER);
 			if(guardDir != null) {
 				guardsMade++;
 				lastPlacedDir = guardDir;
