@@ -16,7 +16,7 @@ import carbohidrati_italiano.robots.Robot;
 
 public class PatrolAroundArchonGoal implements Goal {
 	
-	private static final int PATROL_RADIUS = 2;
+	private static final int PATROL_RADIUS = 3;
 	
 	private final Random rand = new Random();
 	private final int archonId;
@@ -32,6 +32,7 @@ public class PatrolAroundArchonGoal implements Goal {
 		this.archonId = archonId;
 		this.opponentAggressionRange = opponentAggressionRange;
 		this.lastKnownArchonLocation = lastKnownArchonLocation;
+		pathFinder.setRouteMovesUntilFail(4);
 	}
 	
 	@Override
@@ -54,7 +55,6 @@ public class PatrolAroundArchonGoal implements Goal {
 		}
 		
 		move(rc, alr.getLocation());
-		rc.setIndicatorString(0, "I want to go: " + whereIWantToGo);
 		
 		return null;
 	}
@@ -88,23 +88,47 @@ public class PatrolAroundArchonGoal implements Goal {
 		MapLocation myLocation = rc.getLocation();
 		
 		if(whereIWantToGo == null || myLocation.distanceSquaredTo(whereIWantToGo) < 2) {	//TODO: magic number!
-			//time to figure out a new place to go
-			if(directionIndex < 0) {
-				directionIndex = rand.nextInt(8);
-			} else {
-				directionIndex++;
-				directionIndex = directionIndex % 8;
-			}
-			Direction dir = Globals.movableDirections[directionIndex];
-			//int radius = dir.isDiagonal() ? PATROL_RADIUS - 4 : PATROL_RADIUS;		//TODO: magic number!
-			whereIWantToGo = archonLocation.add(dir, PATROL_RADIUS + rand.nextInt(3) - 1);	//TODO: magic number!
-			pathFinder.reset();
+			calculateWhereIWantToGo(archonLocation);
 		}
 		
 		
 		PathFindResult result = pathFinder.move(rc, whereIWantToGo);
-		if(result != PathFindResult.SUCCESS && result != PathFindResult.CORE_DELAY) {	//TODO: smarter decision making here
-			pathFinder.reset();
+//		if(result != PathFindResult.SUCCESS && result != PathFindResult.CORE_DELAY) {	//TODO: smarter decision making here
+//			pathFinder.reset();
+//		}
+		switch(result) {
+		case CORE_DELAY:
+			break;
+		case COULD_NOT_FIND_ROUTE:
+			calculateWhereIWantToGo(archonLocation);
+			break;
+		case ROBOT_IN_WAY:
+			break;
+		case ROBOT_IN_WAY_AND_NOT_MOVING:
+			calculateWhereIWantToGo(archonLocation);
+			break;
+		case STUCK:
+			calculateWhereIWantToGo(archonLocation);
+			break;
+		case SUCCESS:
+			break;
+		default:
+			break;
+		
 		}
+	}
+	
+	private void calculateWhereIWantToGo(MapLocation archonLocation) {
+		//time to figure out a new place to go
+		if(directionIndex < 0) {
+			directionIndex = rand.nextInt(8);
+		} else {
+			directionIndex++;
+			directionIndex = directionIndex % 8;
+		}
+		Direction dir = Globals.movableDirections[directionIndex];
+		//int radius = dir.isDiagonal() ? PATROL_RADIUS - 4 : PATROL_RADIUS;		//TODO: magic number!
+		whereIWantToGo = archonLocation.add(dir, PATROL_RADIUS + rand.nextInt(3) - 1);	//TODO: magic number!
+		pathFinder.reset();
 	}
 }
