@@ -1,7 +1,10 @@
 package carbohidrati_italiano.goals;
 
 import battlecode.common.RobotController;
+import battlecode.common.RobotInfo;
 import battlecode.common.Signal;
+import carbohidrati_italiano.pathfinding.ArchonLocateResult;
+import carbohidrati_italiano.pathfinding.PathFindUtils;
 import carbohidrati_italiano.robots.Robot;
 import carbohidrati_italiano.robots.Signals;
 
@@ -42,7 +45,10 @@ public class WaitForArchonWhoisGoal implements Goal {
 			}
 		}
 		
-		return new PatrolAroundArchonGoal(archonId, opponentAggressionRange);
+		RobotInfo[] nearbyRobots = rc.senseNearbyRobots(4);
+		ArchonLocateResult alr = PathFindUtils.findArchonLocation(rc, archonId, nearbyRobots, null);
+		
+		return new PatrolAroundArchonGoal(archonId, alr.getLocation(), opponentAggressionRange);
 	}
 
 	@Override

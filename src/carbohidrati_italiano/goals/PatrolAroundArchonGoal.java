@@ -16,7 +16,7 @@ import carbohidrati_italiano.robots.Robot;
 
 public class PatrolAroundArchonGoal implements Goal {
 	
-	private static final int PATROL_RADIUS = 14;
+	private static final int PATROL_RADIUS = 2;
 	
 	private final Random rand = new Random();
 	private final int archonId;
@@ -54,6 +54,7 @@ public class PatrolAroundArchonGoal implements Goal {
 		}
 		
 		move(rc, alr.getLocation());
+		rc.setIndicatorString(0, "I want to go: " + whereIWantToGo);
 		
 		return null;
 	}
@@ -65,11 +66,12 @@ public class PatrolAroundArchonGoal implements Goal {
 	
 	private boolean findBaddies(RobotController rc, RobotInfo[] nearbyRobots) {
 		MapLocation myLocation = rc.getLocation();
+		Team myTeam = rc.getTeam();
 		
 		for(RobotInfo ri : nearbyRobots) {
 			if(ri.team == Team.ZOMBIE) {
 				return true;
-			} else if(myLocation.distanceSquaredTo(ri.location) < opponentAggressionRange) {
+			} else if(ri.team != myTeam && myLocation.distanceSquaredTo(ri.location) < opponentAggressionRange) {
 				return true;
 			}
 		}
@@ -94,10 +96,11 @@ public class PatrolAroundArchonGoal implements Goal {
 				directionIndex = directionIndex % 8;
 			}
 			Direction dir = Globals.movableDirections[directionIndex];
-			int radius = dir.isDiagonal() ? PATROL_RADIUS - 4 : PATROL_RADIUS;		//TODO: magic number!
-			whereIWantToGo = archonLocation.add(dir, radius + rand.nextInt(3) - 1);	//TODO: magic number!
+			//int radius = dir.isDiagonal() ? PATROL_RADIUS - 4 : PATROL_RADIUS;		//TODO: magic number!
+			whereIWantToGo = archonLocation.add(dir, PATROL_RADIUS + rand.nextInt(3) - 1);	//TODO: magic number!
 			pathFinder.reset();
 		}
+		
 		
 		PathFindResult result = pathFinder.move(rc, whereIWantToGo);
 		if(result != PathFindResult.SUCCESS && result != PathFindResult.CORE_DELAY) {	//TODO: smarter decision making here
