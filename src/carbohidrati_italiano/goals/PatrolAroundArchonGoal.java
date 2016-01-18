@@ -45,7 +45,7 @@ public class PatrolAroundArchonGoal implements Goal {
 		}
 		
 		if(findBaddies(rc, nearbyRobots)) {
-			return new DefenseGoal(lastKnownArchonLocation, archonId);
+			return new DefenseGoal(lastKnownArchonLocation, archonId, opponentAggressionRange);
 		}
 		
 		//if the archon is out of my sensor range, go back to the archon
