@@ -3,12 +3,10 @@ package carbohidrati_italiano.robots.guard;
 import java.util.ArrayList;
 import java.util.List;
 
-import battlecode.common.Direction;
 import battlecode.common.MapLocation;
 import battlecode.common.RobotController;
 import battlecode.common.RobotInfo;
 import battlecode.common.Team;
-import carbohidrati_italiano.Globals;
 import carbohidrati_italiano.pathfinding.PathFinder;
 import carbohidrati_italiano.robots.Goal;
 import carbohidrati_italiano.robots.RobotBase;
