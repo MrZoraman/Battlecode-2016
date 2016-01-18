@@ -49,11 +49,11 @@ public class PathFinder {
 		
 		DirectionResult result = getDirection(rc, myLocation, target);
 		if(result.dir != null) {
-			rc.move(result.dir);
 			if(routeTries >= routeMovesUntilFail) {
 				return COULD_NOT_FIND_ROUTE;
 			} else {
 				routeTries++;
+				rc.move(result.dir);
 				return SUCCESS;
 			}
 		}
