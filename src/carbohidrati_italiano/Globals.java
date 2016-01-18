@@ -30,5 +30,6 @@ public class Globals {
 	
 	public static final int GUARD_AGGRESSION_RANGE = 14;
 	
-	
+	public static final int GUARD_PATROL_RADIUS = 3;
+	public static final int SOLDIER_PATROL_RADIUS = 4;
 }

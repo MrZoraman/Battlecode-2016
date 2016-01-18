@@ -14,13 +14,15 @@ public class ReturnToArchonGoal implements Goal {
 	private final int archonId;
 	private final int opponentAggressionRange;
 	private final PathFinder pathFinder = new PathFinder();
+	private final int patrolRadius;
 	
 	private MapLocation lastKnownArchonLocation;
 	
-	public ReturnToArchonGoal(MapLocation lastKnownArchonLocation, int archonId, int opponentAggressionRange) {
+	public ReturnToArchonGoal(MapLocation lastKnownArchonLocation, int archonId, int opponentAggressionRange, int patrolRadius) {
 		this.lastKnownArchonLocation = lastKnownArchonLocation;
 		this.archonId = archonId;
 		this.opponentAggressionRange = opponentAggressionRange;
+		this.patrolRadius = patrolRadius;
 	}
 	
 	@Override
@@ -41,7 +43,7 @@ public class ReturnToArchonGoal implements Goal {
 		
 		for(RobotInfo ri : nearbyRobots) {
 			if(ri.ID == archonId) {
-				return new PatrolAroundArchonGoal(archonId, lastKnownArchonLocation, opponentAggressionRange);
+				return new PatrolAroundArchonGoal(archonId, lastKnownArchonLocation, opponentAggressionRange, patrolRadius);
 			}
 		}
 		

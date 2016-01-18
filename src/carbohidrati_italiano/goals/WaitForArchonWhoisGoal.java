@@ -13,9 +13,11 @@ public class WaitForArchonWhoisGoal implements Goal {
 	private int archonId = -1;
 	
 	private final int opponentAggressionRange;
+	private final int patrolRadius;
 	
-	public WaitForArchonWhoisGoal(int opponentAggressionRange) {
+	public WaitForArchonWhoisGoal(int opponentAggressionRange, int patrolRadius) {
 		this.opponentAggressionRange = opponentAggressionRange;
+		this.patrolRadius = patrolRadius;
 	}
 
 	@Override
@@ -48,7 +50,7 @@ public class WaitForArchonWhoisGoal implements Goal {
 		RobotInfo[] nearbyRobots = rc.senseNearbyRobots(4);
 		ArchonLocateResult alr = PathFindUtils.findArchonLocation(rc, archonId, nearbyRobots, null);
 		
-		return new PatrolAroundArchonGoal(archonId, alr.getLocation(), opponentAggressionRange);
+		return new PatrolAroundArchonGoal(archonId, alr.getLocation(), opponentAggressionRange, patrolRadius);
 	}
 
 	@Override

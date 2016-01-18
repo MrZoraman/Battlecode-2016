@@ -13,16 +13,18 @@ import carbohidrati_italiano.robots.Robot;
 
 public class DefenseGoal implements Goal {
 	
-	public DefenseGoal(MapLocation lastKnownArchonLocation, int archonId, int opponentAggressionRange) {
+	public DefenseGoal(MapLocation lastKnownArchonLocation, int archonId, int opponentAggressionRange, int patrolRadius) {
 		this.lastKnownArchonLocation = lastKnownArchonLocation;
 		this.archonId = archonId;
 		this.opponentAggressionRange = opponentAggressionRange;
+		this.patrolRadius = patrolRadius;
 	}
 	
 	private final MapLocation lastKnownArchonLocation;
 	private final int archonId;
 	private final PathFinder pathFinder = new PathFinder();
-	private final int  opponentAggressionRange;
+	private final int opponentAggressionRange;
+	private final int patrolRadius;
 	
 	@Override
 	public Goal achieveGoal(RobotController rc, Robot robot) throws Exception {
@@ -48,7 +50,7 @@ public class DefenseGoal implements Goal {
 			rc.setIndicatorString(1, "defending against the opponent!");
 			defend(rc, opponents);
 		} else {
-			return new ReturnToArchonGoal(lastKnownArchonLocation, archonId, opponentAggressionRange);
+			return new ReturnToArchonGoal(lastKnownArchonLocation, archonId, opponentAggressionRange, patrolRadius);
 		}
 		
 		return null;
