@@ -2,7 +2,6 @@ package carbohidrati_italiano.robots.archon;
 
 import battlecode.common.MapLocation;
 import battlecode.common.RobotController;
-import carbohidrati_italiano.dstarlite.DStarLite;
 import carbohidrati_italiano.robots.RobotBase;
 
 public class Archon extends RobotBase {
@@ -27,7 +26,6 @@ public class Archon extends RobotBase {
 		if(headArchon) {
 			//start at one, because the head archon is at index 0 (that's me!)
 			for(int ii = 1; ii < archons.length; ii++) {
-				DStarLite pf = new DStarLite();
 				
 			}
 		}

@@ -8,7 +8,6 @@ import battlecode.common.RobotController;
 import battlecode.common.RobotInfo;
 import battlecode.common.Team;
 import carbohidrati_italiano.Globals;
-import carbohidrati_italiano.Utils;
 import carbohidrati_italiano.robots.Goal;
 import carbohidrati_italiano.robots.RobotBase;
 
@@ -76,7 +75,7 @@ public class PatrolAroundArchonGoal implements Goal {
 			dir = archonLocation.directionTo(currentLocation);
 			int dirTries = 0;
 			while(!rc.canMove(dir)) {
-				dir = Utils.nextOrdinal(dir);
+				dir = dir.rotateRight();
 				dirTries++;
 				if(dirTries > 8) {
 					return;
@@ -88,7 +87,7 @@ public class PatrolAroundArchonGoal implements Goal {
 			dir = Globals.movableDirections[rand.nextInt(Globals.movableDirections.length - 1)];
 			int dirTries = 0;
 			while(!rc.canMove(dir)) {
-				dir = Utils.nextOrdinal(dir);
+				dir = dir.rotateRight();
 				dirTries++;
 				if(dirTries > 8) {
 					System.out.println("uh oh!");

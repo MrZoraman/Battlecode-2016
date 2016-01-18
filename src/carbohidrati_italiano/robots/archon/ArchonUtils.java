@@ -3,7 +3,6 @@ package carbohidrati_italiano.robots.archon;
 import battlecode.common.Direction;
 import battlecode.common.RobotController;
 import battlecode.common.RobotType;
-import carbohidrati_italiano.Globals;
 
 public class ArchonUtils {
 	private ArchonUtils() { }
@@ -17,10 +16,34 @@ public class ArchonUtils {
 		return false;
 	}
 	
-	public static Direction findPlaceAndBuild(RobotController rc, RobotType type) throws Exception {
-		for(Direction dir : Globals.movableDirections) {
+	public static Direction findPlaceAndBuild(RobotController rc, Direction start, RobotType type) throws Exception {
+		for(int ii = 0; ii < 8; ii++) {
+			Direction dir = findNextDir(rc, start, type);
 			if(safeBuild(rc, type, dir)) {
 				return dir;
+			}
+		}
+		
+		return null;
+	}
+	
+
+	
+	private static Direction findNextDir(RobotController rc, Direction start, RobotType type) {
+		Direction next = start;
+		for(int ii = 0; ii < 4; ii++) {
+			next = next.rotateLeft().rotateLeft();
+			if(rc.canBuild(next, type)) {
+				return next;
+			}
+		}
+		
+		next = next.rotateLeft();
+		
+		for(int ii = 0; ii < 4; ii++) {
+			next = next.rotateLeft().rotateLeft();
+			if(rc.canBuild(next, type)) {
+				return next;
 			}
 		}
 		

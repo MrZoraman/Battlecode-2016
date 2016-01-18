@@ -15,6 +15,8 @@ public class BeginningBuildGoal implements Goal {
 	
 	private boolean hasScout = false;
 	private int guardsMade = 0;
+	
+	private Direction lastPlacedDir = Direction.NORTH;
 
 	@Override
 	public Goal achieveGoal(RobotController rc, RobotBase robot) throws Exception {
@@ -29,10 +31,11 @@ public class BeginningBuildGoal implements Goal {
 		
 		
 		if(!hasScout) {
-			Direction scoutBuilt = ArchonUtils.findPlaceAndBuild(rc, RobotType.SCOUT);
+			Direction scoutDir = ArchonUtils.findPlaceAndBuild(rc, Direction.NORTH, RobotType.SCOUT);
 			
-			if(scoutBuilt != null) {
+			if(scoutDir != null) {
 				hasScout = true;
+				lastPlacedDir = scoutDir;
 				return null;
 			} else {
 				//uh oh, the archon is trapped!
@@ -49,9 +52,10 @@ public class BeginningBuildGoal implements Goal {
 				return null;
 			}
 			
-			Direction guardBuilt = ArchonUtils.findPlaceAndBuild(rc, RobotType.GUARD);
-			if(guardBuilt != null) {
+			Direction guardDir = ArchonUtils.findPlaceAndBuild(rc, lastPlacedDir, RobotType.GUARD);
+			if(guardDir != null) {
 				guardsMade++;
+				lastPlacedDir = guardDir;
 				rc.broadcastMessageSignal(Signals.THIS_IS_MY_ID.getValue(), rc.getID(), 2);
 				return null;
 			} else {

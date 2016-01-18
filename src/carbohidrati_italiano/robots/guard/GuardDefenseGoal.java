@@ -88,6 +88,16 @@ public class GuardDefenseGoal implements Goal {
 				Direction dir = myLocation.directionTo(closestBaddie.location);
 				if(rc.canMove(dir)) {
 					rc.move(dir);
+				} else {
+					dir.rotateLeft();
+					if(rc.canMove(dir)) {
+						rc.move(dir);
+					} else {
+						dir.rotateRight().rotateRight();
+						if(rc.canMove(dir)) {
+							rc.move(dir);
+						}
+					}
 				}
 			}
 		}
