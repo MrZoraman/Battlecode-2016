@@ -9,11 +9,9 @@ public class WaitForArchonWhoisGoal implements Goal {
 	
 	private int archonId = -1;
 	
-	private final int senseRange;
 	private final int opponentAggressionRange;
 	
-	public WaitForArchonWhoisGoal(int senseRange, int opponentAggressionRange) {
-		this.senseRange = senseRange;
+	public WaitForArchonWhoisGoal(int opponentAggressionRange) {
 		this.opponentAggressionRange = opponentAggressionRange;
 	}
 
@@ -44,7 +42,7 @@ public class WaitForArchonWhoisGoal implements Goal {
 			}
 		}
 		
-		return new PatrolAroundArchonGoal(archonId, senseRange, opponentAggressionRange);
+		return new PatrolAroundArchonGoal(archonId, opponentAggressionRange);
 	}
 
 	@Override

@@ -13,23 +13,22 @@ import carbohidrati_italiano.robots.Robot;
 
 public class DefenseGoal implements Goal {
 	
-	public DefenseGoal(MapLocation archonLocation, int archonId, int senseDistance) {
+	public DefenseGoal(MapLocation archonLocation, int archonId) {
 		if(archonLocation == null) {
 			throw new IllegalStateException("archonlocation can't be null!");
 		}
 		this.archonLocation = archonLocation;
 		this.archonId = archonId;
-		this.senseDistance = senseDistance;
 	}
 	
 	private final MapLocation archonLocation;
 	private final int archonId;
 	private final PathFinder pathFinder = new PathFinder();
-	private final int senseDistance;
 	
 	@Override
 	public Goal achieveGoal(RobotController rc, Robot robot) throws Exception {
-		RobotInfo[] robots = rc.senseHostileRobots(rc.getLocation(), senseDistance);
+		int sensorRadiusSquared = rc.getType().sensorRadiusSquared;
+		RobotInfo[] robots = rc.senseHostileRobots(rc.getLocation(), sensorRadiusSquared);
 		
 		Team enemyTeam = rc.getTeam().opponent();
 		
@@ -51,7 +50,7 @@ public class DefenseGoal implements Goal {
 			rc.setIndicatorString(1, "defending against the opponent!");
 			defend(rc, opponents);
 		} else {
-			return new ReturnToArchonGoal(archonLocation, archonId);
+			return new ReturnToArchonGoal(archonLocation, archonId, sensorRadiusSquared);
 		}
 		
 		return null;
@@ -81,7 +80,7 @@ public class DefenseGoal implements Goal {
 			return;
 		}
 		
-		if(closestBaddieDistance <= 2) {
+		if(closestBaddieDistance <= rc.getType().attackRadiusSquared) {
 			if(rc.isWeaponReady()) {
 				rc.attackLocation(closestBaddie.location);
 			}

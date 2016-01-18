@@ -18,12 +18,17 @@ public class RobotFactory {
 		robots.put(ARCHON, new Robot(new BeginningBuildGoal()));
 		
 		robots.put(GUARD, new Robot(
-				new WaitForArchonWhoisGoal(GUARD.attackRadiusSquared, Globals.GUARD_AGGRESSION_RANGE)));
+				new WaitForArchonWhoisGoal(Globals.GUARD_AGGRESSION_RANGE)));
 		
 		robots.put(SCOUT, new Robot(new EmptyGoal()));
-		robots.put(SOLDIER, new Robot(new EmptyGoal()));
+		
+		robots.put(SOLDIER, new Robot(
+				new WaitForArchonWhoisGoal(Globals.GUARD_AGGRESSION_RANGE)));
+		
 		robots.put(TTM, new Robot(new EmptyGoal()));
+		
 		robots.put(TURRET, new Robot(new EmptyGoal()));
+		
 		robots.put(VIPER, new Robot(new EmptyGoal()));
 	}
 	

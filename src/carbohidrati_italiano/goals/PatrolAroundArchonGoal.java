@@ -14,14 +14,12 @@ public class PatrolAroundArchonGoal implements Goal {
 	
 	private final Random rand = new Random();
 	private final int archonId;
-	private final int senseDistance;
 	private final int opponentAggressionRange;
 	
 	private MapLocation archonLocation;
 	
-	public PatrolAroundArchonGoal(int archonId, int senseDistance, int opponentAggressionRange) {
+	public PatrolAroundArchonGoal(int archonId, int opponentAggressionRange) {
 		this.archonId = archonId;
-		this.senseDistance = senseDistance;
 		this.opponentAggressionRange = opponentAggressionRange;
 	}
 	
@@ -32,7 +30,7 @@ public class PatrolAroundArchonGoal implements Goal {
 		archonLocation = rc.senseRobot(archonId).location;
 		
 		if(findBaddies(rc)) {
-			return new DefenseGoal(archonLocation, archonId, senseDistance);
+			return new DefenseGoal(archonLocation, archonId);
 		}
 		
 		move(rc);
@@ -46,7 +44,7 @@ public class PatrolAroundArchonGoal implements Goal {
 	}
 	
 	private boolean findBaddies(RobotController rc) {
-		RobotInfo[] robots = rc.senseHostileRobots(rc.getLocation(), senseDistance);
+		RobotInfo[] robots = rc.senseHostileRobots(rc.getLocation(), rc.getType().sensorRadiusSquared);
 		
 		MapLocation myLocation = rc.getLocation();
 		
