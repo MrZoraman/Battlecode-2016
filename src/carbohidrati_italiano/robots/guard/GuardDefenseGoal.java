@@ -9,6 +9,7 @@ import battlecode.common.RobotController;
 import battlecode.common.RobotInfo;
 import battlecode.common.Team;
 import carbohidrati_italiano.Globals;
+import carbohidrati_italiano.pathfinding.PathFinder;
 import carbohidrati_italiano.robots.Goal;
 import carbohidrati_italiano.robots.RobotBase;
 
@@ -24,6 +25,7 @@ public class GuardDefenseGoal implements Goal {
 	
 	private final MapLocation archonLocation;
 	private final int archonId;
+	private final PathFinder pathFinder = new PathFinder();
 	
 	@Override
 	public Goal achieveGoal(RobotController rc, RobotBase robot) throws Exception {
@@ -84,22 +86,7 @@ public class GuardDefenseGoal implements Goal {
 				rc.attackLocation(closestBaddie.location);
 			}
 		} else {
-			if(rc.isCoreReady()) {
-				Direction dir = myLocation.directionTo(closestBaddie.location);
-				if(rc.canMove(dir)) {
-					rc.move(dir);
-				} else {
-					dir.rotateLeft();
-					if(rc.canMove(dir)) {
-						rc.move(dir);
-					} else {
-						dir.rotateRight().rotateRight();
-						if(rc.canMove(dir)) {
-							rc.move(dir);
-						}
-					}
-				}
-			}
+			pathFinder.move(rc, closestBaddie.location);
 		}
 	}
 }
