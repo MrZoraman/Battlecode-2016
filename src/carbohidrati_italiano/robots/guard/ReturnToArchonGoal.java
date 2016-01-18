@@ -3,6 +3,7 @@ package carbohidrati_italiano.robots.guard;
 import battlecode.common.MapLocation;
 import battlecode.common.RobotController;
 import battlecode.common.RobotInfo;
+import carbohidrati_italiano.pathfinding.PathFindResult;
 import carbohidrati_italiano.pathfinding.PathFinder;
 import carbohidrati_italiano.robots.Goal;
 import carbohidrati_italiano.robots.RobotBase;
@@ -21,7 +22,10 @@ public class ReturnToArchonGoal implements Goal {
 	
 	@Override
 	public Goal achieveGoal(RobotController rc, RobotBase robot) throws Exception {
-		pathFinder.move(rc, archonLocation);
+		PathFindResult result = pathFinder.move(rc, archonLocation);
+		if(result != PathFindResult.SUCCESS) {
+			pathFinder.reset();
+		}
 		
 		RobotInfo[] nearbyRobots = rc.senseNearbyRobots(24, rc.getTeam());
 		for(RobotInfo ri : nearbyRobots) {

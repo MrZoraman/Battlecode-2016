@@ -7,6 +7,7 @@ import battlecode.common.MapLocation;
 import battlecode.common.RobotController;
 import battlecode.common.RobotInfo;
 import battlecode.common.Team;
+import carbohidrati_italiano.pathfinding.PathFindResult;
 import carbohidrati_italiano.pathfinding.PathFinder;
 import carbohidrati_italiano.robots.Goal;
 import carbohidrati_italiano.robots.RobotBase;
@@ -84,7 +85,10 @@ public class GuardDefenseGoal implements Goal {
 				rc.attackLocation(closestBaddie.location);
 			}
 		} else {
-			pathFinder.move(rc, closestBaddie.location);
+			PathFindResult result = pathFinder.move(rc, closestBaddie.location);
+			if(result != PathFindResult.SUCCESS) {
+				pathFinder.reset();
+			}
 		}
 	}
 }
