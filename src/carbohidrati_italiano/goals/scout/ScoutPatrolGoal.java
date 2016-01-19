@@ -30,6 +30,7 @@ public class ScoutPatrolGoal extends ScoutGoalBase {
 			return nextGoal;
 		}
 		
+		move(rc, memory.getLastKnownArchonLocation());
 		
 		return null;
 	}

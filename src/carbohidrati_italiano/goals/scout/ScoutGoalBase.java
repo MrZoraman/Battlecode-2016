@@ -44,7 +44,7 @@ public class ScoutGoalBase extends Goal {
 
 	@Override
 	public String getName() {
-		return null;
+		return "scout goal base";
 	}
 
 }
