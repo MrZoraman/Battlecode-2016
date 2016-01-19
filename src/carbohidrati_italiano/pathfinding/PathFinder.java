@@ -40,6 +40,11 @@ public class PathFinder {
 	private int robotInWayRetries = 6;
 	private int robotRetries;
 	
+	private int distanceDeltaGiveUp = 2;
+	private int distanceDelta = 13;
+	private int lastDistance = 0;
+	private int distanceTries = 0;
+	
 	public PathFindResult move(RobotController rc, MapLocation target) throws Exception {
 		if(!rc.isCoreReady()) {
 			return CORE_DELAY;
@@ -47,13 +52,27 @@ public class PathFinder {
 	
 		MapLocation myLocation = rc.getLocation();
 		
+		int distanceToGoal = myLocation.distanceSquaredTo(target);
+		int calculatedDelta = Math.abs(lastDistance - distanceToGoal);
+		lastDistance = distanceToGoal;
+		if(calculatedDelta < distanceDelta) {
+			distanceTries++;
+		} else {
+			distanceTries = 0;
+		}
+		
+		if(distanceTries > distanceDeltaGiveUp) {
+			return COULD_NOT_FIND_ROUTE;
+		}
+		
 		DirectionResult result = getDirection(rc, myLocation, target);
 		if(result.dir != null) {
-			if(routeTries >= routeMovesUntilFail) {
+			if(routeMovesUntilFail > 0 && routeTries >= routeMovesUntilFail) {
 				return COULD_NOT_FIND_ROUTE;
 			} else {
 				routeTries++;
 				rc.move(result.dir);
+				directionFrom = result.dir.opposite();
 				return SUCCESS;
 			}
 		}
@@ -115,6 +134,7 @@ public class PathFinder {
 		routeTries = 0;
 		robotRetries = 0;
 		directionFrom = null;
+		distanceTries = 0;
 	}
 
 	public int getRouteMovesUntilFail() {
