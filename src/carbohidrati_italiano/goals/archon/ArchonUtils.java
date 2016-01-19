@@ -8,6 +8,9 @@ public class ArchonUtils {
 	private ArchonUtils() { }
 	
 	public static boolean safeBuild(RobotController rc, RobotType type, Direction dir) throws Exception {
+		if(type == null || dir == null) {
+			return true;
+		}
 		if(rc.hasBuildRequirements(type) && rc.canBuild(dir, type)) {
 			rc.build(dir, type);
 			return true;
@@ -26,9 +29,7 @@ public class ArchonUtils {
 		
 		return null;
 	}
-	
-
-	
+		
 	private static Direction findNextDir(RobotController rc, Direction start, RobotType type) {
 		Direction next = start;
 		for(int ii = 0; ii < 4; ii++) {

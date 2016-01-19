@@ -6,6 +6,7 @@ import java.util.Map;
 import battlecode.common.RobotType;
 import carbohidrati_italiano.Globals;
 import carbohidrati_italiano.goals.EmptyGoal;
+import carbohidrati_italiano.goals.MoveAwayGoal;
 import carbohidrati_italiano.goals.PatrolAroundArchonGoal;
 import carbohidrati_italiano.goals.TurretGoal;
 import carbohidrati_italiano.goals.WaitForArchonWhoisGoal;
@@ -35,7 +36,7 @@ public class RobotFactory {
 		
 		robots.put(TURRET, new Robot(
 				new WaitForArchonWhoisGoal(0,0, 
-						mem -> new TurretGoal(mem))));
+						mem -> new MoveAwayGoal(mem))));
 		
 		robots.put(VIPER, new Robot(new EmptyGoal()));
 	}
