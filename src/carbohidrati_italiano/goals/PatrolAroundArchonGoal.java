@@ -22,6 +22,8 @@ public class PatrolAroundArchonGoal extends Goal {
 	
 	private int directionIndex = -1;
 	
+	private Goal nextGoal = null;
+	
 	public PatrolAroundArchonGoal(RobotMemory memory) {
 		super(memory);
 		pathFinder.setRouteMovesUntilFail(4);
@@ -48,7 +50,7 @@ public class PatrolAroundArchonGoal extends Goal {
 		
 		move(rc, alr.getLocation());
 		
-		return null;
+		return nextGoal;
 	}
 
 	@Override
@@ -86,14 +88,14 @@ public class PatrolAroundArchonGoal extends Goal {
 			calculateWhereIWantToGo(archonLocation);
 		}
 		
-		
 		PathFindResult result = pathFinder.move(rc, whereIWantToGo);
-		
 		switch(result) {
 		case CORE_DELAY:
 			break;
 		case COULD_NOT_FIND_ROUTE:
-			calculateWhereIWantToGo(archonLocation);
+			if(!determineDestructibleRubble(rc, myLocation)) {
+				calculateWhereIWantToGo(archonLocation);
+			}
 			break;
 		case ROBOT_IN_WAY:
 			break;
@@ -123,5 +125,28 @@ public class PatrolAroundArchonGoal extends Goal {
 		//int radius = dir.isDiagonal() ? PATROL_RADIUS - 4 : PATROL_RADIUS;		//TODO: magic number!
 		whereIWantToGo = archonLocation.add(dir, memory.getPatrolRadius() + rand.nextInt(3) - 1);	//TODO: magic number!
 		pathFinder.reset();
+	}
+	
+	private boolean determineDestructibleRubble(RobotController rc, MapLocation myLocation) {
+		Direction[] dirs = new Direction[3];
+		dirs[0] = myLocation.directionTo(whereIWantToGo);
+		dirs[1] = dirs[0].rotateLeft();
+		dirs[2] = dirs[1].rotateRight();
+		
+		Direction dir = null;
+		for(int ii = 0; ii < dirs.length; ii++) {
+			double rubble = rc.senseRubble(myLocation.add(dirs[ii]));
+			if(rubble < Globals.RUBBLE_THRESHOLD) {
+				dir = dirs[ii];
+				break;
+			}
+		}
+		
+		if(dir == null) {
+			return false;
+		}
+		
+		nextGoal = new ClearRubbleGoal(memory);
+		return true;
 	}
 }

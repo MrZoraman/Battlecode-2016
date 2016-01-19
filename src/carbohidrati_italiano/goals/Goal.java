@@ -15,9 +15,7 @@ public abstract class Goal
 		this.pathFinder = new PathFinder();
 	}
 	
-	public Goal achieveGoal(RobotController rc, Robot robot) throws Exception {
-		return null;
-	};
+	public abstract Goal achieveGoal(RobotController rc, Robot robot) throws Exception;
 	
 	public abstract String getName();
 }

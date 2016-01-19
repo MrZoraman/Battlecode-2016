@@ -65,8 +65,11 @@ public class BeginningBuildGoal extends Goal {
 			}
 		}
 		
+		MapLocation lastKnownArchonLocation = rc.getInitialArchonLocations(rc.getTeam())[0];
 		
-		return new EmptyGoal();
+		RobotMemory memory = new RobotMemory(0, 0, 0);
+		memory.setLastKnownArchonLocation(lastKnownArchonLocation);
+		return new LeadGoal(memory);
 	}
 
 	@Override
