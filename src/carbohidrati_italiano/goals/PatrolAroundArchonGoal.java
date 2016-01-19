@@ -136,7 +136,8 @@ public class PatrolAroundArchonGoal extends Goal {
 		Direction dir = null;
 		for(int ii = 0; ii < dirs.length; ii++) {
 			double rubble = rc.senseRubble(myLocation.add(dirs[ii]));
-			if(rubble < Globals.RUBBLE_THRESHOLD) {
+			
+			if(rubble > Globals.RUBBLE_THRESHOLD_MIN && rubble < Globals.RUBBLE_THRESHOLD_MAX) {
 				dir = dirs[ii];
 				break;
 			}
