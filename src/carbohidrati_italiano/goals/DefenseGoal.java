@@ -6,6 +6,7 @@ import java.util.List;
 import battlecode.common.MapLocation;
 import battlecode.common.RobotController;
 import battlecode.common.RobotInfo;
+import battlecode.common.RobotType;
 import battlecode.common.Team;
 import carbohidrati_italiano.pathfinding.PathFindResult;
 import carbohidrati_italiano.robots.Robot;
@@ -27,6 +28,9 @@ public class DefenseGoal extends Goal {
 		List<RobotInfo> opponents = new ArrayList<RobotInfo>();
 		
 		for(RobotInfo ri : robots) {
+			if(ri.type == RobotType.ZOMBIEDEN) {
+				continue;
+			}
 			if(ri.team == enemyTeam) {
 				opponents.add(ri);
 			} else {

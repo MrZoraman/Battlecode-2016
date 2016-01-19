@@ -3,11 +3,11 @@ package carbohidrati_italiano.robots;
 import battlecode.common.MapLocation;
 
 public class RobotMemory {
-	private final int archonId;
 	private final int opponentAggressionRange;
 	private final int patrolRadius;
 	
 	private MapLocation lastKnownArchonLocation;
+	private int archonId;
 	
 	public RobotMemory(int archonId, int opponentAggressionRange, int patrolRadius) {
 		this.archonId = archonId;
@@ -35,5 +35,7 @@ public class RobotMemory {
 		return patrolRadius;
 	}
 	
-	
+	public void setArchonId(int id) {
+		this.archonId = id;
+	}
 }

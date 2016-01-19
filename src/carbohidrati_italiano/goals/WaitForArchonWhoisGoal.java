@@ -11,10 +11,13 @@ import carbohidrati_italiano.robots.Signals;
 
 public class WaitForArchonWhoisGoal extends Goal {
 	
+	private final RobotGoalConstructor rgc;
+	
 	private int archonId = -1;
 	
-	public WaitForArchonWhoisGoal(int opponentAggressionRange, int patrolRadius) {
+	public WaitForArchonWhoisGoal(int opponentAggressionRange, int patrolRadius, RobotGoalConstructor rgc) {
 		super(new RobotMemory(-1, opponentAggressionRange, patrolRadius));
+		this.rgc = rgc;
 	}
 
 	@Override
@@ -49,7 +52,7 @@ public class WaitForArchonWhoisGoal extends Goal {
 		
 		RobotMemory mem = new RobotMemory(archonId, memory.getOpponentAggressionRange(), memory.getPatrolRadius());
 		mem.setLastKnownArchonLocation(alr.getLocation());
-		return new PatrolAroundArchonGoal(mem);
+		return rgc.createGoal(mem);
 	}
 
 	@Override

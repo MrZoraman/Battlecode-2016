@@ -6,6 +6,7 @@ import java.util.Map;
 import battlecode.common.RobotType;
 import carbohidrati_italiano.Globals;
 import carbohidrati_italiano.goals.EmptyGoal;
+import carbohidrati_italiano.goals.PatrolAroundArchonGoal;
 import carbohidrati_italiano.goals.WaitForArchonWhoisGoal;
 import carbohidrati_italiano.goals.archon.BeginningBuildGoal;
 
@@ -18,12 +19,14 @@ public class RobotFactory {
 		robots.put(ARCHON, new Robot(new BeginningBuildGoal()));
 		
 		robots.put(GUARD, new Robot(
-				new WaitForArchonWhoisGoal(Globals.GUARD_AGGRESSION_RANGE, Globals.GUARD_PATROL_RADIUS)));
+				new WaitForArchonWhoisGoal(Globals.GUARD_AGGRESSION_RANGE, Globals.GUARD_PATROL_RADIUS,
+						mem -> new PatrolAroundArchonGoal(mem))));
 		
 		robots.put(SCOUT, new Robot(new EmptyGoal()));
 		
 		robots.put(SOLDIER, new Robot(
-				new WaitForArchonWhoisGoal(Globals.GUARD_AGGRESSION_RANGE, Globals.SOLDIER_PATROL_RADIUS)));
+				new WaitForArchonWhoisGoal(Globals.GUARD_AGGRESSION_RANGE, Globals.SOLDIER_PATROL_RADIUS,
+						mem -> new PatrolAroundArchonGoal(mem))));
 		
 		robots.put(TTM, new Robot(new EmptyGoal()));
 		
