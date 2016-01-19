@@ -7,6 +7,7 @@ import battlecode.common.RobotType;
 import carbohidrati_italiano.Globals;
 import carbohidrati_italiano.goals.EmptyGoal;
 import carbohidrati_italiano.goals.PatrolAroundArchonGoal;
+import carbohidrati_italiano.goals.TurretGoal;
 import carbohidrati_italiano.goals.WaitForArchonWhoisGoal;
 import carbohidrati_italiano.goals.archon.BeginningBuildGoal;
 
@@ -25,12 +26,14 @@ public class RobotFactory {
 		robots.put(SCOUT, new Robot(new EmptyGoal()));
 		
 		robots.put(SOLDIER, new Robot(
-				new WaitForArchonWhoisGoal(Globals.GUARD_AGGRESSION_RANGE, Globals.SOLDIER_PATROL_RADIUS,
+				new WaitForArchonWhoisGoal(Globals.SOLDIER_AGGRESSION_RANGE, Globals.SOLDIER_PATROL_RADIUS,
 						mem -> new PatrolAroundArchonGoal(mem))));
 		
 		robots.put(TTM, new Robot(new EmptyGoal()));
 		
-		robots.put(TURRET, new Robot(new EmptyGoal()));
+		robots.put(TURRET, new Robot(
+				new WaitForArchonWhoisGoal(0,0, 
+						mem -> new TurretGoal(mem))));
 		
 		robots.put(VIPER, new Robot(new EmptyGoal()));
 	}
