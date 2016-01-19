@@ -1,12 +1,13 @@
 package carbohidrati_italiano.goals;
 
+import battlecode.common.Direction;
 import battlecode.common.RobotController;
 import carbohidrati_italiano.robots.Robot;
 import carbohidrati_italiano.robots.RobotMemory;
 
 public class ClearRubbleGoal extends Goal {
-
-	public ClearRubbleGoal(RobotMemory memory) {
+	
+	public ClearRubbleGoal(RobotMemory memory, Direction rubbleDir) {
 		super(memory);
 		// TODO Auto-generated constructor stub
 	}

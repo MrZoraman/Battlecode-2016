@@ -146,7 +146,7 @@ public class PatrolAroundArchonGoal extends Goal {
 			return false;
 		}
 		
-		nextGoal = new ClearRubbleGoal(memory);
+		nextGoal = new ClearRubbleGoal(memory, dir);
 		return true;
 	}
 }
