@@ -9,10 +9,12 @@ import battlecode.common.RobotInfo;
 import battlecode.common.RobotType;
 import battlecode.common.Team;
 import team379.pathfinding.PathFindResult;
+import team379.pathfinding.PathFinder;
 import team379.robots.Robot;
 import team379.robots.RobotMemory;
 
 public class DefenseGoal extends Goal {
+	private PathFinder pf = new PathFinder();
 	
 	public DefenseGoal(RobotMemory memory) {
 		super(memory);
@@ -80,9 +82,9 @@ public class DefenseGoal extends Goal {
 				rc.attackLocation(closestBaddie.location);
 			}
 		} else {
-			PathFindResult result = pathFinder.move(rc, closestBaddie.location);
+			PathFindResult result = pf.move(rc, closestBaddie.location);
 			if(result != PathFindResult.SUCCESS && result != PathFindResult.CORE_DELAY) {
-				pathFinder.reset();
+				pf.reset();
 			}
 		}
 	}

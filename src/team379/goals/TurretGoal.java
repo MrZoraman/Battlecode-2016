@@ -1,6 +1,5 @@
 package team379.goals;
 
-import battlecode.common.MapLocation;
 import battlecode.common.RobotController;
 import battlecode.common.RobotInfo;
 import battlecode.common.RobotType;
@@ -8,15 +7,15 @@ import battlecode.common.Team;
 import team379.pathfinding.ArchonLocateResult;
 import team379.pathfinding.PathFindResult;
 import team379.pathfinding.PathFindUtils;
+import team379.pathfinding.PathFinder;
 import team379.robots.Robot;
 import team379.robots.RobotMemory;
 
 public class TurretGoal extends Goal{
+	private final PathFinder pf = new PathFinder();
 
-	private RobotMemory memory;
 	public TurretGoal(RobotMemory mem) {
 		super(mem);
-		memory = mem;
 	}
 	@Override
 	public Goal achieveGoal(RobotController rc, Robot robot) throws Exception {
@@ -48,9 +47,9 @@ public class TurretGoal extends Goal{
         	if(rc.getType() == RobotType.TURRET) {
         		rc.pack();
         	}
-    		PathFindResult result = pathFinder.move(rc, alr.getLocation());
+    		PathFindResult result = pf.move(rc, alr.getLocation());
     		if(result != PathFindResult.SUCCESS && result != PathFindResult.CORE_DELAY) {
-    			pathFinder.reset();
+    			pf.reset();
     		}
     		for(RobotInfo ri : nearbyRobots) {
     			if(ri.ID == memory.getArchonId()) {

@@ -1,7 +1,5 @@
 package team379.goals;
 
-import java.util.Random;
-
 import battlecode.common.Direction;
 import battlecode.common.MapLocation;
 import battlecode.common.RobotController;
@@ -10,23 +8,21 @@ import battlecode.common.RobotType;
 import battlecode.common.Team;
 import team379.Globals;
 import team379.pathfinding.ArchonLocateResult;
+import team379.pathfinding.Orbiter;
 import team379.pathfinding.PathFindResult;
 import team379.pathfinding.PathFindUtils;
 import team379.robots.Robot;
 import team379.robots.RobotMemory;
 
 public class PatrolAroundArchonGoal extends Goal {
-	private final Random rand = new Random();
-	
-	private MapLocation whereIWantToGo = null;
-	
-	private int directionIndex = -1;
+	private final Orbiter orbiter;
 	
 	private Goal nextGoal = null;
 	
 	public PatrolAroundArchonGoal(RobotMemory memory) {
 		super(memory);
-		pathFinder.setRouteMovesUntilFail(4);
+		this.orbiter = new Orbiter(memory.getPatrolRadius());
+		orbiter.setRouteMovesUntilFail(4);
 	}
 	
 	@Override
@@ -77,33 +73,23 @@ public class PatrolAroundArchonGoal extends Goal {
 	}
 	
 	private void move(RobotController rc, MapLocation archonLocation) throws Exception {
-		if(!rc.isCoreReady()) {
-			return;
-		}
-
-		//where am I?
-		MapLocation myLocation = rc.getLocation();
+		PathFindResult result = orbiter.move(rc, archonLocation);
 		
-		if(whereIWantToGo == null || myLocation.distanceSquaredTo(whereIWantToGo) < 2) {	//TODO: magic number!
-			calculateWhereIWantToGo(archonLocation);
-		}
-		
-		PathFindResult result = pathFinder.move(rc, whereIWantToGo);
 		switch(result) {
 		case CORE_DELAY:
 			break;
 		case COULD_NOT_FIND_ROUTE:
-			if(!determineDestructibleRubble(rc, myLocation)) {
-				calculateWhereIWantToGo(archonLocation);
+			if(!determineDestructibleRubble(rc, rc.getLocation())) {
+				orbiter.calculateTarget(archonLocation);
 			}
 			break;
 		case ROBOT_IN_WAY:
 			break;
 		case ROBOT_IN_WAY_AND_NOT_MOVING:
-			calculateWhereIWantToGo(archonLocation);
+			orbiter.calculateTarget(archonLocation);
 			break;
 		case STUCK:
-			calculateWhereIWantToGo(archonLocation);
+			orbiter.calculateTarget(archonLocation);
 			break;
 		case SUCCESS:
 			break;
@@ -113,23 +99,9 @@ public class PatrolAroundArchonGoal extends Goal {
 		}
 	}
 	
-	private void calculateWhereIWantToGo(MapLocation archonLocation) {
-		//time to figure out a new place to go
-		if(directionIndex < 0) {
-			directionIndex = rand.nextInt(8);
-		} else {
-			directionIndex++;
-			directionIndex = directionIndex % 8;
-		}
-		Direction dir = Globals.movableDirections[directionIndex];
-		//int radius = dir.isDiagonal() ? PATROL_RADIUS - 4 : PATROL_RADIUS;		//TODO: magic number!
-		whereIWantToGo = archonLocation.add(dir, memory.getPatrolRadius() + rand.nextInt(3) - 1);	//TODO: magic number!
-		pathFinder.reset();
-	}
-	
 	private boolean determineDestructibleRubble(RobotController rc, MapLocation myLocation) {
 		Direction[] dirs = new Direction[3];
-		dirs[0] = myLocation.directionTo(whereIWantToGo);
+		dirs[0] = myLocation.directionTo(orbiter.getTarget());
 		dirs[1] = dirs[0].rotateLeft();
 		dirs[2] = dirs[1].rotateRight();
 		

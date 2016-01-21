@@ -5,10 +5,12 @@ import battlecode.common.RobotInfo;
 import team379.pathfinding.ArchonLocateResult;
 import team379.pathfinding.PathFindResult;
 import team379.pathfinding.PathFindUtils;
+import team379.pathfinding.PathFinder;
 import team379.robots.Robot;
 import team379.robots.RobotMemory;
 
 public class ReturnToArchonGoal extends Goal {
+	private final PathFinder pf = new PathFinder();
 	
 	public ReturnToArchonGoal(RobotMemory memory) {
 		super(memory);
@@ -25,9 +27,9 @@ public class ReturnToArchonGoal extends Goal {
 		}
 		
 		
-		PathFindResult result = pathFinder.move(rc, alr.getLocation());
+		PathFindResult result = pf.move(rc, alr.getLocation());
 		if(result != PathFindResult.SUCCESS && result != PathFindResult.CORE_DELAY) {
-			pathFinder.reset();
+			pf.reset();
 		}
 		
 		for(RobotInfo ri : nearbyRobots) {
