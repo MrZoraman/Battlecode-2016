@@ -5,6 +5,7 @@ import java.util.Random;
 import battlecode.common.Direction;
 import battlecode.common.MapLocation;
 import battlecode.common.RobotController;
+import battlecode.common.RobotInfo;
 import carbohidrati_italiano.Globals;
 import carbohidrati_italiano.goals.Goal;
 import carbohidrati_italiano.pathfinding.PathFindResult;
@@ -31,6 +32,13 @@ public class ScoutPatrolGoal extends ScoutGoalBase {
 		}
 		
 		move(rc, memory.getLastKnownArchonLocation());
+		
+		RobotInfo[] nearbyRobots = rc.senseHostileRobots(rc.getLocation(), rc.getType().sensorRadiusSquared);
+		
+		
+		for(RobotInfo ri : nearbyRobots) {
+			
+		}
 		
 		return null;
 	}
