@@ -1,27 +1,20 @@
 package team379.goals.scout;
 
-import java.util.Random;
-
-import battlecode.common.Direction;
 import battlecode.common.MapLocation;
 import battlecode.common.RobotController;
 import battlecode.common.RobotInfo;
-import team379.Globals;
 import team379.goals.Goal;
+import team379.pathfinding.Orbiter;
 import team379.pathfinding.PathFindResult;
 import team379.robots.Robot;
 import team379.robots.RobotMemory;
 
 public class ScoutPatrolGoal extends ScoutGoalBase {
-	
-	private final Random rand = new Random();
-	
-	private MapLocation whereIWantToGo = null;
-	
-	private int directionIndex = -1;
+	private final Orbiter orbiter;
 
 	public ScoutPatrolGoal(RobotMemory memory) {
 		super(memory);
+		orbiter = new Orbiter(memory.getPatrolRadius());
 	}
 
 	@Override
@@ -52,28 +45,21 @@ public class ScoutPatrolGoal extends ScoutGoalBase {
 		if(!rc.isCoreReady()) {
 			return;
 		}
-
-		//where am I?
-		MapLocation myLocation = rc.getLocation();
 		
-		if(whereIWantToGo == null || myLocation.distanceSquaredTo(whereIWantToGo) < 2) {	//TODO: magic number!
-			calculateWhereIWantToGo(archonLocation);
-		}
-		
-		PathFindResult result = pathFinder.move(rc, whereIWantToGo);
+		PathFindResult result = orbiter.move(rc, archonLocation);
 		switch(result) {
 		case CORE_DELAY:
 			break;
 		case COULD_NOT_FIND_ROUTE:
-			calculateWhereIWantToGo(archonLocation);
+			orbiter.calculateTarget(archonLocation);
 			break;
 		case ROBOT_IN_WAY:
 			break;
 		case ROBOT_IN_WAY_AND_NOT_MOVING:
-			calculateWhereIWantToGo(archonLocation);
+			orbiter.calculateTarget(archonLocation);
 			break;
 		case STUCK:
-			calculateWhereIWantToGo(archonLocation);
+			orbiter.calculateTarget(archonLocation);
 			break;
 		case SUCCESS:
 			break;
@@ -81,19 +67,5 @@ public class ScoutPatrolGoal extends ScoutGoalBase {
 			break;
 		
 		}
-	}
-	
-	private void calculateWhereIWantToGo(MapLocation archonLocation) {
-		//time to figure out a new place to go
-		if(directionIndex < 0) {
-			directionIndex = rand.nextInt(8);
-		} else {
-			directionIndex++;
-			directionIndex = directionIndex % 8;
-		}
-		Direction dir = Globals.movableDirections[directionIndex];
-		//int radius = dir.isDiagonal() ? PATROL_RADIUS - 4 : PATROL_RADIUS;		//TODO: magic number!
-		whereIWantToGo = archonLocation.add(dir, memory.getPatrolRadius() + rand.nextInt(3) - 1);	//TODO: magic number!
-		pathFinder.reset();
 	}
 }

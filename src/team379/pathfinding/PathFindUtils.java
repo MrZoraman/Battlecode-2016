@@ -16,6 +16,11 @@ public class PathFindUtils {
 			}
 		}
 		
+		if(lastKnownArchonLocation == null) {
+			//I'm really lost!
+			return new ArchonLocateResult(false, lastKnownArchonLocation);
+		}
+		
 		//if I can't find my archon, I'll look for friends in the general direction I last remember the archon being.
 		//They might be following the archon, so if I go to them, I'll probably find the archon.
 		Direction archonDirection = rc.getLocation().directionTo(lastKnownArchonLocation);	//TODO: sometimes this is null!

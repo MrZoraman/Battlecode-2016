@@ -4,7 +4,6 @@ import battlecode.common.Direction;
 import battlecode.common.MapLocation;
 import battlecode.common.RobotController;
 import battlecode.common.RobotType;
-import team379.goals.EmptyGoal;
 import team379.goals.Goal;
 import team379.robots.Robot;
 import team379.robots.RobotMemory;
@@ -15,13 +14,11 @@ public class BeginningBuildGoal extends Goal {
 	public BeginningBuildGoal() {
 		super(new RobotMemory(0, 0, 0));
 	}
-
-	private int guardsToMake = -1;
-	
-	private boolean hasScout = false;
-	private int guardsMade = 0;
 	
 	private Direction lastPlacedDir = Direction.NORTH;
+	private BuildQueue buildQueue = new BuildQueue();
+	private boolean init = false;
+	private RobotType next = null;
 
 	@Override
 	public Goal achieveGoal(RobotController rc, Robot robot) throws Exception {
@@ -29,53 +26,52 @@ public class BeginningBuildGoal extends Goal {
 			return null;
 		}
 		
-		if(guardsToMake < 0) {
-//			guardsToMake = calculateGuardsToMake(rc);
-			guardsToMake = 1000;
-			rc.setIndicatorString(1, "I am making " + guardsToMake + " gaurds.");
+		if(!init) {
+			init(rc);
 		}
 		
-		
-		if(!hasScout) {
-			Direction scoutDir = ArchonUtils.findPlaceAndBuild(rc, Direction.NORTH, RobotType.GUARD);
-			
-			if(scoutDir != null) {
-				hasScout = true;
-				lastPlacedDir = scoutDir;
-				return null;
-			} else {
-				//uh oh, the archon is trapped!
-				return new BeginningBuildGoal();
-			}
+		if(next == null) {
+			next = buildQueue.getNextRobot();
 		}
 		
-		if(guardsMade < guardsToMake) {
-			if(!rc.hasBuildRequirements(RobotType.GUARD)) {
-				return null;
-			}
+		if(next != null) {
+			Direction dir = ArchonUtils.findPlaceAndBuild(rc, lastPlacedDir, next);
 			
-			Direction guardDir = ArchonUtils.findPlaceAndBuild(rc, lastPlacedDir, RobotType.GUARD);
-			if(guardDir != null) {
-				guardsMade++;
-				lastPlacedDir = guardDir;
+			if(dir != null) {
+				lastPlacedDir = dir;
+				next = null;
 				rc.broadcastMessageSignal(Signals.THIS_IS_MY_ID.getValue(), rc.getID(), 2);
-				return null;
-			} else {
-				//no more room for guards
-				return new BeginningBuildGoal();
 			}
 		}
 		
-		MapLocation lastKnownArchonLocation = rc.getInitialArchonLocations(rc.getTeam())[0];
+		if(buildQueue.isEmpty()) {
+			MapLocation lastKnownArchonLocation = rc.getInitialArchonLocations(rc.getTeam())[0];
+			
+			RobotMemory memory = new RobotMemory(0, 0, 0);
+			memory.setLastKnownArchonLocation(lastKnownArchonLocation);
+			return new LeadGoal(memory);
+		}
 		
-		RobotMemory memory = new RobotMemory(0, 0, 0);
-		memory.setLastKnownArchonLocation(lastKnownArchonLocation);
-		return new LeadGoal(memory);
+		return null;
 	}
 
 	@Override
 	public String getName() {
 		return "Beginning Build Goal";
+	}
+	
+	private void init(RobotController rc) {
+		init = true;
+		
+		int friendlyArchons = rc.getInitialArchonLocations(rc.getTeam()).length;
+		buildQueue.setDelay(friendlyArchons);
+		
+		buildQueue.enqueue(RobotType.SCOUT);
+
+		int guardsToMake = calculateGuardsToMake(rc);
+		for(int ii = 0; ii < guardsToMake; ii++) {
+			buildQueue.enqueue(RobotType.GUARD);
+		}
 	}
 	
 	private int calculateGuardsToMake(RobotController rc) {
