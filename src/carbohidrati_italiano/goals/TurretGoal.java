@@ -54,7 +54,7 @@ public class TurretGoal extends Goal{
     		}
     		for(RobotInfo ri : nearbyRobots) {
     			if(ri.ID == memory.getArchonId()) {
-    				return new TurretGoal(memory);
+    				return null;
     			}
     		}
         }

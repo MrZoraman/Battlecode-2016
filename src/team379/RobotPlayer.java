@@ -1,4 +1,4 @@
-package examplefuncsplayer;
+package team379;
 
 import battlecode.common.*;
 

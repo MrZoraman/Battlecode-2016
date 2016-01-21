@@ -30,13 +30,14 @@ public class BeginningBuildGoal extends Goal {
 		}
 		
 		if(guardsToMake < 0) {
-			guardsToMake = calculateGuardsToMake(rc);
+//			guardsToMake = calculateGuardsToMake(rc);
+			guardsToMake = 1000;
 			rc.setIndicatorString(1, "I am making " + guardsToMake + " gaurds.");
 		}
 		
 		
 		if(!hasScout) {
-			Direction scoutDir = ArchonUtils.findPlaceAndBuild(rc, Direction.NORTH, RobotType.SCOUT);
+			Direction scoutDir = ArchonUtils.findPlaceAndBuild(rc, Direction.NORTH, RobotType.GUARD);
 			
 			if(scoutDir != null) {
 				hasScout = true;
@@ -44,7 +45,7 @@ public class BeginningBuildGoal extends Goal {
 				return null;
 			} else {
 				//uh oh, the archon is trapped!
-				return new EmptyGoal();
+				return new BeginningBuildGoal();
 			}
 		}
 		
@@ -61,7 +62,7 @@ public class BeginningBuildGoal extends Goal {
 				return null;
 			} else {
 				//no more room for guards
-				return new EmptyGoal();
+				return new BeginningBuildGoal();
 			}
 		}
 		
