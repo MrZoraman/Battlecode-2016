@@ -1,4 +1,4 @@
-package team379.goals;
+package team379.goals.turret;
 
 import java.util.Random;
 
@@ -7,6 +7,7 @@ import battlecode.common.GameActionException;
 import battlecode.common.RobotController;
 import battlecode.common.RobotInfo;
 import team379.Globals;
+import team379.goals.Goal;
 import team379.pathfinding.ArchonLocateResult;
 import team379.pathfinding.PathFindUtils;
 import team379.robots.Robot;

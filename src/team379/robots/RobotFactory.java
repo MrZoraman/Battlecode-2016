@@ -6,12 +6,12 @@ import java.util.Map;
 import battlecode.common.RobotType;
 import team379.Globals;
 import team379.goals.EmptyGoal;
-import team379.goals.MoveAwayGoal;
 import team379.goals.PatrolAroundArchonGoal;
-import team379.goals.TurretGoal;
 import team379.goals.WaitForArchonWhoisGoal;
 import team379.goals.archon.BeginningBuildGoal;
 import team379.goals.scout.ScoutPatrolGoal;
+import team379.goals.turret.MoveAwayGoal;
+import team379.goals.turret.TurretGoal;
 
 import static battlecode.common.RobotType.*;
 

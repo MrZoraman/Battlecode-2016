@@ -1,9 +1,10 @@
-package team379.goals;
+package team379.goals.turret;
 
 import battlecode.common.RobotController;
 import battlecode.common.RobotInfo;
 import battlecode.common.RobotType;
 import battlecode.common.Team;
+import team379.goals.Goal;
 import team379.pathfinding.ArchonLocateResult;
 import team379.pathfinding.PathFindResult;
 import team379.pathfinding.PathFindUtils;
