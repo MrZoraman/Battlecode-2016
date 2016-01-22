@@ -5,7 +5,7 @@ import team379.goals.Goal;
 import team379.robots.Robot;
 import team379.robots.RobotMemory;
 
-public class ArchonGoalBase extends Goal {
+public abstract class ArchonGoalBase extends Goal {
 
 	public ArchonGoalBase(RobotMemory memory) {
 		super(memory);
@@ -13,13 +13,7 @@ public class ArchonGoalBase extends Goal {
 
 	@Override
 	public Goal achieveGoal(RobotController rc, Robot robot) throws Exception {
-		//rc.broadcastMessageSignal()
+		rc.broadcastSignal(rc.getType().sensorRadiusSquared);
 		return null;
 	}
-
-	@Override
-	public String getName() {
-		return "Archon Goal Base";
-	}
-
 }
