@@ -5,7 +5,7 @@ import battlecode.common.Signal;
 import team379.goals.Goal;
 import team379.robots.Robot;
 import team379.robots.RobotMemory;
-import team379.robots.Signals;
+import team379.signals.SignalType;
 
 public class ScoutGoalBase extends Goal {
 
@@ -23,7 +23,7 @@ public class ScoutGoalBase extends Goal {
 				continue;
 			}
 			
-			Signals id = Signals.toSignal(messages[0]);
+			SignalType id = SignalType.toSignal(messages[0]);
 			if(id == null) {
 				continue;
 			}

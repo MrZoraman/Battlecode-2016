@@ -7,7 +7,7 @@ import battlecode.common.RobotType;
 import team379.goals.Goal;
 import team379.robots.Robot;
 import team379.robots.RobotMemory;
-import team379.robots.Signals;
+import team379.signals.SignalType;
 
 public class BeginningBuildGoal extends Goal {
 	
@@ -40,7 +40,7 @@ public class BeginningBuildGoal extends Goal {
 			if(dir != null) {
 				lastPlacedDir = dir;
 				next = null;
-				rc.broadcastMessageSignal(Signals.THIS_IS_MY_ID.getValue(), rc.getID(), 2);
+				rc.broadcastMessageSignal(SignalType.THIS_IS_MY_ID.getValue(), rc.getID(), 2);
 			}
 		}
 		

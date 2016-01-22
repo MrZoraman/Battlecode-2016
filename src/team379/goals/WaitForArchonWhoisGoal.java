@@ -7,7 +7,7 @@ import team379.pathfinding.ArchonLocateResult;
 import team379.pathfinding.PathFindUtils;
 import team379.robots.Robot;
 import team379.robots.RobotMemory;
-import team379.robots.Signals;
+import team379.signals.SignalType;
 
 public class WaitForArchonWhoisGoal extends Goal {
 	
@@ -30,7 +30,7 @@ public class WaitForArchonWhoisGoal extends Goal {
 				continue;
 			}
 			
-			Signals id = Signals.toSignal(messages[0]);
+			SignalType id = SignalType.toSignal(messages[0]);
 			if(id == null) {
 				continue;
 			}
