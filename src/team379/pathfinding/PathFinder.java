@@ -18,20 +18,16 @@ public class PathFinder {
 		boolean robotInWay = false;
 	}
 	
-	private static final DirectionTranslator[] translators;
-	
-	static {
-		translators = new DirectionTranslator[] {
-			dir -> dir,								//north
-			dir -> dir.rotateLeft(),				//north-west
-			dir -> dir.rotateRight().rotateRight(),	//north-east
-			dir -> dir.rotateRight(),				//east
-			dir -> dir.opposite(),					//west
-			dir -> dir.rotateLeft(),				//south-west
-			dir -> dir.rotateLeft().rotateLeft(),	//south-east
-			dir -> dir.rotateRight()				//east
-		};
-	}
+	private static final DirectionTranslator[] translators = new DirectionTranslator[] {
+		dir -> dir,								//north
+		dir -> dir.rotateLeft(),				//north-west
+		dir -> dir.rotateRight().rotateRight(),	//north-east
+		dir -> dir.rotateRight(),				//east
+		dir -> dir.opposite(),					//west
+		dir -> dir.rotateLeft(),				//south-west
+		dir -> dir.rotateLeft().rotateLeft(),	//south-east
+		dir -> dir.rotateRight()				//east
+	};
 	
 	private Direction directionFrom = null;
 	
