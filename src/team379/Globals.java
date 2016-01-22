@@ -1,7 +1,6 @@
 package team379;
 
 import battlecode.common.Direction;
-import battlecode.common.RobotType;
 
 public class Globals {
 	
@@ -15,17 +14,6 @@ public class Globals {
         Direction.WEST, 
         Direction.NORTH_WEST
     };
-	
-	public static final RobotType[] playerTypes = {
-		RobotType.SCOUT,
-		RobotType.SOLDIER,
-		RobotType.SOLDIER,
-		RobotType.SOLDIER,
-        RobotType.GUARD,
-        RobotType.GUARD,
-        RobotType.VIPER,
-        RobotType.TURRET
-	};
 	
 	public static final int GUARD_AGGRESSION_RANGE = 14;
 	public static final int SOLDIER_AGGRESSION_RANGE = 14;
