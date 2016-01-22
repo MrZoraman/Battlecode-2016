@@ -4,7 +4,6 @@ import battlecode.common.Direction;
 import battlecode.common.RobotType;
 
 public class Globals {
-	private Globals() { }
 	
 	public static final Direction[] movableDirections = {
 		Direction.NORTH, 
