@@ -21,15 +21,16 @@ public class PathFinder {
 	private static final DirectionTranslator[] translators;
 	
 	static {
-		translators = new DirectionTranslator[8];
-		translators[0] = dir -> dir;							//north
-		translators[1] = dir -> dir.rotateLeft();				//north-west
-		translators[2] = dir -> dir.rotateRight().rotateRight();//north-east
-		translators[3] = dir -> dir.rotateRight();				//east
-		translators[4] = dir -> dir.opposite();					//west
-		translators[5] = dir -> dir.rotateLeft();				//south-west
-		translators[6] = dir -> dir.rotateLeft().rotateLeft();	//south-east
-		translators[7] = dir -> dir.rotateRight();				//south
+		translators = new DirectionTranslator[] {
+			dir -> dir,								//north
+			dir -> dir.rotateLeft(),				//north-west
+			dir -> dir.rotateRight().rotateRight(),	//north-east
+			dir -> dir.rotateRight(),				//east
+			dir -> dir.opposite(),					//west
+			dir -> dir.rotateLeft(),				//south-west
+			dir -> dir.rotateLeft().rotateLeft(),	//south-east
+			dir -> dir.rotateRight()				//east
+		};
 	}
 	
 	private Direction directionFrom = null;
