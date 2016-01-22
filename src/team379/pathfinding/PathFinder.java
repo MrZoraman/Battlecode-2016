@@ -47,7 +47,7 @@ public class PathFinder {
 	}
 	
 	private static final DirectionTranslator[] translators = new DirectionTranslator[] {
-		dir -> dir,								//north
+		dir -> dir,								//north			assuming north, the following offsets are:
 		dir -> dir.rotateLeft(),				//north-west
 		dir -> dir.rotateRight().rotateRight(),	//north-east
 		dir -> dir.rotateRight(),				//east
