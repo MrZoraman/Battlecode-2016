@@ -29,7 +29,7 @@ public class PathFinder {
 		dir -> dir.rotateRight()				//east
 	};
 	
-	private Direction directionFrom = null;
+	private Direction whereICamFrom = null;
 	
 	private int routeMovesUntilFail = 24;
 	private int routeTries = 0;
@@ -71,7 +71,7 @@ public class PathFinder {
 			} else {
 				routeTries++;
 				rc.move(result.dir);
-				directionFrom = result.dir.opposite();
+				whereICamFrom = result.dir.opposite();
 				return SUCCESS;
 			}
 		}
@@ -94,7 +94,7 @@ public class PathFinder {
 		for(int ii = 0; ii < translators.length; ii++) {
 			targetDir = translators[ii].translateDirection(targetDir);
 			
-			if(directionFrom != null && targetDir == directionFrom) {
+			if(whereICamFrom != null && targetDir == whereICamFrom) {
 				continue;
 			}
 			
@@ -119,8 +119,8 @@ public class PathFinder {
 			}
 		}
 		
-		if(directionFrom != null && result.dir == null && !result.robotInWay) {
-			targetDir = directionFrom.opposite();
+		if(whereICamFrom != null && result.dir == null && !result.robotInWay) {
+			targetDir = whereICamFrom.opposite();
 			if(rc.canMove(targetDir)) {
 				result.dir = targetDir;
 			}
@@ -132,7 +132,7 @@ public class PathFinder {
 	public void reset() {
 		routeTries = 0;
 		robotRetries = 0;
-		directionFrom = null;
+		whereICamFrom = null;
 		distanceTries = 0;
 	}
 
