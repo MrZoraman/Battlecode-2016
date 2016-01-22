@@ -21,7 +21,7 @@ public class PatrolAroundArchonGoal extends Goal {
 	
 	public PatrolAroundArchonGoal(RobotMemory memory) {
 		super(memory);
-		this.orbiter = new Orbiter(memory.getPatrolRadius());
+		this.orbiter = new Orbiter(memory.getPatrolRadius(), memory.getLastPatrolOrdinal());
 		orbiter.setRouteMovesUntilFail(4);
 	}
 	
@@ -45,6 +45,7 @@ public class PatrolAroundArchonGoal extends Goal {
 		}
 		
 		move(rc, alr.getLocation());
+		memory.setLastPatrolOrdinal(orbiter.getDirectionIndex());
 		
 		return nextGoal;
 	}

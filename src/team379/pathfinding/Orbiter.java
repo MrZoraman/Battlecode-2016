@@ -9,18 +9,23 @@ import team379.Globals;
 
 public class Orbiter extends PathFinder {
 	//how close to the target location before time to switch directions.
-	private static final int  DISTANCE_THRESHOLD = 2;
+	private static final int DISTANCE_THRESHOLD = 2;
 	
 	private final Random rand = new Random();
 	
-	private int directionIndex = -1;
+	private int directionIndex;
 	private MapLocation target;
 	private int radius;
 	
 	private int radiusVariability = 3;
 	
 	public Orbiter(int radius) {
+		this(radius, -1);
+	}
+	
+	public Orbiter(int radius, int directionIndex) {
 		this.radius = radius;
+		this.directionIndex = directionIndex;
 	}
 	
 	@Override
@@ -59,5 +64,13 @@ public class Orbiter extends PathFinder {
 	
 	public void setRadiusVariability(int radiusVariability) {
 		this.radiusVariability = radiusVariability;
+	}
+	
+	public int getDirectionIndex() {
+		return directionIndex;
+	}
+	
+	public void setDirectionIndex(int directionIndex) {
+		this.directionIndex = directionIndex;
 	}
 }

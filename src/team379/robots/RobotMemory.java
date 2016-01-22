@@ -4,7 +4,9 @@ import battlecode.common.MapLocation;
 
 public class RobotMemory {
 	private final int opponentAggressionRange;
+	
 	private final int patrolRadius;
+	private int lastPatrolOrdinal = -1;
 	
 	private MapLocation lastKnownArchonLocation;
 	private int archonId;
@@ -37,5 +39,13 @@ public class RobotMemory {
 	
 	public void setArchonId(int id) {
 		this.archonId = id;
+	}
+
+	public int getLastPatrolOrdinal() {
+		return lastPatrolOrdinal;
+	}
+
+	public void setLastPatrolOrdinal(int lastPatrolOrdinal) {
+		this.lastPatrolOrdinal = lastPatrolOrdinal;
 	}
 }
