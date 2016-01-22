@@ -1,8 +1,10 @@
 package team379.goals.scout;
 
+import battlecode.common.Direction;
 import battlecode.common.MapLocation;
 import battlecode.common.RobotController;
 import battlecode.common.RobotInfo;
+import battlecode.common.Signal;
 import team379.goals.Goal;
 import team379.pathfinding.Orbiter;
 import team379.pathfinding.PathFindResult;
@@ -19,18 +21,25 @@ public class ScoutPatrolGoal extends ScoutGoalBase {
 
 	@Override
 	public Goal achieveGoal(RobotController rc, Robot robot) throws Exception {
-		Goal nextGoal = super.achieveGoal(rc, robot);
-		if(nextGoal != null) {
-			return nextGoal;
-		}
+//		Goal nextGoal = super.achieveGoal(rc, robot);
+//		if(nextGoal != null) {
+//			return nextGoal;
+//		}
+//		
+//		move(rc, memory.getLastKnownArchonLocation());
+//		
+//		RobotInfo[] nearbyRobots = rc.senseHostileRobots(rc.getLocation(), rc.getType().sensorRadiusSquared);
+//		
+//		
+//		for(RobotInfo ri : nearbyRobots) {
+//			
+//		}
 		
-		move(rc, memory.getLastKnownArchonLocation());
-		
-		RobotInfo[] nearbyRobots = rc.senseHostileRobots(rc.getLocation(), rc.getType().sensorRadiusSquared);
-		
-		
-		for(RobotInfo ri : nearbyRobots) {
-			
+		Signal[] signals = rc.emptySignalQueue();
+		if(signals.length > 0) {
+			if(rc.isCoreReady() && rc.canMove(Direction.WEST)) {
+				rc.move(Direction.WEST);
+			}
 		}
 		
 		return null;

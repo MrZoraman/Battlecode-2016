@@ -11,7 +11,6 @@ import team379.goals.WaitForArchonWhoisGoal;
 import team379.goals.archon.BeginningBuildGoal;
 import team379.goals.scout.ScoutPatrolGoal;
 import team379.goals.turret.MoveAwayGoal;
-import team379.goals.turret.TurretGoal;
 
 import static battlecode.common.RobotType.*;
 
@@ -22,20 +21,20 @@ public class RobotFactory {
 		robots.put(ARCHON, new Robot(new BeginningBuildGoal()));
 		
 		robots.put(GUARD, new Robot(
-				new WaitForArchonWhoisGoal(Globals.GUARD_AGGRESSION_RANGE, Globals.GUARD_PATROL_RADIUS,
+				new WaitForArchonWhoisGoal(Globals.GUARD_AGGRESSION_RANGE, GUARD,
 						mem -> new PatrolAroundArchonGoal(mem))));
 		
 		robots.put(SCOUT, new Robot(
-				new WaitForArchonWhoisGoal(0, Globals.SCOUT_PATROL_RADIUS, mem -> new ScoutPatrolGoal(mem))));
+				new WaitForArchonWhoisGoal(0, SCOUT, mem -> new ScoutPatrolGoal(mem))));
 		
 		robots.put(SOLDIER, new Robot(
-				new WaitForArchonWhoisGoal(Globals.SOLDIER_AGGRESSION_RANGE, Globals.SOLDIER_PATROL_RADIUS,
+				new WaitForArchonWhoisGoal(Globals.SOLDIER_AGGRESSION_RANGE, SOLDIER, 
 						mem -> new PatrolAroundArchonGoal(mem))));
 		
 		robots.put(TTM, new Robot(new EmptyGoal()));
 		
 		robots.put(TURRET, new Robot(
-				new WaitForArchonWhoisGoal(0,0, 
+				new WaitForArchonWhoisGoal(0, TURRET,
 						mem -> new MoveAwayGoal(mem))));
 		
 		robots.put(VIPER, new Robot(new EmptyGoal()));

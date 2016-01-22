@@ -5,7 +5,7 @@ import team379.goals.Goal;
 import team379.robots.Robot;
 import team379.robots.RobotMemory;
 
-public class LeadGoal extends Goal {
+public class LeadGoal extends ArchonGoalBase {
 
 	public LeadGoal(RobotMemory memory) {
 		super(memory);
@@ -13,6 +13,7 @@ public class LeadGoal extends Goal {
 
 	@Override
 	public Goal achieveGoal(RobotController rc, Robot robot) throws Exception {
+		super.achieveGoal(rc, robot);
 		return null;
 	}
 

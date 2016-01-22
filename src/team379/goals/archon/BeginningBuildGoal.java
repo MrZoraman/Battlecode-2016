@@ -9,10 +9,10 @@ import team379.robots.Robot;
 import team379.robots.RobotMemory;
 import team379.signals.SignalType;
 
-public class BeginningBuildGoal extends Goal {
+public class BeginningBuildGoal extends ArchonGoalBase {
 	
 	public BeginningBuildGoal() {
-		super(new RobotMemory(0, 0, 0));
+		super(new RobotMemory(0, 0, RobotType.ARCHON));
 	}
 	
 	private Direction lastPlacedDir = Direction.NORTH;
@@ -22,6 +22,8 @@ public class BeginningBuildGoal extends Goal {
 
 	@Override
 	public Goal achieveGoal(RobotController rc, Robot robot) throws Exception {
+		super.achieveGoal(rc, robot);
+		
 		if(!rc.isCoreReady()) {
 			return null;
 		}
@@ -47,7 +49,7 @@ public class BeginningBuildGoal extends Goal {
 		if(buildQueue.isEmpty()) {
 			MapLocation lastKnownArchonLocation = rc.getInitialArchonLocations(rc.getTeam())[0];
 			
-			RobotMemory memory = new RobotMemory(0, 0, 0);
+			RobotMemory memory = new RobotMemory(0, 0, RobotType.ARCHON);
 			memory.setLastKnownArchonLocation(lastKnownArchonLocation);
 			return new LeadGoal(memory);
 		}

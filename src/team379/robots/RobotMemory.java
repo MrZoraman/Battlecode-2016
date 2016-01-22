@@ -1,20 +1,26 @@
 package team379.robots;
 
 import battlecode.common.MapLocation;
+import battlecode.common.RobotType;
 
 public class RobotMemory {
 	private final int opponentAggressionRange;
 	
-	private final int patrolRadius;
+	private int patrolRadius;
+	private final RobotType type;
+	
 	private int lastPatrolOrdinal = -1;
 	
 	private MapLocation lastKnownArchonLocation;
 	private int archonId;
+	private int archonLocationStaleness = 0;
 	
-	public RobotMemory(int archonId, int opponentAggressionRange, int patrolRadius) {
+	private int broadcastRadius = RobotType.ARCHON.sensorRadiusSquared;
+	
+	public RobotMemory(int archonId, int opponentAggressionRange, RobotType type) {
 		this.archonId = archonId;
 		this.opponentAggressionRange = opponentAggressionRange;
-		this.patrolRadius = patrolRadius;
+		this.type = type;
 	}
 
 	public MapLocation getLastKnownArchonLocation() {
@@ -23,6 +29,7 @@ public class RobotMemory {
 
 	public void setLastKnownArchonLocation(MapLocation lastKnownArchonLocation) {
 		this.lastKnownArchonLocation = lastKnownArchonLocation;
+		resetStaleness();
 	}
 
 	public int getArchonId() {
@@ -47,5 +54,33 @@ public class RobotMemory {
 
 	public void setLastPatrolOrdinal(int lastPatrolOrdinal) {
 		this.lastPatrolOrdinal = lastPatrolOrdinal;
+	}
+
+	public int getBroadcastRadius() {
+		return broadcastRadius;
+	}
+
+	public void setBroadcastRadius(int broadcastRadius) {
+		this.broadcastRadius = broadcastRadius;
+	}
+	
+	public void incrementStaleness() {
+		archonLocationStaleness++;
+	}
+	
+	public void resetStaleness() {
+		archonLocationStaleness = 0;
+	}
+	
+	public int getStaleness() {
+		return archonLocationStaleness;
+	}
+	
+	public RobotType getType() {
+		return type;
+	}
+	
+	public void setPatrolRadius(int radius) {
+		this.patrolRadius = radius;
 	}
 }

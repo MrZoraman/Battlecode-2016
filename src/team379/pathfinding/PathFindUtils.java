@@ -4,13 +4,18 @@ import battlecode.common.Direction;
 import battlecode.common.MapLocation;
 import battlecode.common.RobotController;
 import battlecode.common.RobotInfo;
+import team379.robots.RobotMemory;
 
 public class PathFindUtils {
 	private PathFindUtils() { }
 	
-	public static ArchonLocateResult findArchonLocation(RobotController rc, int archonId, RobotInfo[] nearbyRobots, MapLocation lastKnownArchonLocation) {
+	public static ArchonLocateResult findArchonLocation(RobotController rc, RobotMemory memory, RobotInfo[] nearbyRobots, MapLocation lastKnownArchonLocation) {
+		if(memory.getStaleness() < 6) {	//TODO: magic number!
+			return new ArchonLocateResult(false, lastKnownArchonLocation);
+		}
+		
 		for(RobotInfo ri : nearbyRobots) {
-			if(ri.ID == archonId) {
+			if(ri.ID == memory.getArchonId()) {
 				//I found my archon!
 				return new ArchonLocateResult(true, ri.location);
 			}

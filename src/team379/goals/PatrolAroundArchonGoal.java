@@ -7,29 +7,45 @@ import battlecode.common.RobotInfo;
 import battlecode.common.RobotType;
 import battlecode.common.Team;
 import team379.Globals;
+import team379.OrbitCalculator;
 import team379.pathfinding.ArchonLocateResult;
 import team379.pathfinding.Orbiter;
 import team379.pathfinding.PathFindResult;
 import team379.pathfinding.PathFindUtils;
 import team379.robots.Robot;
 import team379.robots.RobotMemory;
+import team379.signals.SignalData;
+import team379.signals.SignalType;
 
-public class PatrolAroundArchonGoal extends Goal {
+public class PatrolAroundArchonGoal extends ArchonListenerGoal {
 	private final Orbiter orbiter;
 	
 	private Goal nextGoal = null;
 	
 	public PatrolAroundArchonGoal(RobotMemory memory) {
 		super(memory);
-		this.orbiter = new Orbiter(memory.getPatrolRadius(), memory.getLastPatrolOrdinal());
+		OrbitCalculator oc = new OrbitCalculator(memory.getPatrolRadius(), memory.getType());
+		this.orbiter = new Orbiter(oc.getCalculatedRadius(), memory.getLastPatrolOrdinal());
+		orbiter.setRadiusVariability(oc.getCalculatedRange());
 		orbiter.setRouteMovesUntilFail(4);
 	}
 	
 	@Override
 	public Goal achieveGoal(RobotController rc, Robot robot) throws Exception {
+		super.achieveGoal(rc, robot);
+		
+		for(SignalData sd : signals) {
+			if(sd.getType() == SignalType.NEW_RADIUS) {
+				OrbitCalculator oc = new OrbitCalculator(sd.getOtherInfo(), memory.getType());
+				orbiter.setRadius(oc.getCalculatedRadius());
+				orbiter.setRadiusVariability(oc.getCalculatedRange());
+			}
+		}
+		signals.clear();
+		
 		RobotInfo[] nearbyRobots = rc.senseNearbyRobots(rc.getType().sensorRadiusSquared);
 		
-		ArchonLocateResult alr = PathFindUtils.findArchonLocation(rc, memory.getArchonId(), nearbyRobots, memory.getLastKnownArchonLocation());
+		ArchonLocateResult alr = PathFindUtils.findArchonLocation(rc, memory, nearbyRobots, memory.getLastKnownArchonLocation());
 		
 		if(alr.foundTheArchon()) {
 			memory.setLastKnownArchonLocation(alr.getLocation());
@@ -39,8 +55,12 @@ public class PatrolAroundArchonGoal extends Goal {
 			return new DefenseGoal(memory);
 		}
 		
-		//if the archon is out of my sensor range, go back to the archon
-		if(rc.getLocation().distanceSquaredTo(alr.getLocation()) > rc.getType().sensorRadiusSquared) {
+		//if the archon is out of my assigned radius, go back to where I should be
+		if(rc.getLocation().distanceSquaredTo(memory.getLastKnownArchonLocation()) > Math.pow(orbiter.getRadius() + orbiter.getRadiusVariability(), 2)) {
+			System.out.println("too far away!");
+			System.out.println("   distance: " + rc.getLocation().distanceSquaredTo(memory.getLastKnownArchonLocation()));
+			System.out.println("   orbiter radius: " + orbiter.getRadius());
+			System.out.println("   orbiter radius variability: " + orbiter.getRadiusVariability());
 			return new ReturnToArchonGoal(memory);
 		}
 		

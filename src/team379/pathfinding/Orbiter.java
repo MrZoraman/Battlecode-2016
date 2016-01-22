@@ -33,6 +33,7 @@ public class Orbiter extends PathFinder {
 		if(target == null || 
 				rc.getLocation().distanceSquaredTo(target) < DISTANCE_THRESHOLD) {
 			calculateTarget(center);
+			rc.setIndicatorString(2, "my new target: " + target);
 		}
 		return super.move(rc, target);
 	}
@@ -51,6 +52,8 @@ public class Orbiter extends PathFinder {
 	}
 	
 	private int calculateRadius() {
+		System.out.println("calculating radius. radius: " + radius);
+		System.out.println("radius variability: " + radiusVariability);
 		return radius + rand.nextInt(radiusVariability) - (radiusVariability / 2);
 	}
 	
@@ -72,5 +75,13 @@ public class Orbiter extends PathFinder {
 	
 	public void setDirectionIndex(int directionIndex) {
 		this.directionIndex = directionIndex;
+	}
+
+	public int getRadius() {
+		return radius;
+	}
+
+	public int getRadiusVariability() {
+		return radiusVariability;
 	}
 }

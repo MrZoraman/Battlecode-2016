@@ -20,7 +20,7 @@ public class ReturnToArchonGoal extends Goal {
 	public Goal achieveGoal(RobotController rc, Robot robot) throws Exception {
 		RobotInfo[] nearbyRobots = rc.senseNearbyRobots(rc.getType().sensorRadiusSquared);
 		
-		ArchonLocateResult alr = PathFindUtils.findArchonLocation(rc, memory.getArchonId(), nearbyRobots, memory.getLastKnownArchonLocation());
+		ArchonLocateResult alr = PathFindUtils.findArchonLocation(rc, memory, nearbyRobots, memory.getLastKnownArchonLocation());
 		
 		if(alr.foundTheArchon()) {
 			memory.setLastKnownArchonLocation(alr.getLocation());

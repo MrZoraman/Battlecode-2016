@@ -2,6 +2,7 @@ package team379.goals;
 
 import battlecode.common.RobotController;
 import battlecode.common.RobotInfo;
+import battlecode.common.RobotType;
 import battlecode.common.Signal;
 import team379.pathfinding.ArchonLocateResult;
 import team379.pathfinding.PathFindUtils;
@@ -15,8 +16,8 @@ public class WaitForArchonWhoisGoal extends Goal {
 	
 	private int archonId = -1;
 	
-	public WaitForArchonWhoisGoal(int opponentAggressionRange, int patrolRadius, RobotGoalConstructor rgc) {
-		super(new RobotMemory(-1, opponentAggressionRange, patrolRadius));
+	public WaitForArchonWhoisGoal(int opponentAggressionRange, RobotType type, RobotGoalConstructor rgc) {
+		super(new RobotMemory(-1, opponentAggressionRange, type));
 		this.rgc = rgc;
 	}
 
@@ -48,9 +49,9 @@ public class WaitForArchonWhoisGoal extends Goal {
 		}
 		
 		RobotInfo[] nearbyRobots = rc.senseNearbyRobots(4);
-		ArchonLocateResult alr = PathFindUtils.findArchonLocation(rc, archonId, nearbyRobots, null);
+		ArchonLocateResult alr = PathFindUtils.findArchonLocation(rc, memory, nearbyRobots, null);
 		
-		RobotMemory mem = new RobotMemory(archonId, memory.getOpponentAggressionRange(), memory.getPatrolRadius());
+		RobotMemory mem = new RobotMemory(archonId, memory.getOpponentAggressionRange(), rc.getType());
 		mem.setLastKnownArchonLocation(alr.getLocation());
 		return rgc.createGoal(mem);
 	}
