@@ -18,17 +18,29 @@ import battlecode.common.RobotInfo;
 public class PathFinder {
 	
 	/**
-	 * This functional interface represents a rotation/translation of a direction.
+	 * This functional interface represents a rotation/translation of a direction. The goal is
+	 * 	to have a set of these that each move around the compass a little. With them in the right
+	 * 	order, I can try to find the path of least resistance that still generally takes me to
+	 * 	my target location.
 	 * 
 	 * @author Matt
 	 *
 	 */
 	@FunctionalInterface
 	private interface DirectionTranslator {
+		/**
+		 * Translates a direction.
+		 * @param dir The direction to transform
+		 * @return The new direction.
+		 */
 		Direction translateDirection(Direction dir);
 	}
 	
-	//TODO: what is this for?
+	/**
+	 * The result of the pathfinder trying to find a good direction to move in.
+	 * @author Matt
+	 *
+	 */
 	private class DirectionResult {
 		Direction dir;
 		boolean robotInWay = false;
