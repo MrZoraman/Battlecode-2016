@@ -40,9 +40,9 @@ public class PathFinder {
 	private int robotInWayRetries = 6;
 	private int robotRetries;
 	
-	private int distanceDeltaGiveUp = 2;
-	private int distanceDelta = 13;
-	private int lastDistance = 0;
+	private int distanceDeltaGiveUp = 13;
+	private double distanceDelta = 0.8;
+	private double lastDistance = 0;
 	private int distanceTries = 0;
 	
 	public PathFindResult move(RobotController rc, MapLocation target) throws Exception {
@@ -52,9 +52,11 @@ public class PathFinder {
 	
 		MapLocation myLocation = rc.getLocation();
 		
-		int distanceToGoal = myLocation.distanceSquaredTo(target);
-		int calculatedDelta = Math.abs(lastDistance - distanceToGoal);
+		double distanceToGoal = Math.sqrt(myLocation.distanceSquaredTo(target));
+		System.out.println("distanceToGoal: " + distanceToGoal);
+		double calculatedDelta = Math.abs(lastDistance - distanceToGoal);
 		lastDistance = distanceToGoal;
+		System.out.println("calculatedDelta: " + calculatedDelta);
 		if(calculatedDelta < distanceDelta) {
 			distanceTries++;
 		} else {

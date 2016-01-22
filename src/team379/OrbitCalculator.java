@@ -36,7 +36,7 @@ public class OrbitCalculator {
 	}
 	
 	private void calculateGuard() {
-		System.out.println("radius I've been given: " + radius);
+		//System.out.println("radius I've been given: " + radius);
 		if(radius <= 5) {
 			calculatedRadius = Globals.GUARD_PATROL_RADIUS;
 			calculatedRange = 3;

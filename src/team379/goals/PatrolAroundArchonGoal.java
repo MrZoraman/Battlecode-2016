@@ -27,7 +27,7 @@ public class PatrolAroundArchonGoal extends ArchonListenerGoal {
 		OrbitCalculator oc = new OrbitCalculator(memory.getPatrolRadius(), memory.getType());
 		this.orbiter = new Orbiter(oc.getCalculatedRadius(), memory.getLastPatrolOrdinal());
 		orbiter.setRadiusVariability(oc.getCalculatedRange());
-		orbiter.setRouteMovesUntilFail(4);
+		//orbiter.setRouteMovesUntilFail(4);
 	}
 	
 	@Override
@@ -57,10 +57,10 @@ public class PatrolAroundArchonGoal extends ArchonListenerGoal {
 		
 		//if the archon is out of my assigned radius, go back to where I should be
 		if(rc.getLocation().distanceSquaredTo(memory.getLastKnownArchonLocation()) > Math.pow(orbiter.getRadius() + orbiter.getRadiusVariability(), 2)) {
-			System.out.println("too far away!");
-			System.out.println("   distance: " + rc.getLocation().distanceSquaredTo(memory.getLastKnownArchonLocation()));
-			System.out.println("   orbiter radius: " + orbiter.getRadius());
-			System.out.println("   orbiter radius variability: " + orbiter.getRadiusVariability());
+//			System.out.println("too far away!");
+//			System.out.println("   distance: " + rc.getLocation().distanceSquaredTo(memory.getLastKnownArchonLocation()));
+//			System.out.println("   orbiter radius: " + orbiter.getRadius());
+//			System.out.println("   orbiter radius variability: " + orbiter.getRadiusVariability());
 			return new ReturnToArchonGoal(memory);
 		}
 		
@@ -95,22 +95,23 @@ public class PatrolAroundArchonGoal extends ArchonListenerGoal {
 	
 	private void move(RobotController rc, MapLocation archonLocation) throws Exception {
 		PathFindResult result = orbiter.move(rc, archonLocation);
+		System.out.println("move result: " + result);
 		
 		switch(result) {
 		case CORE_DELAY:
 			break;
 		case COULD_NOT_FIND_ROUTE:
 			if(!determineDestructibleRubble(rc, rc.getLocation())) {
-				orbiter.calculateTarget(archonLocation);
+				//orbiter.calculateTarget(archonLocation);
 			}
 			break;
 		case ROBOT_IN_WAY:
 			break;
 		case ROBOT_IN_WAY_AND_NOT_MOVING:
-			orbiter.calculateTarget(archonLocation);
+			//orbiter.calculateTarget(archonLocation);
 			break;
 		case STUCK:
-			orbiter.calculateTarget(archonLocation);
+			//orbiter.calculateTarget(archonLocation);
 			break;
 		case SUCCESS:
 			break;

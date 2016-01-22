@@ -17,7 +17,7 @@ public class Orbiter extends PathFinder {
 	private MapLocation target;
 	private int radius;
 	
-	private int radiusVariability = 3;
+	private int radiusVariability = 1;
 	
 	public Orbiter(int radius) {
 		this(radius, -1);
@@ -28,13 +28,17 @@ public class Orbiter extends PathFinder {
 		this.directionIndex = directionIndex;
 	}
 	
+	RobotController rc;
+	
 	@Override
 	public PathFindResult move(RobotController rc, MapLocation center) throws Exception {
+		this.rc = rc;
 		if(target == null || 
-				rc.getLocation().distanceSquaredTo(target) < DISTANCE_THRESHOLD) {
+				/*rc.getLocation().distanceSquaredTo(target) < DISTANCE_THRESHOLD) { */
+				rc.getLocation().equals(target)) {
 			calculateTarget(center);
-			rc.setIndicatorString(2, "my new target: " + target);
 		}
+		rc.setIndicatorString(2, "target: " + target + " :: distance from archon: " + rc.getLocation().distanceSquaredTo(center) + " :: my target's distance from center: " + target.distanceSquaredTo(center));
 		return super.move(rc, target);
 	}
 	
@@ -47,14 +51,16 @@ public class Orbiter extends PathFinder {
 			directionIndex = directionIndex % 8;
 		}
 		Direction dir = Globals.movableDirections[directionIndex];
+		//rc.setIndicatorString(2, "direction from center: " + dir + " :: center location: " + center + " :: target location: " + target);
 		target = center.add(dir, calculateRadius());
 		super.reset();
 	}
 	
 	private int calculateRadius() {
-		System.out.println("calculating radius. radius: " + radius);
-		System.out.println("radius variability: " + radiusVariability);
+//		System.out.println("calculating radius. radius: " + radius);
+//		System.out.println("radius variability: " + radiusVariability);
 		return radius + rand.nextInt(radiusVariability) - (radiusVariability / 2);
+		//return radius;
 	}
 	
 	public MapLocation getTarget() {
