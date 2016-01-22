@@ -6,8 +6,8 @@ import battlecode.common.RobotController;
 import battlecode.common.RobotInfo;
 import team379.robots.RobotMemory;
 
-public class PathFindUtils {
-	private PathFindUtils() { }
+public class ArchonLocator {
+	private ArchonLocator() { }
 	
 	public static ArchonLocateResult findArchonLocation(RobotController rc, RobotMemory memory, RobotInfo[] nearbyRobots, MapLocation lastKnownArchonLocation) {
 		if(memory.getStaleness() < 6) {	//TODO: magic number!

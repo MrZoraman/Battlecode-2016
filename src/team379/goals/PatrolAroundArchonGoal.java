@@ -11,7 +11,7 @@ import team379.OrbitCalculator;
 import team379.pathfinding.ArchonLocateResult;
 import team379.pathfinding.Orbiter;
 import team379.pathfinding.PathFindResult;
-import team379.pathfinding.PathFindUtils;
+import team379.pathfinding.ArchonLocator;
 import team379.robots.Robot;
 import team379.robots.RobotMemory;
 import team379.signals.SignalData;
@@ -45,7 +45,7 @@ public class PatrolAroundArchonGoal extends ArchonListenerGoal {
 		
 		RobotInfo[] nearbyRobots = rc.senseNearbyRobots(rc.getType().sensorRadiusSquared);
 		
-		ArchonLocateResult alr = PathFindUtils.findArchonLocation(rc, memory, nearbyRobots, memory.getLastKnownArchonLocation());
+		ArchonLocateResult alr = ArchonLocator.findArchonLocation(rc, memory, nearbyRobots, memory.getLastKnownArchonLocation());
 		
 		if(alr.foundTheArchon()) {
 			memory.setLastKnownArchonLocation(alr.getLocation());

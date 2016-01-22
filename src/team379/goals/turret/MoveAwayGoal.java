@@ -9,7 +9,7 @@ import battlecode.common.RobotInfo;
 import team379.Globals;
 import team379.goals.Goal;
 import team379.pathfinding.ArchonLocateResult;
-import team379.pathfinding.PathFindUtils;
+import team379.pathfinding.ArchonLocator;
 import team379.robots.Robot;
 import team379.robots.RobotMemory;
 
@@ -25,7 +25,7 @@ public class MoveAwayGoal extends Goal{
 	public Goal achieveGoal(RobotController rc, Robot robot) throws Exception {
 		
 		RobotInfo[] nearbyRobots = rc.senseNearbyRobots(rc.getType().sensorRadiusSquared);
-		ArchonLocateResult alr = PathFindUtils.findArchonLocation(rc, memory.getArchonId(), nearbyRobots, memory.getLastKnownArchonLocation());
+		ArchonLocateResult alr = ArchonLocator.findArchonLocation(rc, memory.getArchonId(), nearbyRobots, memory.getLastKnownArchonLocation());
 
 		if(testDistance(rc, alr)) {
 			return new TurretGoal(memory);

@@ -5,7 +5,7 @@ import battlecode.common.RobotInfo;
 import battlecode.common.RobotType;
 import battlecode.common.Signal;
 import team379.pathfinding.ArchonLocateResult;
-import team379.pathfinding.PathFindUtils;
+import team379.pathfinding.ArchonLocator;
 import team379.robots.Robot;
 import team379.robots.RobotMemory;
 import team379.signals.SignalType;
@@ -49,7 +49,7 @@ public class WaitForArchonWhoisGoal extends Goal {
 		}
 		
 		RobotInfo[] nearbyRobots = rc.senseNearbyRobots(4);
-		ArchonLocateResult alr = PathFindUtils.findArchonLocation(rc, memory, nearbyRobots, null);
+		ArchonLocateResult alr = ArchonLocator.findArchonLocation(rc, memory, nearbyRobots, null);
 		
 		RobotMemory mem = new RobotMemory(archonId, memory.getOpponentAggressionRange(), rc.getType());
 		mem.setLastKnownArchonLocation(alr.getLocation());

@@ -4,7 +4,7 @@ import battlecode.common.RobotController;
 import battlecode.common.RobotInfo;
 import team379.pathfinding.ArchonLocateResult;
 import team379.pathfinding.PathFindResult;
-import team379.pathfinding.PathFindUtils;
+import team379.pathfinding.ArchonLocator;
 import team379.pathfinding.PathFinder;
 import team379.robots.Robot;
 import team379.robots.RobotMemory;
@@ -20,7 +20,7 @@ public class ReturnToArchonGoal extends Goal {
 	public Goal achieveGoal(RobotController rc, Robot robot) throws Exception {
 		RobotInfo[] nearbyRobots = rc.senseNearbyRobots(rc.getType().sensorRadiusSquared);
 		
-		ArchonLocateResult alr = PathFindUtils.findArchonLocation(rc, memory, nearbyRobots, memory.getLastKnownArchonLocation());
+		ArchonLocateResult alr = ArchonLocator.findArchonLocation(rc, memory, nearbyRobots, memory.getLastKnownArchonLocation());
 		
 		if(alr.foundTheArchon()) {
 			memory.setLastKnownArchonLocation(alr.getLocation());
