@@ -13,15 +13,14 @@ import team379.RobotMemory;
 import team379.pathfinding.PathFindResult;
 import team379.pathfinding.PathFinder;
 
-public class DefenseGoal extends Goal {
+public class DefenseGoal implements Goal {
 	private PathFinder pf = new PathFinder();
 	
-	public DefenseGoal(RobotMemory memory) {
-		super(memory);
+	public DefenseGoal() {
 	}
 	
 	@Override
-	public Goal achieveGoal(RobotController rc, Robot robot) throws Exception {
+	public Goal achieveGoal(RobotController rc) throws Exception {
 		RobotInfo[] robots = rc.senseHostileRobots(rc.getLocation(), rc.getType().sensorRadiusSquared);
 		
 		Team enemyTeam = rc.getTeam().opponent();

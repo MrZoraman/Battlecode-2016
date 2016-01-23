@@ -14,7 +14,9 @@ import team379.pathfinding.Orbiter;
 import team379.pathfinding.PathFindResult;
 import team379.pathfinding.ArchonLocator;
 import team379.signals.SignalData;
+import team379.signals.SignalReader;
 import team379.signals.SignalType;
+import team379.signals.consumers.HeadArchonIdentifier;
 
 public class PatrolAroundArchonGoal implements Goal {
 	
@@ -24,12 +26,29 @@ public class PatrolAroundArchonGoal implements Goal {
 	
 	public PatrolAroundArchonGoal() {
 		if(orbiter == null) {
-			orbiter = new Orbiter(RobotMemory.getArchonLocation(), 5, 5);	//TODO: them magic numbers!
+			orbiter = new Orbiter(RobotMemory.getArchonLocation(), 5, 3);	//TODO: them magic numbers!
+		} else {
+			orbiter.setTarget(RobotMemory.getArchonLocation());
 		}
 	}
 	
 	@Override
 	public Goal achieveGoal(RobotController rc) throws Exception {
+		HeadArchonIdentifier hai = new HeadArchonIdentifier();
+		SignalReader.consume(rc, hai);
+		
+		if(hai.getArchonId() < RobotMemory.getArchonId()) {
+			orbiter.setCenter(hai.getArchonLocation());
+			RobotMemory.setArchonId(hai.getArchonId());
+			RobotMemory.setArchonLocation(hai.getArchonLocation());
+		}
+		
+		RobotInfo[] nearbyRobots = rc.senseNearbyRobots(rc.getType().sensorRadiusSquared);
+		if(findBaddies(rc, nearbyRobots)) {
+			return new DefenseGoal();
+		}
+		
+		move(rc);
 		
 		return null;
 	}
@@ -49,7 +68,7 @@ public class PatrolAroundArchonGoal implements Goal {
 					continue;
 				}
 				return true;
-			} else if(ri.team != myTeam && myLocation.distanceSquaredTo(ri.location) < memory.getOpponentAggressionRange()) {
+			} else if(ri.team != myTeam && myLocation.distanceSquaredTo(ri.location) < RobotMemory.getAggressionRange()) {
 				return true;
 			}
 		}
@@ -57,9 +76,8 @@ public class PatrolAroundArchonGoal implements Goal {
 		return false;
 	}
 	
-	private void move(RobotController rc, MapLocation archonLocation) throws Exception {
+	private void move(RobotController rc) throws Exception {
 		PathFindResult result = orbiter.move(rc);
-		System.out.println("move result: " + result);
 		
 		switch(result) {
 		case CORE_DELAY:
