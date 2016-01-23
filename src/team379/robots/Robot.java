@@ -2,40 +2,53 @@ package team379.robots;
 
 import battlecode.common.Clock;
 import battlecode.common.RobotController;
-import battlecode.common.Team;
 import team379.goals.Goal;
 
-public class Robot{
+/**
+ * Represents a Robot that periodically executes a goal.
+ * @author Matt
+ *
+ */
+public class Robot {
 	
+	/**
+	 * The constructor. Takes in the initial goal.
+	 * @param initialGoal The first goal to start working on.
+	 */
 	public Robot(Goal initialGoal) {
 		currentGoal = initialGoal;
 	}
 	
-	protected Team myTeam;
-	protected Team enemyTeam;
-	
+	/**
+	 * The current goal that is being achieved.
+	 */
 	private Goal currentGoal;
 	
+	/**
+	 * Runs the robot. If this returns then the robot explodes.
+	 * @param rc The RobotController for the robot.
+	 */
 	public final void run(RobotController rc) {
-		try {
-			myTeam = rc.getTeam();
-			enemyTeam = myTeam.opponent();
-			updateGoalString(rc, currentGoal);
-			while(true) {
+		while(true) {
+			try {
 				Goal newGoal = currentGoal.achieveGoal(rc, this);
 				if(newGoal != null) {
 					currentGoal = newGoal;
 					updateGoalString(rc, newGoal);
 				}
+			} catch (Exception ex) {
+				ex.printStackTrace();
+			} finally {
 				Clock.yield();
 			}
-		} catch (Exception e) {
-			e.printStackTrace();
 		}
-		
-		System.out.println("Uh oh! I've exited!");
 	}
 	
+	/**
+	 * Updates the goal string.
+	 * @param rc The RobotController
+	 * @param goal The goal to represent in the top bar.
+	 */
 	private void updateGoalString(RobotController rc, Goal goal) {
 		rc.setIndicatorString(0, "Goal: " + goal.getName());
 	}
