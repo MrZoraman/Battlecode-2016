@@ -15,8 +15,6 @@ public class RobotPlayer {
      **/
     public static void run(RobotController rc) {
         Robot robot = new Robot();
-        if(robot != null) {
-        	robot.run(rc);
-        }
+    	robot.run(rc);
     }
 }
