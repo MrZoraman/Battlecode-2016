@@ -2,6 +2,11 @@ package team379;
 
 import battlecode.common.RobotController;
 
+/**
+ * Entry point for the code
+ * @author Matt
+ *
+ */
 public class RobotPlayer {
 
     /**
