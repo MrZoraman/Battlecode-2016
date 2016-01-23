@@ -5,7 +5,7 @@ import team379.HeadArchonIdentifier;
 import team379.signals.SignalReader;
 
 /**
- * Waits for a notication from and archon containing the id. It then finds the location of the archon,
+ * Waits for a notification from and archon containing the id. It then finds the location of the archon,
  * 	then passes the info into the {@link team379.goals.GoalFactory GoalFactory}.
  * @author Matt
  *
