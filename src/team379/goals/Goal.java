@@ -7,8 +7,7 @@ import battlecode.common.RobotController;
  * @author Matt
  *
  */
-public interface Goal
-{
+public interface Goal {
 	/**
 	 * Try to achieve the goal
 	 * @param rc The RobotController

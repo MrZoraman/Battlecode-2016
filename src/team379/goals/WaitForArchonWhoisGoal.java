@@ -4,23 +4,19 @@ import battlecode.common.RobotController;
 import battlecode.common.RobotInfo;
 import battlecode.common.RobotType;
 import battlecode.common.Signal;
-import team379.pathfinding.ArchonLocateResult;
 import team379.pathfinding.ArchonLocator;
 import team379.robots.Robot;
-import team379.robots.RobotMemory;
 import team379.signals.SignalType;
 
 public class WaitForArchonWhoisGoal implements Goal {
 	
 	private int archonId = -1;
 	
-	public WaitForArchonWhoisGoal(int opponentAggressionRange, RobotType type, RobotGoalConstructor rgc) {
-		super(new RobotMemory(-1, opponentAggressionRange, type));
-		this.rgc = rgc;
+	public WaitForArchonWhoisGoal() {
 	}
 
 	@Override
-	public Goal achieveGoal(RobotController rc, Robot robot) throws Exception {
+	public Goal achieveGoal(RobotController rc) throws Exception {
 		Signal[] signals = rc.emptySignalQueue();
 		
 		for(Signal s : signals) {
