@@ -15,6 +15,6 @@ public class GoalFactory {
 	private GoalFactory() { }
 	
 	public static Goal createGoal(RobotController rc, MapLocation archonLocation) {
-		return null;
+		return new EmptyGoal();
 	}
 }
