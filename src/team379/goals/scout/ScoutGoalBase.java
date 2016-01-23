@@ -2,19 +2,14 @@ package team379.goals.scout;
 
 import battlecode.common.RobotController;
 import battlecode.common.Signal;
-import team379.Robot;
 import team379.RobotMemory;
 import team379.goals.Goal;
 import team379.signals.SignalType;
 
-public class ScoutGoalBase extends Goal {
-
-	public ScoutGoalBase(RobotMemory memory) {
-		super(memory);
-	}
+public class ScoutGoalBase implements Goal {
 
 	@Override
-	public Goal achieveGoal(RobotController rc, Robot robot) throws Exception {
+	public Goal achieveGoal(RobotController rc) throws Exception {
 		Signal[] signals = rc.emptySignalQueue();
 		
 		for(Signal s : signals) {
@@ -23,16 +18,16 @@ public class ScoutGoalBase extends Goal {
 				continue;
 			}
 			
-			SignalType id = SignalType.toSignal(messages[0]);
+			SignalType id = SignalType.toSignal((short) messages[0]);
 			if(id == null) {
 				continue;
 			}
 			
 			switch(id) {
 			case THIS_IS_MY_ID:
-				if(memory.getArchonId() <= 0) {
-					memory.setArchonId(messages[1]);
-					rc.setIndicatorString(1, "My Archon is at: " + memory.getArchonId());
+				if(RobotMemory.getArchonId() <= 0) {
+					RobotMemory.setArchonId(messages[1]);
+					rc.setIndicatorString(1, "My Archon is at: " + RobotMemory.getArchonId());
 				}
 				break;
 			default:
