@@ -1,16 +1,16 @@
 package team379.goals;
 
 import battlecode.common.RobotController;
-import team379.Robot;
 
-public class EmptyGoal extends Goal {
-
-	public EmptyGoal() {
-		super(null);
-	}
+/**
+ * Goal that does nothing.
+ * @author Matt
+ *
+ */
+public class EmptyGoal implements Goal {
 
 	@Override
-	public Goal achieveGoal(RobotController rc, Robot robot) throws Exception {
+	public Goal achieveGoal(RobotController rc) throws Exception {
 		return null;
 	}
 
