@@ -5,89 +5,167 @@ import java.util.Random;
 import battlecode.common.Direction;
 import battlecode.common.MapLocation;
 import battlecode.common.RobotController;
-import team379.Globals;
 
+/**
+ * A special kind of path finder that "orbits" around a specific point.
+ * @author Matt
+ *
+ */
 public class Orbiter extends PathFinder {
-	//how close to the target location before time to switch directions.
-	private static final int DISTANCE_THRESHOLD = 2;
+	/**
+	 * The default direction the robot will move to to get in orbit.
+	 */
+	private static final Direction DEFAULT_DIRECTION = Direction.NORTH;
 	
+	/**
+	 * How close to the target location the robot can get before it decides to switch directions.
+	 */
+	private static final double DISTANCE_THRESHOLD = 1.1;
+	
+	/**
+	 * The random number generator for the orbit range variability.
+	 */
 	private final Random rand = new Random();
 	
-	private int directionIndex;
-	private MapLocation target;
-	private int radius;
+	/**
+	 * The direction from the center the pathfinding target is.
+	 */
+	private Direction compassDirection = DEFAULT_DIRECTION;
 	
-	private int radiusVariability = 1;
+	/**
+	 * The distance from the center this robot will orbit.
+	 */
+	private double radius;
 	
-	public Orbiter(int radius) {
-		this(radius, -1);
-	}
+	/**
+	 * The variability of the orbit (aka the "width").
+	 */
+	private int orbitRange;
 	
-	public Orbiter(int radius, int directionIndex) {
+	/**
+	 * The center/reference point of this robot's orbit.
+	 */
+	private MapLocation center;
+	
+	/**
+	 * Constructor.
+	 * @param radius The orbit radius in blocks.
+	 * @param center The center/reference point of the orbit.
+	 * @param range The range/variability of the orbit radius.
+	 */
+	public Orbiter(MapLocation center, double radius, int range) {
+		this.center = center;
 		this.radius = radius;
-		this.directionIndex = directionIndex;
 	}
 	
-	RobotController rc;
+	/**
+	 * Constructor.
+	 * @param radius The orbit radius in blocks.
+	 * @param center The center/reference point of the orbit.
+	 * @param range The range/variability of the orbit radius squared.
+	 */
+	public Orbiter(MapLocation center, int radiusSquared, int range) {
+		this(center, Math.sqrt(radiusSquared), range);
+	}
+	
+	/**
+	 * calculates the target (some point on the orbit path) for the path finder to move towards.
+	 * @param newDirection If the direction from the center should be switched. Set to false if
+	 * 	the target is just being recalculated due to a center shift.
+	 */
+	private void calculateNextTarget(boolean newDirection) {
+		//get the next Direction
+		if (newDirection) {
+			compassDirection = compassDirection.rotateRight();
+		}
+		
+		//get the radius squared
+		int radiusSquared = (int) Math.pow(calculateRadius(), 2);
+		//set the next target in the base class
+		setTarget(center.add(compassDirection, radiusSquared));
+	}
 	
 	@Override
-	public PathFindResult move(RobotController rc, MapLocation center) throws Exception {
-		this.rc = rc;
-		if(target == null || 
-				/*rc.getLocation().distanceSquaredTo(target) < DISTANCE_THRESHOLD) { */
-				rc.getLocation().equals(target)) {
-			calculateTarget(center);
-		}
-		rc.setIndicatorString(2, "target: " + target + " :: distance from archon: " + rc.getLocation().distanceSquaredTo(center) + " :: my target's distance from center: " + target.distanceSquaredTo(center));
-		return super.move(rc, target);
-	}
-	
-	public void calculateTarget(MapLocation center) {
-		//time to figure out a new place to go
-		if(directionIndex < 0) {
-			directionIndex = rand.nextInt(8);
+	public PathFindResult move(RobotController rc) throws Exception {
+		//make sure there is a target
+		if(compassDirection == null) {
+			calculateNextTarget(true);
 		} else {
-			directionIndex++;
-			directionIndex = directionIndex % 8;
+			//get the distance to target
+			int distanceSquared = getTarget().distanceSquaredTo(rc.getLocation());
+			double distance = Math.sqrt(distanceSquared);
+			//if I'm close enough, recalculate target
+			if(distance < DISTANCE_THRESHOLD) {
+				calculateNextTarget(true);
+			}
 		}
-		Direction dir = Globals.movableDirections[directionIndex];
-		//rc.setIndicatorString(2, "direction from center: " + dir + " :: center location: " + center + " :: target location: " + target);
-		target = center.add(dir, calculateRadius());
-		super.reset();
+		
+		//have the base class do the rest
+		return super.move(rc);
 	}
 	
-	private int calculateRadius() {
-//		System.out.println("calculating radius. radius: " + radius);
-//		System.out.println("radius variability: " + radiusVariability);
-		return radius + rand.nextInt(radiusVariability) - (radiusVariability / 2);
-		//return radius;
-	}
-	
-	public MapLocation getTarget() {
-		return target;
-	}
-	
-	public void setRadius(int radius) {
-		this.radius = radius;
-	}
-	
-	public void setRadiusVariability(int radiusVariability) {
-		this.radiusVariability = radiusVariability;
-	}
-	
-	public int getDirectionIndex() {
-		return directionIndex;
-	}
-	
-	public void setDirectionIndex(int directionIndex) {
-		this.directionIndex = directionIndex;
+	/**
+	 * calculates the actual radius (combines the radius plus the range with a little randomness)
+	 * @return The final radius for the target to be located at.
+	 */
+	private double calculateRadius() {
+		return radius + rand.nextInt(orbitRange) - (orbitRange / 2);
 	}
 
-	public int getRadius() {
+	/**
+	 * Getss the radius from the center.
+	 * @return The radius in squares.
+	 */
+	public double getRadius() {
 		return radius;
 	}
 
-	public int getRadiusVariability() {
-		return radiusVariability;
+	/**
+	 * Sets the radius to orbit around the center from.
+	 * @param radius The radius in squares.
+	 */
+	public void setRadius(double radius) {
+		this.radius = radius;
+	}
+	
+	/**
+	 * Sets the radius to orbit around the center from.
+	 * @param radiusSquared The radius in radius squared.
+	 */
+	public void setRadius(int radiusSquared) {
+		setRadius(Math.sqrt(radiusSquared));
+	}
+
+	/**
+	 * Gets the range/variabilty of the orbit.
+	 * @return The orbit range in squares.
+	 */
+	public int getOrbitRange() {
+		return orbitRange;
+	}
+
+	/**
+	 * Sets the orbit range.
+	 * @param orbitRange The orbit range in squares.
+	 */
+	public void setOrbitRange(int orbitRange) {
+		this.orbitRange = orbitRange;
+	}
+
+	/**
+	 * Gets the center/target to orbit around.
+	 * @return The center of the orbit.
+	 */
+	public MapLocation getCenter() {
+		return center;
+	}
+
+	/**
+	 * Sets the center of the orbit.
+	 * @param center The center to orbit around.
+	 */
+	public void setCenter(MapLocation center) {
+		this.center = center;
+		calculateNextTarget(false);
 	}
 }
