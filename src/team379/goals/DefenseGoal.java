@@ -46,7 +46,7 @@ public class DefenseGoal implements Goal {
 			rc.setIndicatorString(1, "defending against the opponent!");
 			defend(rc, opponents);
 		} else {
-			return new ReturnToArchonGoal(memory);
+			return new ReturnToArchonGoal();
 		}
 		
 		return null;
@@ -81,7 +81,8 @@ public class DefenseGoal implements Goal {
 				rc.attackLocation(closestBaddie.location);
 			}
 		} else {
-			PathFindResult result = pf.move(rc, closestBaddie.location);
+			pf.setTarget(closestBaddie.location);
+			PathFindResult result = pf.move(rc);
 			if(result != PathFindResult.SUCCESS && result != PathFindResult.CORE_DELAY) {
 				pf.reset();
 			}
