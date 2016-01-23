@@ -5,26 +5,22 @@ import battlecode.common.RobotController;
 import battlecode.common.RobotInfo;
 import battlecode.common.Team;
 import team379.Globals;
-import team379.Robot;
-import team379.RobotMemory;
 
-public class ClearRubbleGoal extends Goal {
+public class ClearRubbleGoal implements Goal {
 	
-	private RobotMemory memory;
 	private Direction dir;
-	public ClearRubbleGoal(RobotMemory inMemory, Direction rubbleDir) {
-		super(inMemory);
+	
+	public ClearRubbleGoal(Direction rubbleDir) {
 		dir = rubbleDir;
-		memory = inMemory;
 	}
 
 	@Override
-	public Goal achieveGoal(RobotController rc, Robot robot) throws Exception {
+	public Goal achieveGoal(RobotController rc) throws Exception {
 		int myAttackRange = rc.getType().attackRadiusSquared;
 		RobotInfo[] enemiesWithinRange = rc.senseNearbyRobots(myAttackRange, rc.getTeam().opponent());
         RobotInfo[] zombiesWithinRange = rc.senseNearbyRobots(myAttackRange, Team.ZOMBIE);
         if (enemiesWithinRange.length > 0 || zombiesWithinRange.length > 0) {
-        	return new DefenseGoal(memory);
+        	return new DefenseGoal();
         } else if(rc.senseRubble(rc.getLocation().add(dir)) > Globals.RUBBLE_THRESHOLD_MIN) {
         	if(rc.isCoreReady()) {
         		rc.clearRubble(dir);
@@ -33,7 +29,7 @@ public class ClearRubbleGoal extends Goal {
         	return null;
         }
         rc.setIndicatorString(2, "Returning to Patrol");
-        return new PatrolAroundArchonGoal(memory);
+        return new PatrolAroundArchonGoal();
 	}
 
 	@Override
