@@ -23,7 +23,7 @@ public class WaitForArchonWhoisGoal implements Goal {
 			return null;
 		}
 		
-		//I konw who and where my archon is!
+		//I know who and where my archon is!
 		//Time to let the goal factory do the rest...
 		return GoalFactory.createGoal(rc, hai.getArchonLocation());
 	}
