@@ -1,18 +1,25 @@
 package team379.goals;
 
 import battlecode.common.RobotController;
-import team379.robots.Robot;
-import team379.robots.RobotMemory;
 
-public abstract class Goal
+/**
+ * A goal (represents something to do).
+ * @author Matt
+ *
+ */
+public interface Goal
 {
-	protected final RobotMemory memory;
+	/**
+	 * Try to achieve the goal
+	 * @param rc The RobotController
+	 * @return The next goal to complete (or null to keep doing the same goal)
+	 * @throws Exception If something goes wrong...
+	 */
+	public Goal achieveGoal(RobotController rc) throws Exception;
 	
-	public Goal(RobotMemory memory) {
-		this.memory = memory;
-	}
-	
-	public abstract Goal achieveGoal(RobotController rc, Robot robot) throws Exception;
-	
-	public abstract String getName();
+	/**
+	 * Gets the name of the goal. This is displayed in the status window at index 0.
+	 * @return The name of the goal.
+	 */
+	public String getName();
 }

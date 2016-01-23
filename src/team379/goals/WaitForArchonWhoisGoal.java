@@ -10,9 +10,7 @@ import team379.robots.Robot;
 import team379.robots.RobotMemory;
 import team379.signals.SignalType;
 
-public class WaitForArchonWhoisGoal extends Goal {
-	
-	private final RobotGoalConstructor rgc;
+public class WaitForArchonWhoisGoal implements Goal {
 	
 	private int archonId = -1;
 	
