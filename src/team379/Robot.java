@@ -1,8 +1,9 @@
-package team379.robots;
+package team379;
 
 import battlecode.common.Clock;
 import battlecode.common.RobotController;
 import team379.goals.Goal;
+import team379.goals.WaitForArchonWhoisGoal;
 
 /**
  * Represents a Robot that periodically executes a goal.
@@ -12,17 +13,9 @@ import team379.goals.Goal;
 public class Robot {
 	
 	/**
-	 * The constructor. Takes in the initial goal.
-	 * @param initialGoal The first goal to start working on.
+	 * The current goal that is being achieved. At first it's the WaitForArchonWhois goal.
 	 */
-	public Robot(Goal initialGoal) {
-		currentGoal = initialGoal;
-	}
-	
-	/**
-	 * The current goal that is being achieved.
-	 */
-	private Goal currentGoal;
+	private Goal currentGoal = new WaitForArchonWhoisGoal();
 	
 	/**
 	 * Runs the robot. If this returns then the robot explodes.
@@ -31,7 +24,7 @@ public class Robot {
 	public final void run(RobotController rc) {
 		while(true) {
 			try {
-				Goal newGoal = currentGoal.achieveGoal(rc, this);
+				Goal newGoal = currentGoal.achieveGoal(rc);
 				if(newGoal != null) {
 					currentGoal = newGoal;
 					updateGoalString(rc, newGoal);

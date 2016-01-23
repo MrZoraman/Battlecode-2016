@@ -8,10 +8,10 @@ import battlecode.common.RobotController;
 import battlecode.common.RobotInfo;
 import battlecode.common.RobotType;
 import battlecode.common.Team;
+import team379.Robot;
+import team379.RobotMemory;
 import team379.pathfinding.PathFindResult;
 import team379.pathfinding.PathFinder;
-import team379.robots.Robot;
-import team379.robots.RobotMemory;
 
 public class DefenseGoal extends Goal {
 	private PathFinder pf = new PathFinder();

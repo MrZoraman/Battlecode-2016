@@ -8,12 +8,12 @@ import battlecode.common.RobotType;
 import battlecode.common.Team;
 import team379.Globals;
 import team379.OrbitCalculator;
+import team379.Robot;
+import team379.RobotMemory;
 import team379.pathfinding.ArchonLocateResult;
 import team379.pathfinding.Orbiter;
 import team379.pathfinding.PathFindResult;
 import team379.pathfinding.ArchonLocator;
-import team379.robots.Robot;
-import team379.robots.RobotMemory;
 import team379.signals.SignalData;
 import team379.signals.SignalType;
 

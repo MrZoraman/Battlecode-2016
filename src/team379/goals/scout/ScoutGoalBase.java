@@ -2,9 +2,9 @@ package team379.goals.scout;
 
 import battlecode.common.RobotController;
 import battlecode.common.Signal;
+import team379.Robot;
+import team379.RobotMemory;
 import team379.goals.Goal;
-import team379.robots.Robot;
-import team379.robots.RobotMemory;
 import team379.signals.SignalType;
 
 public class ScoutGoalBase extends Goal {

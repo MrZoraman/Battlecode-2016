@@ -1,8 +1,6 @@
 package team379;
 
 import battlecode.common.RobotController;
-import team379.robots.Robot;
-import team379.robots.RobotFactory;
 
 public class RobotPlayer {
 
@@ -11,7 +9,7 @@ public class RobotPlayer {
      * If this method returns, the robot dies!
      **/
     public static void run(RobotController rc) {
-        Robot robot = RobotFactory.getRobot(rc.getType());
+        Robot robot = new Robot();
         if(robot != null) {
         	robot.run(rc);
         }

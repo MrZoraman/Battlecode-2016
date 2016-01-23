@@ -4,9 +4,9 @@ import battlecode.common.Direction;
 import battlecode.common.MapLocation;
 import battlecode.common.RobotController;
 import battlecode.common.RobotType;
+import team379.Robot;
+import team379.RobotMemory;
 import team379.goals.Goal;
-import team379.robots.Robot;
-import team379.robots.RobotMemory;
 import team379.signals.SignalType;
 
 public class BeginningBuildGoal extends ArchonGoalBase {

@@ -1,7 +1,7 @@
 package team379.goals;
 
 import battlecode.common.RobotController;
-import team379.robots.Robot;
+import team379.Robot;
 
 public class EmptyGoal extends Goal {
 

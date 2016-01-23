@@ -7,11 +7,11 @@ import battlecode.common.GameActionException;
 import battlecode.common.RobotController;
 import battlecode.common.RobotInfo;
 import team379.Globals;
+import team379.Robot;
+import team379.RobotMemory;
 import team379.goals.Goal;
 import team379.pathfinding.ArchonLocateResult;
 import team379.pathfinding.ArchonLocator;
-import team379.robots.Robot;
-import team379.robots.RobotMemory;
 
 public class MoveAwayGoal extends Goal{
 

@@ -5,11 +5,11 @@ import battlecode.common.MapLocation;
 import battlecode.common.RobotController;
 import battlecode.common.RobotInfo;
 import battlecode.common.Signal;
+import team379.Robot;
+import team379.RobotMemory;
 import team379.goals.Goal;
 import team379.pathfinding.Orbiter;
 import team379.pathfinding.PathFindResult;
-import team379.robots.Robot;
-import team379.robots.RobotMemory;
 
 public class ScoutPatrolGoal extends ScoutGoalBase {
 	private final Orbiter orbiter;

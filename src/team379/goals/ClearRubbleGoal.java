@@ -5,8 +5,8 @@ import battlecode.common.RobotController;
 import battlecode.common.RobotInfo;
 import battlecode.common.Team;
 import team379.Globals;
-import team379.robots.Robot;
-import team379.robots.RobotMemory;
+import team379.Robot;
+import team379.RobotMemory;
 
 public class ClearRubbleGoal extends Goal {
 	
