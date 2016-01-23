@@ -16,11 +16,12 @@ import team379.signals.SignalData;
 import team379.signals.SignalType;
 
 public class PatrolAroundArchonGoal implements Goal {
-	private Orbiter orbiter;
+	private final Orbiter orbiter;
 	
 	private Goal nextGoal = null;
 	
-	public PatrolAroundArchonGoal() {
+	public PatrolAroundArchonGoal(MapLocation center) {
+		orbiter = new Orbiter(center, 5, 2);			//TODO: thems be some magic numbers
 	}
 	
 	@Override
