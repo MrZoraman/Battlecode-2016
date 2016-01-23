@@ -56,6 +56,7 @@ public class Orbiter extends PathFinder {
 	public Orbiter(MapLocation center, double radius, int range) {
 		this.center = center;
 		this.radius = radius;
+		this.orbitRange = range;
 	}
 	
 	/**
@@ -88,7 +89,7 @@ public class Orbiter extends PathFinder {
 	@Override
 	public PathFindResult move(RobotController rc) throws Exception {
 		//make sure there is a target
-		if(compassDirection == null) {
+		if(compassDirection == null || getTarget() == null) {
 			calculateNextTarget(true);
 		} else {
 			//get the distance to target
