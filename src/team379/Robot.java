@@ -15,7 +15,15 @@ public class Robot {
 	/**
 	 * The current goal that is being achieved. At first it's the WaitForArchonWhois goal.
 	 */
-	private Goal currentGoal = new WaitForArchonWhoisGoal();
+	private Goal currentGoal;
+	
+	public Robot(Goal currentGoal) {
+		this.currentGoal = currentGoal;
+	}
+	
+	public Robot() {
+		this(new WaitForArchonWhoisGoal());
+	}
 	
 	/**
 	 * Runs the robot. If this returns then the robot explodes.

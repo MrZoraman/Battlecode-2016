@@ -1,6 +1,8 @@
 package team379;
 
 import battlecode.common.RobotController;
+import battlecode.common.RobotType;
+import team379.goals.archon.BeginningBuildGoal;
 
 /**
  * Entry point for the code
@@ -14,7 +16,12 @@ public class RobotPlayer {
      * If this method returns, the robot dies!
      **/
     public static void run(RobotController rc) {
-        Robot robot = new Robot();
+    	Robot robot;
+    	if(rc.getType() == RobotType.ARCHON) {
+    		robot = new Robot(new BeginningBuildGoal());
+    	} else {
+    		robot = new Robot();
+    	}
     	robot.run(rc);
     }
 }
