@@ -10,26 +10,22 @@ import team379.Globals;
 import team379.Robot;
 import team379.RobotMemory;
 import team379.goals.Goal;
-import team379.pathfinding.ArchonLocateResult;
 import team379.pathfinding.ArchonLocator;
 
-public class MoveAwayGoal extends Goal{
+public class MoveAwayGoal implements Goal{
 
 	private int directionIndex = 0;
 	private final Random rand = new Random();
-	public MoveAwayGoal(RobotMemory memory) {
-		super(memory);
-	}
 
 	@Override
-	public Goal achieveGoal(RobotController rc, Robot robot) throws Exception {
+	public Goal achieveGoal(RobotController rc) throws Exception {
 		
 		RobotInfo[] nearbyRobots = rc.senseNearbyRobots(rc.getType().sensorRadiusSquared);
-		ArchonLocateResult alr = ArchonLocator.findArchonLocation(rc, memory.getArchonId(), nearbyRobots, memory.getLastKnownArchonLocation());
+		//ArchonLocateResult alr = ArchonLocator.findArchonLocation(rc, memory.getArchonId(), nearbyRobots, memory.getLastKnownArchonLocation());
 
-		if(testDistance(rc, alr)) {
-			return new TurretGoal(memory);
-		}
+		//if(testDistance(rc, alr)) {
+			//return new TurretGoal(memory);
+		//}
 		rc.pack();
 		findMove(rc);
 		return null;
@@ -51,12 +47,12 @@ public class MoveAwayGoal extends Goal{
 			rc.move(dir);
 		}
 	}
-	private boolean testDistance(RobotController rc, ArchonLocateResult alr) {
-		if(Math.abs(rc.getLocation().x - alr.getLocation().x) > Globals.TURRET_ARCHON_DISTANCE) {
-			return false;
-		} else if(Math.abs(rc.getLocation().y - alr.getLocation().y) > Globals.TURRET_ARCHON_DISTANCE) {
-			return false;
-		}
+	private boolean testDistance(RobotController rc) {
+//		if(Math.abs(rc.getLocation().x - alr.getLocation().x) > Globals.TURRET_ARCHON_DISTANCE) {
+//			return false;
+//		} else if(Math.abs(rc.getLocation().y - alr.getLocation().y) > Globals.TURRET_ARCHON_DISTANCE) {
+//			return false;
+//		}
 		return true;
 	}
 

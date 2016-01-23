@@ -7,26 +7,23 @@ import battlecode.common.Team;
 import team379.Robot;
 import team379.RobotMemory;
 import team379.goals.Goal;
-import team379.pathfinding.ArchonLocateResult;
 import team379.pathfinding.PathFindResult;
 import team379.pathfinding.ArchonLocator;
 import team379.pathfinding.PathFinder;
 
-public class TurretGoal extends Goal{
+public class TurretGoal implements Goal{
 	private final PathFinder pf = new PathFinder();
-
-	public TurretGoal(RobotMemory mem) {
-		super(mem);
-	}
+	
 	@Override
-	public Goal achieveGoal(RobotController rc, Robot robot) throws Exception {
+	public Goal achieveGoal(RobotController rc) throws Exception {
 		
 		RobotInfo[] nearbyRobots = rc.senseNearbyRobots(rc.getType().sensorRadiusSquared);
-		ArchonLocateResult alr = ArchonLocator.findArchonLocation(rc, memory.getArchonId(), nearbyRobots, memory.getLastKnownArchonLocation());
+		// alr = ArchonLocator.findArchonLocation(rc, memory.getArchonId(), nearbyRobots, memory.getLastKnownArchonLocation());
 		
 		int myAttackRange = rc.getType().attackRadiusSquared;
 		RobotInfo[] enemiesWithinRange = rc.senseNearbyRobots(myAttackRange, rc.getTeam().opponent());
         RobotInfo[] zombiesWithinRange = rc.senseNearbyRobots(myAttackRange, Team.ZOMBIE);
+        /*
         if(zombiesWithinRange.length > 0) {
         	if(rc.getType() == RobotType.TTM) {
     			rc.unpack();
@@ -58,6 +55,7 @@ public class TurretGoal extends Goal{
     			}
     		}
         }
+        */
         return null;
 	}
 	@Override
