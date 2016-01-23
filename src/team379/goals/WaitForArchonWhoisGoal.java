@@ -1,8 +1,9 @@
 package team379.goals;
 
 import battlecode.common.RobotController;
-import team379.HeadArchonIdentifier;
+import team379.RobotMemory;
 import team379.signals.SignalReader;
+import team379.signals.consumers.HeadArchonIdentifier;
 
 /**
  * Waits for a notification from and archon containing the id. It then finds the location of the archon,
@@ -23,9 +24,12 @@ public class WaitForArchonWhoisGoal implements Goal {
 			return null;
 		}
 		
-		//I know who and where my archon is!
+		//I know who and where my archon is! Better remember...
+		RobotMemory.setArchonId(hai.getArchonId());
+		RobotMemory.setArchonLocation(hai.getArchonLocation());
+		
 		//Time to let the goal factory do the rest...
-		return GoalFactory.createGoal(rc, hai.getArchonLocation());
+		return GoalFactory.createGoal(rc);
 	}
 
 	@Override

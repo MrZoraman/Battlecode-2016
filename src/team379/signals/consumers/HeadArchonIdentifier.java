@@ -1,4 +1,4 @@
-package team379;
+package team379.signals.consumers;
 
 import battlecode.common.MapLocation;
 import team379.signals.SignalConsumer;
