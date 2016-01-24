@@ -16,12 +16,12 @@ public class Globals {
 	
 	public static final int INITIAL_ORBIT_CONSTANT() { return 4; }
 	
-	public static final int GUARD_AGGRESSION_RANGE = 14;
-	public static final int SOLDIER_AGGRESSION_RANGE = 14;
+	public static final int GUARD_AGGRESSION_RANGE() { return 14; }
+	public static final int SOLDIER_AGGRESSION_RANGE() { return 14; }
 	
-	public static final double RUBBLE_THRESHOLD_MIN = 50.0;
-	public static final double RUBBLE_THRESHOLD_MAX = 600.0;
+	public static final double RUBBLE_THRESHOLD_MIN() { return 50.0; }
+	public static final double RUBBLE_THRESHOLD_MAX() { return 600.0; }
 	
-	public static final int TURRET_ARCHON_DISTANCE = 12;
+	public static final int TURRET_ARCHON_DISTANCE() { return 12; }
 	
 }

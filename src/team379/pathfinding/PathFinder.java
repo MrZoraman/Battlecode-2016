@@ -204,7 +204,7 @@ public class PathFinder {
 			//see if rubble is blocking my path
 			if(rc.onTheMap(loc)) {
 				double rubble = rc.senseRubble(loc);
-				if(rubble > Globals.RUBBLE_THRESHOLD_MIN && rubble < Globals.RUBBLE_THRESHOLD_MAX) {
+				if(rubble > Globals.RUBBLE_THRESHOLD_MIN() && rubble < Globals.RUBBLE_THRESHOLD_MAX()) {
 					result.rubbleInWay = true;
 					rubbleDir = targetDir;
 					return result;

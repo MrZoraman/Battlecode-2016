@@ -21,7 +21,7 @@ public class ClearRubbleGoal implements Goal {
         RobotInfo[] zombiesWithinRange = rc.senseNearbyRobots(myAttackRange, Team.ZOMBIE);
         if (enemiesWithinRange.length > 0 || zombiesWithinRange.length > 0) {
         	return new DefenseGoal();
-        } else if(rc.senseRubble(rc.getLocation().add(dir)) > Globals.RUBBLE_THRESHOLD_MIN) {
+        } else if(rc.senseRubble(rc.getLocation().add(dir)) > Globals.RUBBLE_THRESHOLD_MIN()) {
         	if(rc.isCoreReady()) {
         		rc.clearRubble(dir);
         	}
