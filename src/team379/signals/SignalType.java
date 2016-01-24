@@ -18,7 +18,12 @@ public enum SignalType {
 	/**
 	 * Used to broadcast a new radius to orbit at.
 	 */
-	NEW_RADIUS(2);
+	NEW_RADIUS(2),
+	
+	/**
+	 * Used to broadcast that stuff has been found.
+	 */
+	FOUND_STUFF(3);
 	
 	/**
 	 * Stores a map of signals to their short representation.

@@ -3,6 +3,7 @@ package team379.goals;
 import battlecode.common.RobotController;
 import team379.Globals;
 import team379.RobotMemory;
+import team379.goals.scout.ScoutPatrolGoal;
 
 /**
  * Creates a goal for a robot given the robot's type and the archon location.
@@ -24,7 +25,7 @@ public class GoalFactory {
 			RobotMemory.setAggressionRange(Globals.GUARD_AGGRESSION_RANGE());
 			return createPatrolGoal(rc);
 		case SCOUT:
-			break;
+			return new ScoutPatrolGoal(rc);
 		case SOLDIER:
 			RobotMemory.setAggressionRange(Globals.SOLDIER_AGGRESSION_RANGE());
 			return createPatrolGoal(rc);

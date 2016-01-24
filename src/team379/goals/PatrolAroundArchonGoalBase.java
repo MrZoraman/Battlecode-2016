@@ -11,7 +11,7 @@ import team379.signals.consumers.HeadArchonIdentifier;
 
 public abstract class PatrolAroundArchonGoalBase implements Goal {
 	
-	private static Orbiter orbiter;
+	protected static Orbiter orbiter;
 	
 	public PatrolAroundArchonGoalBase(RobotController rc) {
 		OrbitCalculator oc = new OrbitCalculator(RobotMemory.getOrbitConstant(), rc.getType());
