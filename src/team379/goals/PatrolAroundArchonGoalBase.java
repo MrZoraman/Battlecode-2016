@@ -37,7 +37,7 @@ public abstract class PatrolAroundArchonGoalBase implements Goal {
 		
 		RobotInfo[] nearbyRobots = rc.senseHostileRobots(rc.getLocation(), rc.getType().sensorRadiusSquared);
 		if(nearbyRobots.length > 0) {
-			Goal nextGoal = baddiesFound(nearbyRobots);
+			Goal nextGoal = baddiesFound(rc, nearbyRobots);
 			if(nextGoal != null) {
 				return nextGoal;
 			}
@@ -46,7 +46,7 @@ public abstract class PatrolAroundArchonGoalBase implements Goal {
 		return move(rc);
 	}
 	
-	protected abstract Goal baddiesFound(RobotInfo[] baddies);
+	protected abstract Goal baddiesFound(RobotController rc, RobotInfo[] baddies) throws Exception;
 
 	@Override
 	public String getName() {
