@@ -36,5 +36,10 @@ public enum PathFindResult {
 	/**
 	 * The robot has no target destination!
 	 */
-	NO_TARGET
+	NO_TARGET,
+	
+	/**
+	 * Rubble that is worth destroying has blocked the robot's path.
+	 */
+	RUBBLE_IN_WAY
 }

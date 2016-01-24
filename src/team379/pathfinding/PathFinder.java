@@ -6,6 +6,7 @@ import battlecode.common.Direction;
 import battlecode.common.MapLocation;
 import battlecode.common.RobotController;
 import battlecode.common.RobotInfo;
+import team379.Globals;
 
 /**
  * This is the path finder. It is given a target location, and it will try to move to that location.
@@ -44,6 +45,7 @@ public class PathFinder {
 	private class DirectionResult {
 		Direction dir;
 		boolean robotInWay = false;
+		boolean rubbleInWay = false;
 	}
 	
 	private static final DirectionTranslator[] translators = new DirectionTranslator[] {
@@ -83,6 +85,11 @@ public class PathFinder {
 	 * The target location to go to.
 	 */
 	private MapLocation target;
+	
+	/**
+	 * The direction of the rubble that has blocked the orbiter's path.
+	 */
+	private Direction rubbleDir;
 	
 	/**
 	 * Moves the PathFinder (hopefully) towards the target location.
@@ -128,6 +135,10 @@ public class PathFinder {
 		
 		//get the best direction to my target
 		DirectionResult result = getDirection(rc, myLocation, target);
+		
+		if(result.rubbleInWay) {
+			return RUBBLE_IN_WAY;
+		}
 		
 		//did I find a way to go?
 		if(result.dir != null) {
@@ -176,6 +187,16 @@ public class PathFinder {
 			MapLocation loc = myLocation.add(targetDir);
 			//the maplocation that contains something in my way
 			
+			//see if rubble is blocking my path
+			if(rc.onTheMap(loc)) {
+				double rubble = rc.senseRubble(loc);
+				if(rubble > Globals.RUBBLE_THRESHOLD_MIN && rubble < Globals.RUBBLE_THRESHOLD_MAX) {
+					result.rubbleInWay = true;
+					rubbleDir = targetDir;
+					return result;
+				}
+			}
+			
 			//check if there's a robot in that space
 			RobotInfo ri = rc.senseRobotAtLocation(loc);
 			if(ri != null) {
@@ -209,5 +230,13 @@ public class PathFinder {
 	 */
 	public void setTarget(MapLocation target) {
 		this.target = target;
+	}
+	
+	/**
+	 * Gets the location of the rubble that blocked the orbiter's path.
+	 * @return The location of rubble (within the threshold specified in the Globals class).
+	 */
+	public Direction getRubbleDirection() {
+		return rubbleDir;
 	}
 }

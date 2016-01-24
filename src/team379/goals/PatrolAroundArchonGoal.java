@@ -21,9 +21,9 @@ public class PatrolAroundArchonGoal implements Goal {
 	
 	public PatrolAroundArchonGoal() {
 		if(orbiter == null) {
-			orbiter = new Orbiter(RobotMemory.getArchonLocation(), 5.0, 3);	//TODO: them magic numbers!
+			orbiter = new Orbiter(RobotMemory.getArchonLocation(), 5.0, 0);	//TODO: them magic numbers!
 		} else {
-			orbiter.setTarget(RobotMemory.getArchonLocation());
+			orbiter.setCenter(RobotMemory.getArchonLocation());
 		}
 	}
 	
@@ -45,7 +45,7 @@ public class PatrolAroundArchonGoal implements Goal {
 		
 		move(rc);
 		
-		return null;
+		return nextGoal;
 	}
 
 	@Override
@@ -91,6 +91,9 @@ public class PatrolAroundArchonGoal implements Goal {
 			//orbiter.calculateTarget(archonLocation);
 			break;
 		case SUCCESS:
+			break;
+		case RUBBLE_IN_WAY:
+			nextGoal = new ClearRubbleGoal(orbiter.getRubbleDirection());
 			break;
 		default:
 			break;

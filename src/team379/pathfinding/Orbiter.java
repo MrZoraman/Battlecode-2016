@@ -94,6 +94,7 @@ public class Orbiter extends PathFinder {
 		if(compassDirection == null || getTarget() == null) {
 			calculateNextTarget(true);
 		} else {
+			rc.setIndicatorLine(rc.getLocation(), getTarget(), 1, 1, 1);
 			//get the distance to target
 			int distanceSquared = getTarget().distanceSquaredTo(rc.getLocation());
 			double distance = Math.sqrt(distanceSquared);

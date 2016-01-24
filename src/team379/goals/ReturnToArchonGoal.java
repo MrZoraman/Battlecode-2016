@@ -21,7 +21,6 @@ public class ReturnToArchonGoal implements Goal {
 		if(!al.isLost()) {
 			RobotMemory.setArchonLocation(archonLocation);
 		}
-		
 		pf.setTarget(archonLocation);
 		PathFindResult result = pf.move(rc);
 		if(result != PathFindResult.SUCCESS && result != PathFindResult.CORE_DELAY) {
