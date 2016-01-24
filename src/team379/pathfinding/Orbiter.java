@@ -85,12 +85,29 @@ public class Orbiter extends PathFinder {
 		setTarget(calculatedTarget);
 	}
 	
+	private MapLocation putTargetOnMap(RobotController rc, MapLocation calculatedTarget) throws Exception {
+		//if the target is in sensor radius and is not on the map
+		if(calculatedTarget.distanceSquaredTo(rc.getLocation()) < rc.getType().sensorRadiusSquared 
+				&& !rc.onTheMap(calculatedTarget)) {
+			Direction backwards = compassDirection.opposite();
+			return putTargetOnMap(rc, calculatedTarget.add(backwards));
+		}
+		
+		//the target is either outside my range or its on the map
+		return calculatedTarget;
+	}
+	
 	@Override
 	public PathFindResult move(RobotController rc) throws Exception {
 		//make sure there is a target
 		if(compassDirection == null || getTarget() == null) {
 			calculateNextTarget(true);
 		} else {
+			//put target on map
+			MapLocation target = getTarget();
+			target = putTargetOnMap(rc, target);
+			setTarget(target);
+			
 			//get the distance to target
 			int distanceSquared = getTarget().distanceSquaredTo(rc.getLocation());
 			double distance = Math.sqrt(distanceSquared);
