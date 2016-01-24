@@ -275,6 +275,7 @@ public class PathFinder {
 	 * @param target The location the path finder is trying to get to.
 	 */
 	public void setTarget(MapLocation target) {
+		reset();
 		atTarget = false;
 		this.target = target;
 	}
@@ -285,6 +286,14 @@ public class PathFinder {
 	 */
 	public Direction getRubbleDirection() {
 		return rubbleDir;
+	}
+	
+	/**
+	 * Sets the rubble threshold.
+	 * @param threshold How much rubble is the pathfinder willing to find worth destroying?
+	 */
+	public void setRubbleThreshold(double threshold) {
+		maxRubbleThreshold = threshold;
 	}
 	
 	/**
