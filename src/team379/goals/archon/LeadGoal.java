@@ -8,6 +8,9 @@ public class LeadGoal extends ArchonGoalBase {
 	@Override
 	public Goal achieveGoal(RobotController rc) throws Exception {
 		super.achieveGoal(rc);
+		
+		
+		
 		return null;
 	}
 

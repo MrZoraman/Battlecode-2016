@@ -1,6 +1,5 @@
 package team379;
 
-import battlecode.common.RobotController;
 import battlecode.common.RobotType;
 import battlecode.common.Team;
 

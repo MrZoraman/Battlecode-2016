@@ -25,11 +25,7 @@ public class TurretGoal implements Goal{
 		if(al == null) {
 			al = new ArchonLocator(RobotMemory.getArchonLocation(), RobotMemory.getArchonId());
 		}
-		SignalReader.consume(rc, data ->{
-			if(data.getType() == SignalType.THIS_IS_MY_ID) {
-				al.updateArchonLocation(data.getLocation());
-			}
-		});
+		SignalReader.consume(rc, al);
 		
 		MapLocation mp = al.getArchonLocation(rc);
 		double archonDistance = ArchonDistance(mp);

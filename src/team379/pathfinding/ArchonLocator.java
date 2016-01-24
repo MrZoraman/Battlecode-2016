@@ -7,13 +7,17 @@ import battlecode.common.Direction;
 import battlecode.common.MapLocation;
 import battlecode.common.RobotController;
 import battlecode.common.RobotInfo;
+import team379.RobotMemory;
+import team379.signals.SignalConsumer;
+import team379.signals.SignalData;
+import team379.signals.SignalType;
 
 /**
  * Keeps track of the archon location.
  * @author Matt
  *
  */
-public class ArchonLocator {
+public class ArchonLocator implements SignalConsumer {
 	
 	/**
 	 * This is how many times the ArchonLocator can assume 
@@ -153,6 +157,7 @@ public class ArchonLocator {
 	 * @param loc The location of the archon.
 	 */
 	public void updateArchonLocation(MapLocation loc) {
+		RobotMemory.setArchonLocation(loc);
 		this.lastKnownArchonLocation = loc;
 		this.locationStaleness = 0;
 		this.lost = false;
@@ -165,5 +170,12 @@ public class ArchonLocator {
 	 */
 	public boolean isLost() {
 		return lost;
+	}
+
+	@Override
+	public void consume(SignalData data) {
+		if(data.getType() == SignalType.THIS_IS_MY_ID) {
+			updateArchonLocation(data.getLocation());
+		}
 	}
 }
