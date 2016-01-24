@@ -33,11 +33,11 @@ public abstract class PatrolAroundArchonGoalBase implements Goal {
 		HeadArchonIdentifier hai = new HeadArchonIdentifier();
 		SignalReader.consume(rc, hai);
 		
-		if(hai.getArchonId() < RobotMemory.getArchonId()) {
-			orbiter.setCenter(hai.getArchonLocation());
-			RobotMemory.setArchonId(hai.getArchonId());
-			RobotMemory.setArchonLocation(hai.getArchonLocation());
-		}
+//		if(hai.getArchonId() < RobotMemory.getArchonId()) {
+//			orbiter.setCenter(hai.getArchonLocation());
+//			RobotMemory.setArchonId(hai.getArchonId());
+//			RobotMemory.setArchonLocation(hai.getArchonLocation());
+//		}
 		
 		
 		RobotInfo[] nearbyRobots = rc.senseHostileRobots(rc.getLocation(), rc.getType().sensorRadiusSquared);
