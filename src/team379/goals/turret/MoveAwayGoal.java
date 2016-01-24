@@ -1,57 +1,71 @@
 package team379.goals.turret;
 
-import java.util.Random;
-
-import battlecode.common.Direction;
 import battlecode.common.GameActionException;
 import battlecode.common.RobotController;
-import battlecode.common.RobotInfo;
-import battlecode.common.RobotType;
-import team379.Globals;
-import team379.Robot;
+import team379.OrbitCalculator;
 import team379.RobotMemory;
 import team379.goals.Goal;
-import team379.pathfinding.ArchonLocator;
+import team379.pathfinding.Orbiter;
+import team379.pathfinding.PathFindResult;
 
 public class MoveAwayGoal implements Goal{
 
-	private int directionIndex = 0;
-	private final Random rand = new Random();
+	private static Orbiter orbiter;
+	
+	public MoveAwayGoal(RobotController rc) throws GameActionException {
+		rc.pack();
+		OrbitCalculator oc = new OrbitCalculator(RobotMemory.getOrbitConstant(), rc.getType());
+		if(orbiter == null) {
+			orbiter = new Orbiter(RobotMemory.getArchonLocation(), oc.calculateRadius());
+		} else {
+			orbiter.setCenter(RobotMemory.getArchonLocation());
+			orbiter.setRadius(oc.calculateRadius());
+		}
+	}
 
 	@Override
 	public Goal achieveGoal(RobotController rc) throws Exception {
+		PathFindResult result = orbiter.move(rc);
 		
-		RobotInfo[] nearbyRobots = rc.senseNearbyRobots(rc.getType().sensorRadiusSquared);
+		if(orbiter.isAtTarget()) {
+			orbiter.resetRubbleThreshold();
+		}
 		
+		switch(result) {
+		case CORE_DELAY:
+			break;
+		case COULD_NOT_FIND_ROUTE:
+			orbiter.reset();
+			orbiter.calculateNextTarget(true);
+			break;
+		case TRAPPED:
+			orbiter.reset();
+			orbiter.calculateNextTarget(true);
+			break;
+		case STUCK:
+			orbiter.reset();
+			orbiter.calculateNextTarget(true);
+			break;
+		case SUCCESS:
+			break;
+		case RUBBLE_IN_WAY:
+			orbiter.reset();
+			orbiter.calculateNextTarget(true);
+			break;
+		default:
+			break;
 		
-		rc.pack();
-		findMove(rc);
+		}
+		if(orbiter.isAtTarget()) {
+			rc.unpack();
+			return new TurretGoal();
+		}
 		return null;
 	}
 
 	@Override
 	public String getName() {
 		return "Moving Away!";
-	}
-		
-	private void findMove(RobotController rc) throws GameActionException {
-		directionIndex = rand.nextInt(8);
-		Direction dir = Globals.movableDirections[directionIndex];
-		move(rc, dir);
-	}
-	
-	private void move(RobotController rc, Direction dir) throws GameActionException {
-		if(rc.canMove(dir)) {
-			rc.move(dir);
-		}
-	}
-	private boolean testDistance(RobotController rc) {
-//		if(Math.abs(rc.getLocation().x - alr.getLocation().x) > Globals.TURRET_ARCHON_DISTANCE) {
-//			return false;
-//		} else if(Math.abs(rc.getLocation().y - alr.getLocation().y) > Globals.TURRET_ARCHON_DISTANCE) {
-//			return false;
-//		}
-		return true;
 	}
 
 }

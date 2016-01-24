@@ -1,9 +1,11 @@
 package team379.goals;
 
+import battlecode.common.GameActionException;
 import battlecode.common.RobotController;
 import team379.Globals;
 import team379.RobotMemory;
 import team379.goals.scout.ScoutPatrolGoal;
+import team379.goals.turret.MoveAwayGoal;
 
 /**
  * Creates a goal for a robot given the robot's type and the archon location.
@@ -16,7 +18,7 @@ public class GoalFactory {
 	 */
 	private GoalFactory() { }
 	
-	public static Goal createGoal(RobotController rc) {
+	public static Goal createGoal(RobotController rc) throws GameActionException {
 		RobotMemory.setOrbitConstant(Globals.INITIAL_ORBIT_CONSTANT());
 		switch(rc.getType()) {
 		case ARCHON:
@@ -27,12 +29,11 @@ public class GoalFactory {
 		case SCOUT:
 			return new ScoutPatrolGoal(rc);
 		case SOLDIER:
-			RobotMemory.setAggressionRange(Globals.SOLDIER_AGGRESSION_RANGE());
 			return createPatrolGoal(rc);
 		case TTM:
 			break;
 		case TURRET:
-			break;
+			return new MoveAwayGoal(rc);
 		case VIPER:
 			break;
 		default:

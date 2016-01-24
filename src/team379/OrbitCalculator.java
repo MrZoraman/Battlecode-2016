@@ -13,6 +13,7 @@ public class OrbitCalculator {
 	private static final double GUARD_PATROL_RADIUS = 1.0;
 	private static final double SOLDIER_PATROL_RADIUS = 0.85;
 	private static final double SCOUT_PATROL_RADIUS = 3.0;
+	private static final double TURRET_PATROL_RADIUS = 0.75;
 	private static final double DEFAULT_PATROL_RADIUS = 0.6;
 
 	private final double orbitConstant;
@@ -30,6 +31,9 @@ public class OrbitCalculator {
 			break;
 		case SCOUT:
 			patrolRadius = SCOUT_PATROL_RADIUS;
+			break;
+		case TURRET:
+			patrolRadius = TURRET_PATROL_RADIUS;
 			break;
 		default:
 			patrolRadius = DEFAULT_PATROL_RADIUS;
