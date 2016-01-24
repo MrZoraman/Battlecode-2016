@@ -8,6 +8,7 @@ import battlecode.common.RobotController;
 import battlecode.common.RobotInfo;
 import battlecode.common.RobotType;
 import battlecode.common.Team;
+import team379.Globals;
 import team379.Robot;
 import team379.RobotMemory;
 import team379.pathfinding.PathFindResult;
@@ -80,7 +81,7 @@ public class DefenseGoal implements Goal {
 			if(rc.isWeaponReady()) {
 				rc.attackLocation(closestBaddie.location);
 			}
-		} else {
+		} else if(closestBaddieDistance >= Globals.GUARD_AGGRESSION_RANGE()){
 			pf.setTarget(closestBaddie.location);
 			PathFindResult result = pf.move(rc);
 			if(result != PathFindResult.SUCCESS && result != PathFindResult.CORE_DELAY) {

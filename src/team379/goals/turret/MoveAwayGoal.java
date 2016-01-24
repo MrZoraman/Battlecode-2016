@@ -6,6 +6,7 @@ import battlecode.common.Direction;
 import battlecode.common.GameActionException;
 import battlecode.common.RobotController;
 import battlecode.common.RobotInfo;
+import battlecode.common.RobotType;
 import team379.Globals;
 import team379.Robot;
 import team379.RobotMemory;
@@ -21,11 +22,8 @@ public class MoveAwayGoal implements Goal{
 	public Goal achieveGoal(RobotController rc) throws Exception {
 		
 		RobotInfo[] nearbyRobots = rc.senseNearbyRobots(rc.getType().sensorRadiusSquared);
-		//ArchonLocateResult alr = ArchonLocator.findArchonLocation(rc, memory.getArchonId(), nearbyRobots, memory.getLastKnownArchonLocation());
-
-		//if(testDistance(rc, alr)) {
-			//return new TurretGoal(memory);
-		//}
+		
+		
 		rc.pack();
 		findMove(rc);
 		return null;
