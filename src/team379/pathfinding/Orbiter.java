@@ -20,7 +20,7 @@ public class Orbiter extends PathFinder {
 	/**
 	 * How close to the target location the robot can get before it decides to switch directions.
 	 */
-	private static final double DISTANCE_THRESHOLD = 1.1;
+	private static final double DISTANCE_THRESHOLD = 0.8;
 	
 	/**
 	 * The random number generator for the orbit range variability.
@@ -80,10 +80,12 @@ public class Orbiter extends PathFinder {
 			compassDirection = compassDirection.rotateRight();
 		}
 		
-		//get the radius squared
-		int radiusSquared = (int) Math.pow(calculateRadius(), 2);
+		//calculated the radius
+		double calculatedRadius = calculateRadius();
+		//calculate the target
+		MapLocation calculatedTarget = center.add(compassDirection, (int) calculatedRadius); //this takes radius not squared!
 		//set the next target in the base class
-		setTarget(center.add(compassDirection, radiusSquared));
+		setTarget(calculatedTarget);
 	}
 	
 	@Override
@@ -110,7 +112,12 @@ public class Orbiter extends PathFinder {
 	 * @return The final radius for the target to be located at.
 	 */
 	private double calculateRadius() {
-		return radius + rand.nextInt(orbitRange) - (orbitRange / 2);
+		double radius = this.radius;
+		if(compassDirection.isDiagonal()) {
+			radius *= 0.85;
+		}
+		//return radius + rand.nextInt(orbitRange) - (orbitRange / 2);
+		return radius;
 	}
 
 	/**
