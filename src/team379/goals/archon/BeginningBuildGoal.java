@@ -15,10 +15,22 @@ public class BeginningBuildGoal extends ArchonGoalBase {
 	private BuildQueue buildQueue = new BuildQueue();
 	private boolean init = false;
 	private RobotType next = null;
+	private BuildDistributor bd;
 
 	@Override
 	public Goal achieveGoal(RobotController rc) throws Exception {
 		super.achieveGoal(rc);
+		
+		if(bd == null) {
+			int myIndex = 0;
+			MapLocation[] locs = rc.getInitialArchonLocations(rc.getTeam());
+			for(int ii = 0; ii < locs.length; ii++) {
+				if(locs[ii] == rc.getLocation()) {
+					myIndex = ii;
+				}
+			}
+			bd = new BuildDistributor(myIndex, locs.length);
+		}
 		
 		if(!rc.isCoreReady()) {
 			return null;
@@ -26,6 +38,10 @@ public class BeginningBuildGoal extends ArchonGoalBase {
 		
 		if(!init) {
 			init(rc);
+		}
+		
+		if(!bd.tryBuild()) {
+			return null;
 		}
 		
 		if(next == null) {
@@ -59,7 +75,7 @@ public class BeginningBuildGoal extends ArchonGoalBase {
 		init = true;
 		
 		int friendlyArchons = rc.getInitialArchonLocations(rc.getTeam()).length;
-		buildQueue.setDelay(friendlyArchons);
+		//buildQueue.setDelay(friendlyArchons);
 		
 		buildQueue.enqueue(RobotType.SCOUT);
 
