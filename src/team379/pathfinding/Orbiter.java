@@ -80,15 +80,28 @@ public class Orbiter extends PathFinder {
 		setTarget(calculatedTarget);
 	}
 	
+	/**
+	 * Gradually moves the calculated target towards the center until it is on the map.
+	 * @param rc The robotController
+	 * @param calculatedTarget The calculated target for the path finder
+	 * @return The new target that is on the map.
+	 * @throws Exception If something goes wrong...
+	 */
 	private MapLocation putTargetOnMap(RobotController rc, MapLocation calculatedTarget) throws Exception {
-		//if the target is in sensor radius and is not on the map
-		if(calculatedTarget.distanceSquaredTo(rc.getLocation()) < rc.getType().sensorRadiusSquared 
-				&& !rc.onTheMap(calculatedTarget)) {
+		//my location
+		MapLocation myLocation = rc.getLocation();
+		//direction that takes me to my target
+		Direction dirToTarget = myLocation.directionTo(calculatedTarget);
+		//the map location in that direction
+		MapLocation spaceToTarget = myLocation.add(dirToTarget);
+		//make sure that direction is on the map
+		if(!rc.onTheMap(spaceToTarget)) {
+			//it is not on the map, move the target location closer to the center
 			Direction backwards = compassDirection.opposite();
 			return putTargetOnMap(rc, calculatedTarget.add(backwards));
 		}
 		
-		//the target is either outside my range or its on the map
+		//location is on the map
 		return calculatedTarget;
 	}
 	
@@ -103,6 +116,7 @@ public class Orbiter extends PathFinder {
 			target = putTargetOnMap(rc, target);
 			setTarget(target);
 			
+			rc.setIndicatorString(2, "my target is: " + target);
 			//get the distance to target
 			int distanceSquared = getTarget().distanceSquaredTo(rc.getLocation());
 			double distance = Math.sqrt(distanceSquared);

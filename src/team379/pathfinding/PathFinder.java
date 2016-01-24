@@ -82,6 +82,11 @@ public class PathFinder {
 	 */
 	private Direction rubbleDir;
 	
+	/**
+	 * The direction the robot last came from. This is stored to prevent the robot from backtracking.
+	 */
+	private Direction directionCameFrom = null;
+	
 	protected DirectionTranslator[] generateTranslators() {
 		return new DirectionTranslator[] {
 			dir -> dir,								//north			assuming north, the following offsets are:
@@ -190,8 +195,15 @@ public class PathFinder {
 			//find the translation
 			targetDir = translators[ii].translateDirection(targetDir);
 			
+			//make sure this isn't the direction I came from..
+			if(directionCameFrom != null && targetDir == directionCameFrom) {
+				continue;
+			}
+			
 			//if this direction is valid, then this is the direction I will go.
 			if(rc.canMove(targetDir)) {
+				//save which direction I came from
+				directionCameFrom = targetDir.opposite();
 				result.dir = targetDir;
 				break;
 			}
@@ -204,7 +216,7 @@ public class PathFinder {
 			//see if rubble is blocking my path
 			if(rc.onTheMap(loc)) {
 				double rubble = rc.senseRubble(loc);
-				if(rubble > Globals.RUBBLE_THRESHOLD_MIN() && rubble < Globals.RUBBLE_THRESHOLD_MAX()) {
+				if(rubble >= Globals.RUBBLE_THRESHOLD_MIN() && rubble <= Globals.RUBBLE_THRESHOLD_MAX()) {
 					result.rubbleInWay = true;
 					rubbleDir = targetDir;
 					return result;

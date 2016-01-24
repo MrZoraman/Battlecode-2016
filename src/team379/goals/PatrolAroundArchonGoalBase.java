@@ -64,6 +64,8 @@ public abstract class PatrolAroundArchonGoalBase implements Goal {
 			orbiter.calculateNextTarget(true);
 			break;
 		case TRAPPED:
+			orbiter.reset();
+			orbiter.calculateNextTarget(true);
 			break;
 		case STUCK:
 			break;
