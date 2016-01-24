@@ -51,7 +51,7 @@ public class Orbiter extends PathFinder {
 	 * Constructor.
 	 * @param radius The orbit radius in blocks.
 	 * @param center The center/reference point of the orbit.
-	 * @param range The range/variability of the orbit radius.
+	 * @param range The range/variability of the orbit radius. Setting this to zero or less disables this.
 	 */
 	public Orbiter(MapLocation center, double radius, int range) {
 		this.center = center;
@@ -63,7 +63,7 @@ public class Orbiter extends PathFinder {
 	 * Constructor.
 	 * @param radius The orbit radius in blocks.
 	 * @param center The center/reference point of the orbit.
-	 * @param range The range/variability of the orbit radius squared.
+	 * @param range The range/variability of the orbit radius squared. Setting this to zero or less disables this.
 	 */
 	public Orbiter(MapLocation center, int radiusSquared, int range) {
 		this(center, Math.sqrt(radiusSquared), range);
@@ -116,8 +116,10 @@ public class Orbiter extends PathFinder {
 		if(compassDirection.isDiagonal()) {
 			radius *= 0.85;
 		}
-		return radius + rand.nextInt(orbitRange) - (orbitRange / 2);
-		//return radius;
+		if(orbitRange > 0) {
+			return radius + rand.nextInt(orbitRange) - (orbitRange / 2);
+		}
+		return radius;
 	}
 
 	/**
