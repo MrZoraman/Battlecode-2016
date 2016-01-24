@@ -78,6 +78,9 @@ public class PatrolAroundArchonGoal implements Goal {
 		case CORE_DELAY:
 			break;
 		case COULD_NOT_FIND_ROUTE:
+			orbiter.reset();
+			orbiter.calculateNextTarget(true);
+			
 			if(!determineDestructibleRubble(rc, rc.getLocation())) {
 				//orbiter.calculateTarget(archonLocation);
 			}

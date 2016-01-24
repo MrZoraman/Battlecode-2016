@@ -74,7 +74,7 @@ public class Orbiter extends PathFinder {
 	 * @param newDirection If the direction from the center should be switched. Set to false if
 	 * 	the target is just being recalculated due to a center shift.
 	 */
-	private void calculateNextTarget(boolean newDirection) {
+	public void calculateNextTarget(boolean newDirection) {
 		//get the next Direction
 		if (newDirection) {
 			compassDirection = compassDirection.rotateRight();
