@@ -38,7 +38,8 @@ public class OrbitCalculator {
 	private void calculateGuard() {
 		//System.out.println("radius I've been given: " + radius);
 		if(radius <= 5) {
-			calculatedRadius = Globals.GUARD_PATROL_RADIUS;
+			//calculatedRadius = Globals.GUARD_PATROL_RADIUS;
+			calculatedRadius = 5;
 			calculatedRange = 3;
 		} else {
 			double maxRadius = radius;
@@ -51,7 +52,8 @@ public class OrbitCalculator {
 	
 	private void calculateSoldier() {
 		if(radius <= 5) {
-			calculatedRadius = Globals.SOLDIER_PATROL_RADIUS;
+			//calculatedRadius = Globals.SOLDIER_PATROL_RADIUS;
+			calculatedRadius = 5;
 			calculatedRange = 3;
 		} else {
 			double maxRadius = radius * 0.75;
@@ -64,7 +66,8 @@ public class OrbitCalculator {
 	
 	private void calculateScout() {
 		if(radius <= 5) {
-			calculatedRadius = Globals.SCOUT_PATROL_RADIUS;
+			//calculatedRadius = Globals.SCOUT_PATROL_RADIUS;
+			calculatedRadius = 5;
 			calculatedRange = 3;
 		} else {
 			double maxRadius = radius * 1.65;
