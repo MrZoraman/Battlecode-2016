@@ -4,9 +4,11 @@ import battlecode.common.RobotController;
 import battlecode.common.RobotInfo;
 import team379.OrbitCalculator;
 import team379.RobotMemory;
+import team379.pathfinding.ArchonLocator;
 import team379.pathfinding.Orbiter;
 import team379.pathfinding.PathFindResult;
 import team379.signals.SignalReader;
+import team379.signals.SignalType;
 import team379.signals.consumers.HeadArchonIdentifier;
 
 public abstract class PatrolAroundArchonGoalBase implements Goal {
@@ -17,6 +19,7 @@ public abstract class PatrolAroundArchonGoalBase implements Goal {
 	private static final int RUBBLE_BOOST_AMOUNT = 100;
 	
 	protected static Orbiter orbiter;
+	//protected static ArchonLocator al;
 	
 	public PatrolAroundArchonGoalBase(RobotController rc) {
 		OrbitCalculator oc = new OrbitCalculator(RobotMemory.getOrbitConstant(), rc.getType());
@@ -30,8 +33,20 @@ public abstract class PatrolAroundArchonGoalBase implements Goal {
 	
 	@Override
 	public Goal achieveGoal(RobotController rc) throws Exception {
-		HeadArchonIdentifier hai = new HeadArchonIdentifier();
-		SignalReader.consume(rc, hai);
+//		if(al == null) {
+//			al = new ArchonLocator(RobotMemory.getArchonLocation(), RobotMemory.getArchonId());
+//		}
+		//HeadArchonIdentifier hai = new HeadArchonIdentifier();
+		SignalReader.consume(rc, data -> {
+			if(data.getType() == SignalType.THIS_IS_MY_ID) {
+				short archonId = data.getOtherInfo();
+				if(archonId == RobotMemory.getAggressionRange()) {
+					System.out.println("got a signal from my archon! It's at " + data.getLocation() + " now.");
+					//al.updateArchonLocation(data.getLocation());
+					orbiter.setCenter(data.getLocation());
+				}
+			}
+		});
 		
 //		if(hai.getArchonId() < RobotMemory.getArchonId()) {
 //			orbiter.setCenter(hai.getArchonLocation());
