@@ -5,6 +5,8 @@ import java.util.Random;
 import battlecode.common.Direction;
 import battlecode.common.MapLocation;
 import battlecode.common.RobotController;
+import team379.Globals;
+import team379.pathfinding.PathFinder.DirectionTranslator;
 
 /**
  * A special kind of path finder that "orbits" around a specific point.
@@ -15,7 +17,7 @@ public class Orbiter extends PathFinder {
 	/**
 	 * The default direction the robot will move to to get in orbit.
 	 */
-	private static final Direction DEFAULT_DIRECTION = Direction.NORTH;
+	//private static final Direction DEFAULT_DIRECTION = Direction.NORTH;
 	
 	/**
 	 * How close to the target location the robot can get before it decides to switch directions.
@@ -23,14 +25,14 @@ public class Orbiter extends PathFinder {
 	private static final double DISTANCE_THRESHOLD = 0.8;
 	
 	/**
-	 * The random number generator for the orbit range variability.
+	 * The random number generator for the orbit range variability and initial direction.
 	 */
-	private final Random rand = new Random();
+	private Random rand = null;
 	
 	/**
 	 * The direction from the center the pathfinding target is.
 	 */
-	private Direction compassDirection = DEFAULT_DIRECTION;
+	private Direction compassDirection = null;
 	
 	/**
 	 * The distance from the center this robot will orbit.
@@ -75,8 +77,12 @@ public class Orbiter extends PathFinder {
 	 * 	the target is just being recalculated due to a center shift.
 	 */
 	public void calculateNextTarget(boolean newDirection) {
-		//get the next Direction
-		if (newDirection) {
+		//make sure direction is not null
+		if(compassDirection == null) {
+			int directionIndex = rand.nextInt(8);
+			compassDirection = Globals.movableDirections[directionIndex];
+		} else if (newDirection) {
+			//get the next Direction
 			compassDirection = compassDirection.rotateRight();
 		}
 		
@@ -90,6 +96,10 @@ public class Orbiter extends PathFinder {
 	
 	@Override
 	public PathFindResult move(RobotController rc) throws Exception {
+		//make random with rc
+		if(rand == null) {
+			rand = new Random(rc.getID());
+		}
 		//make sure there is a target
 		if(compassDirection == null || getTarget() == null) {
 			calculateNextTarget(true);
@@ -121,6 +131,17 @@ public class Orbiter extends PathFinder {
 			return radius + rand.nextInt(orbitRange) - (orbitRange / 2);
 		}
 		return radius;
+	}
+	
+	@Override
+	public DirectionTranslator[] generateTranslators() {
+		return new DirectionTranslator[] {
+			dir -> dir,								//north			assuming north, the following offsets are:
+			dir -> dir.rotateLeft(),				//north-west
+			dir -> dir.rotateRight().rotateRight(),	//north-east
+			dir -> dir.rotateRight(),				//east
+			dir -> dir.opposite()					//west
+		};
 	}
 
 	/**

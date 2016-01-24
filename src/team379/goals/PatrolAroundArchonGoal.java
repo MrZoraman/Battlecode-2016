@@ -21,7 +21,7 @@ public class PatrolAroundArchonGoal implements Goal {
 	
 	public PatrolAroundArchonGoal() {
 		if(orbiter == null) {
-			orbiter = new Orbiter(RobotMemory.getArchonLocation(), 5.0, 0);	//TODO: them magic numbers!
+			orbiter = new Orbiter(RobotMemory.getArchonLocation(), 7.0, 0);	//TODO: them magic numbers!
 		} else {
 			orbiter.setCenter(RobotMemory.getArchonLocation());
 		}
@@ -38,10 +38,10 @@ public class PatrolAroundArchonGoal implements Goal {
 			RobotMemory.setArchonLocation(hai.getArchonLocation());
 		}
 		
-		RobotInfo[] nearbyRobots = rc.senseNearbyRobots(rc.getType().sensorRadiusSquared);
-		if(findBaddies(rc, nearbyRobots)) {
-			return new DefenseGoal();
-		}
+//		RobotInfo[] nearbyRobots = rc.senseNearbyRobots(rc.getType().sensorRadiusSquared);
+//		if(findBaddies(rc, nearbyRobots)) {
+//			return new DefenseGoal();
+//		}
 		
 		move(rc);
 		

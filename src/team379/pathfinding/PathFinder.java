@@ -28,7 +28,7 @@ public class PathFinder {
 	 *
 	 */
 	@FunctionalInterface
-	private interface DirectionTranslator {
+	protected interface DirectionTranslator {
 		/**
 		 * Translates a direction.
 		 * @param dir The direction to transform
@@ -48,16 +48,7 @@ public class PathFinder {
 		boolean rubbleInWay = false;
 	}
 	
-	private static final DirectionTranslator[] translators = new DirectionTranslator[] {
-		dir -> dir,								//north			assuming north, the following offsets are:
-		dir -> dir.rotateLeft(),				//north-west
-		dir -> dir.rotateRight().rotateRight(),	//north-east
-		dir -> dir.rotateRight(),				//east
-		dir -> dir.opposite(),					//west
-		dir -> dir.rotateLeft(),				//south-west
-		dir -> dir.rotateLeft().rotateLeft(),	//south-east
-		dir -> dir.rotateRight()				//east
-	};
+	private DirectionTranslator[] translators = null;
 	
 	/**
 	 * How many moves that are below the {@link #distanceDelta} threshold before the pathfinder fails?
@@ -91,6 +82,19 @@ public class PathFinder {
 	 */
 	private Direction rubbleDir;
 	
+	protected DirectionTranslator[] generateTranslators() {
+		return new DirectionTranslator[] {
+			dir -> dir,								//north			assuming north, the following offsets are:
+			dir -> dir.rotateLeft(),				//north-west
+			dir -> dir.rotateRight().rotateRight(),	//north-east
+			dir -> dir.rotateRight(),				//east
+			dir -> dir.opposite(),					//west
+			dir -> dir.rotateLeft(),				//south-west
+			dir -> dir.rotateLeft().rotateLeft(),	//south-east
+			dir -> dir.rotateRight()				//east
+		};
+	}
+	
 	/**
 	 * Moves the PathFinder (hopefully) towards the target location.
 	 * 
@@ -114,25 +118,6 @@ public class PathFinder {
 		//where am I?
 		MapLocation myLocation = rc.getLocation();
 		
-		//how far away (in blocks) is my target?
-		double distanceToTarget = Math.sqrt(myLocation.distanceSquaredTo(target));
-		//how much change since the last move?
-		double calculatedDelta = lastDistance - distanceToTarget;
-		//record the distance for later
-		lastDistance = distanceToTarget;
-		
-		//record how many times in a row I've been below the threshold, or reset it if I'm good.
-		if(calculatedDelta < distanceDelta) {
-			distanceTries++;
-		} else {
-			distanceTries = 0;
-		}
-		
-		//if it is time to give up, give up.
-		if(distanceTries > distanceDeltaGiveUp) {
-			return COULD_NOT_FIND_ROUTE;
-		}
-		
 		//get the best direction to my target
 		DirectionResult result = getDirection(rc, myLocation, target);
 		
@@ -144,6 +129,30 @@ public class PathFinder {
 		if(result.dir != null) {
 			//go where I want to go
 			rc.move(result.dir);
+			
+			//
+			//make sure I'm actually going somewhere...
+			//
+			
+			//how far away (in blocks) is my target?
+			double distanceToTarget = Math.sqrt(myLocation.distanceSquaredTo(target));
+			//how much change since the last move?
+			double calculatedDelta = lastDistance - distanceToTarget;
+			//record the distance for later
+			lastDistance = distanceToTarget;
+			
+			//record how many times in a row I've been below the threshold, or reset it if I'm good.
+			if(calculatedDelta < distanceDelta) {
+				distanceTries++;
+			} else {
+				distanceTries = 0;
+			}
+			
+			//if it is time to give up, give up.
+			if(distanceTries > distanceDeltaGiveUp) {
+				return COULD_NOT_FIND_ROUTE;
+			}
+			
 			//all is good
 			return SUCCESS;
 		}
@@ -166,6 +175,11 @@ public class PathFinder {
 	 * @throws Exception if Something goes wrong...
 	 */
 	private DirectionResult getDirection(RobotController rc, MapLocation myLocation, MapLocation target) throws Exception {
+		//generate the translators if they haven't been already
+		if(translators == null) {
+			translators = generateTranslators();
+		}
+		
 		//create the result to return
 		DirectionResult result = new DirectionResult();
 		
