@@ -11,6 +11,11 @@ import team379.signals.consumers.HeadArchonIdentifier;
 
 public abstract class PatrolAroundArchonGoalBase implements Goal {
 	
+	/**
+	 * How much to boost the rubble threshold if it must be raised due to being stuck.
+	 */
+	private static final int RUBBLE_BOOST_AMOUNT = 100;
+	
 	protected static Orbiter orbiter;
 	
 	public PatrolAroundArchonGoalBase(RobotController rc) {
@@ -56,6 +61,10 @@ public abstract class PatrolAroundArchonGoalBase implements Goal {
 	private Goal move(RobotController rc) throws Exception {
 		PathFindResult result = orbiter.move(rc);
 		
+		if(orbiter.isAtTarget()) {
+			orbiter.resetRubbleThreshold();
+		}
+		
 		switch(result) {
 		case CORE_DELAY:
 			break;
@@ -68,6 +77,8 @@ public abstract class PatrolAroundArchonGoalBase implements Goal {
 			orbiter.calculateNextTarget(true);
 			break;
 		case STUCK:
+			orbiter.boostRubbleThreshold(RUBBLE_BOOST_AMOUNT);
+			orbiter.reset();
 			break;
 		case SUCCESS:
 			break;

@@ -63,15 +63,15 @@ public class BeginningBuildGoal extends ArchonGoalBase {
 		
 		buildQueue.enqueue(RobotType.SCOUT);
 
-		int guardsToMake = 25;//calculateGuardsToMake(rc);
+		int guardsToMake = calculateGuardsToMake(rc);
 		for(int ii = 0; ii < guardsToMake; ii++) {
 			buildQueue.enqueue(RobotType.GUARD);
 		}
 		
-		int soldiersToMake = 25;
-		for(int ii = 0; ii < soldiersToMake; ii++) {
-			buildQueue.enqueue(RobotType.SOLDIER);
-		}
+//		int soldiersToMake = 25;
+//		for(int ii = 0; ii < soldiersToMake; ii++) {
+//			buildQueue.enqueue(RobotType.SOLDIER);
+//		}
 	}
 	
 	private int calculateGuardsToMake(RobotController rc) {

@@ -15,8 +15,6 @@ import team379.signals.SignalType;
 
 public class ScoutPatrolGoal extends PatrolAroundArchonGoalBase {
 	
-	private MapLocation priorTarget = null;
-	
 	private int goodieTotal = 0;
 	private Direction goodiesDirection = null;
 	
@@ -32,18 +30,7 @@ public class ScoutPatrolGoal extends PatrolAroundArchonGoalBase {
 	public Goal achieveGoal(RobotController rc) throws Exception {
 		super.achieveGoal(rc);
 		
-		boolean atTarget = false;
-		
-		if(priorTarget == null) {
-			priorTarget = orbiter.getTarget();
-		} else {
-			if(priorTarget != orbiter.getTarget()) {
-				atTarget = true;
-				priorTarget = orbiter.getTarget();
-			}
-		}
-		
-		if(atTarget) {
+		if(orbiter.isAtTarget()) {
 			targetsMet++;
 			int goodieTotal = 0;
 			int sensorRadiusSquared = rc.getType().sensorRadiusSquared;

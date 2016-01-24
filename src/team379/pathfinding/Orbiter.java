@@ -123,6 +123,9 @@ public class Orbiter extends PathFinder {
 			//if I'm close enough, recalculate target
 			if(distance < DISTANCE_THRESHOLD) {
 				calculateNextTarget(true);
+				atTarget = true;
+			} else {
+				atTarget = false;
 			}
 		}
 		

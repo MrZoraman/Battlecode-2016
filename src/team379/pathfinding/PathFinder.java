@@ -87,6 +87,21 @@ public class PathFinder {
 	 */
 	private Direction directionCameFrom = null;
 	
+	/**
+	 * Minimum rubble threshold
+	 */
+	private double minRubbleThreshold = Globals.RUBBLE_THRESHOLD_MIN();
+	
+	/**
+	 * Maximum rubble threshold
+	 */
+	private double maxRubbleThreshold = Globals.RUBBLE_THRESHOLD_MAX();
+	
+	/**
+	 * Info stored on if it is at the target or not.
+	 */
+	protected boolean atTarget = false;
+	
 	protected DirectionTranslator[] generateTranslators() {
 		return new DirectionTranslator[] {
 			dir -> dir,								//north			assuming north, the following offsets are:
@@ -134,6 +149,11 @@ public class PathFinder {
 		if(result.dir != null) {
 			//go where I want to go
 			rc.move(result.dir);
+			
+			//see if I'm at the target
+			if(rc.getLocation() == target) {
+				atTarget = true;
+			}
 			
 			//
 			//make sure I'm actually going somewhere...
@@ -216,7 +236,7 @@ public class PathFinder {
 			//see if rubble is blocking my path
 			if(rc.onTheMap(loc)) {
 				double rubble = rc.senseRubble(loc);
-				if(rubble >= Globals.RUBBLE_THRESHOLD_MIN() && rubble <= Globals.RUBBLE_THRESHOLD_MAX()) {
+				if(rubble >= minRubbleThreshold && rubble <= maxRubbleThreshold) {
 					result.rubbleInWay = true;
 					rubbleDir = targetDir;
 					return result;
@@ -255,6 +275,7 @@ public class PathFinder {
 	 * @param target The location the path finder is trying to get to.
 	 */
 	public void setTarget(MapLocation target) {
+		atTarget = false;
 		this.target = target;
 	}
 	
@@ -264,5 +285,28 @@ public class PathFinder {
 	 */
 	public Direction getRubbleDirection() {
 		return rubbleDir;
+	}
+	
+	/**
+	 * Boosts the rubble threshold.
+	 * @param increment How much to raise the threshold by.
+	 */
+	public void boostRubbleThreshold(double increment) {
+		maxRubbleThreshold += increment;
+	}
+	
+	/**
+	 * Checks to see if the pathfinder is at its target or not.
+	 * @return True if the pathfinder is at (or reasonably close) to its target. False if otherwise.
+	 */
+	public boolean isAtTarget() {
+		return atTarget;
+	}
+	
+	/**
+	 * Resets the rubble threshold to the default specified in the Globals.
+	 */
+	public void resetRubbleThreshold() {
+		maxRubbleThreshold = Globals.RUBBLE_THRESHOLD_MAX();
 	}
 }
