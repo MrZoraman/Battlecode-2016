@@ -1,12 +1,8 @@
 package team379.pathfinding;
 
-import java.util.Random;
-
 import battlecode.common.Direction;
 import battlecode.common.MapLocation;
 import battlecode.common.RobotController;
-import team379.Globals;
-import team379.pathfinding.PathFinder.DirectionTranslator;
 
 /**
  * A special kind of path finder that "orbits" around a specific point.
@@ -17,7 +13,7 @@ public class Orbiter extends PathFinder {
 	/**
 	 * The default direction the robot will move to to get in orbit.
 	 */
-	//private static final Direction DEFAULT_DIRECTION = Direction.NORTH;
+	private static final Direction DEFAULT_DIRECTION = Direction.NORTH;
 	
 	/**
 	 * How close to the target location the robot can get before it decides to switch directions.
@@ -27,22 +23,17 @@ public class Orbiter extends PathFinder {
 	/**
 	 * The random number generator for the orbit range variability and initial direction.
 	 */
-	private Random rand = null;
+	//private Random rand = null;
 	
 	/**
 	 * The direction from the center the pathfinding target is.
 	 */
-	private Direction compassDirection = null;
+	private Direction compassDirection = DEFAULT_DIRECTION;
 	
 	/**
 	 * The distance from the center this robot will orbit.
 	 */
 	private double radius;
-	
-	/**
-	 * The variability of the orbit (aka the "width").
-	 */
-	private int orbitRange;
 	
 	/**
 	 * The center/reference point of this robot's orbit.
@@ -55,10 +46,9 @@ public class Orbiter extends PathFinder {
 	 * @param center The center/reference point of the orbit.
 	 * @param range The range/variability of the orbit radius. Setting this to zero or less disables this.
 	 */
-	public Orbiter(MapLocation center, double radius, int range) {
+	public Orbiter(MapLocation center, double radius) {
 		this.center = center;
 		this.radius = radius;
-		this.orbitRange = range;
 	}
 	
 	/**
@@ -67,8 +57,8 @@ public class Orbiter extends PathFinder {
 	 * @param center The center/reference point of the orbit.
 	 * @param range The range/variability of the orbit radius squared. Setting this to zero or less disables this.
 	 */
-	public Orbiter(MapLocation center, int radiusSquared, int range) {
-		this(center, Math.sqrt(radiusSquared), range);
+	public Orbiter(MapLocation center, int radiusSquared) {
+		this(center, Math.sqrt(radiusSquared));
 	}
 	
 	/**
@@ -77,12 +67,8 @@ public class Orbiter extends PathFinder {
 	 * 	the target is just being recalculated due to a center shift.
 	 */
 	public void calculateNextTarget(boolean newDirection) {
-		//make sure direction is not null
-		if(compassDirection == null) {
-			int directionIndex = rand.nextInt(8);
-			compassDirection = Globals.movableDirections[directionIndex];
-		} else if (newDirection) {
-			//get the next Direction
+		//get the next Direction
+		if (newDirection) {
 			compassDirection = compassDirection.rotateRight();
 		}
 		
@@ -96,10 +82,6 @@ public class Orbiter extends PathFinder {
 	
 	@Override
 	public PathFindResult move(RobotController rc) throws Exception {
-		//make random with rc
-		if(rand == null) {
-			rand = new Random(rc.getID());
-		}
 		//make sure there is a target
 		if(compassDirection == null || getTarget() == null) {
 			calculateNextTarget(true);
@@ -126,9 +108,6 @@ public class Orbiter extends PathFinder {
 		double radius = this.radius;
 		if(compassDirection.isDiagonal()) {
 			radius *= 0.85;
-		}
-		if(orbitRange > 0) {
-			return radius + rand.nextInt(orbitRange) - (orbitRange / 2);
 		}
 		return radius;
 	}
@@ -166,22 +145,6 @@ public class Orbiter extends PathFinder {
 	 */
 	public void setRadius(int radiusSquared) {
 		setRadius(Math.sqrt(radiusSquared));
-	}
-
-	/**
-	 * Gets the range/variabilty of the orbit.
-	 * @return The orbit range in squares.
-	 */
-	public int getOrbitRange() {
-		return orbitRange;
-	}
-
-	/**
-	 * Sets the orbit range.
-	 * @param orbitRange The orbit range in squares.
-	 */
-	public void setOrbitRange(int orbitRange) {
-		this.orbitRange = orbitRange;
 	}
 
 	/**
