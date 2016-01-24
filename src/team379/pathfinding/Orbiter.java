@@ -26,11 +26,6 @@ public class Orbiter extends PathFinder {
 	private static final double DISTANCE_THRESHOLD = 1.5;
 	
 	/**
-	 * The random number generator for the orbit range variability and initial direction.
-	 */
-	//private Random rand = null;
-	
-	/**
 	 * The direction from the center the pathfinding target is.
 	 */
 	private Direction compassDirection = DEFAULT_DIRECTION;
