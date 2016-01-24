@@ -22,7 +22,7 @@ public class Orbiter extends PathFinder {
 	/**
 	 * How close to the target location the robot can get before it decides to switch directions.
 	 */
-	private static final double DISTANCE_THRESHOLD = 0.8;
+	private static final double DISTANCE_THRESHOLD = 1.5;
 	
 	/**
 	 * The random number generator for the orbit range variability and initial direction.
