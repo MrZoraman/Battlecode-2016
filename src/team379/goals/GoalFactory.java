@@ -16,6 +16,7 @@ public class GoalFactory {
 	private GoalFactory() { }
 	
 	public static Goal createGoal(RobotController rc) {
+		RobotMemory.setOrbitConstant(Globals.INITIAL_ORBIT_CONSTANT());
 		switch(rc.getType()) {
 		case ARCHON:
 			break;

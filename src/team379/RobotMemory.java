@@ -16,6 +16,7 @@ public class RobotMemory {
 	private static int archonId = -1;
 	private static MapLocation archonLocation = null;
 	private static int aggressionRange = 0;
+	private static int orbitConstant = 0;
 	
 	public static int getArchonId() {
 		return archonId;
@@ -39,5 +40,13 @@ public class RobotMemory {
 
 	public static void setAggressionRange(int aggressionRange) {
 		RobotMemory.aggressionRange = aggressionRange;
+	}
+
+	public static int getOrbitConstant() {
+		return orbitConstant;
+	}
+
+	public static void setOrbitConstant(int orbitConstant) {
+		RobotMemory.orbitConstant = orbitConstant;
 	}
 }

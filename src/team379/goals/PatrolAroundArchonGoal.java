@@ -21,11 +21,12 @@ public class PatrolAroundArchonGoal implements Goal {
 	private Goal nextGoal = null;
 	
 	public PatrolAroundArchonGoal(RobotController rc) {
+		OrbitCalculator oc = new OrbitCalculator(RobotMemory.getOrbitConstant(), rc.getType());
 		if(orbiter == null) {
-			OrbitCalculator oc = new OrbitCalculator(7, rc.getType());
 			orbiter = new Orbiter(RobotMemory.getArchonLocation(), oc.calculateRadius());	//TODO: them magic numbers!
 		} else {
 			orbiter.setCenter(RobotMemory.getArchonLocation());
+			orbiter.setRadius(oc.calculateRadius());
 		}
 	}
 	
