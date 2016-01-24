@@ -23,7 +23,12 @@ public enum SignalType {
 	/**
 	 * Used to broadcast that stuff has been found.
 	 */
-	FOUND_STUFF(3);
+	FOUND_STUFF(3),
+	
+	/**
+	 * Used to notify a change in leadership.
+	 */
+	NEW_LEADER(4);
 	
 	/**
 	 * Stores a map of signals to their short representation.

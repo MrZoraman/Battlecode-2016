@@ -1,5 +1,8 @@
 package team379;
 
+import battlecode.common.MapLocation;
+import battlecode.common.RobotController;
+import battlecode.common.RobotInfo;
 import battlecode.common.RobotType;
 import battlecode.common.Team;
 
@@ -7,7 +10,7 @@ public enum Goodies {
 
 	PARTS(1),
 	
-	FRIENDLY_ARCHON(10000),
+	FRIENDLY_ARCHON(6000),
 	
 	NEUTRAL_ARCHON(2000),
 	ZOMBIE_DEN(1500),
@@ -18,17 +21,17 @@ public enum Goodies {
 	VIPER(0),
 	TURRET(150);
 	
-	private int value;
+	private short value;
 	
 	private Goodies(int value) {
-		this.value = value;
+		this.value = (short) value;
 	}
 	
-	public int getValue() {
+	public short getValue() {
 		return value;
 	}
 	
-	public static int getValue(RobotType type, Team myTeam, Team theirTeam) {
+	public static short getValue(RobotType type, Team myTeam, Team theirTeam) {
 		switch(type) {
 		case ARCHON:
 			if(theirTeam == Team.NEUTRAL)
@@ -45,5 +48,29 @@ public enum Goodies {
 		case ZOMBIEDEN: return ZOMBIE_DEN.getValue();
 		default: return 0;
 		}
+	}
+	
+	public static short scanGoodies(RobotController rc) {
+		short goodieTotal = 0;
+		int sensorRadiusSquared = rc.getType().sensorRadiusSquared;
+		RobotInfo[] neutrals = rc.senseNearbyRobots(sensorRadiusSquared, Team.NEUTRAL);
+		for(RobotInfo neutral : neutrals) {
+			goodieTotal += Goodies.getValue(neutral.type, rc.getTeam(), neutral.team);
+		}
+		RobotInfo[] zombies = rc.senseNearbyRobots(sensorRadiusSquared, Team.ZOMBIE);
+		for(RobotInfo zombie : zombies) {
+			goodieTotal += Goodies.getValue(zombie.type, rc.getTeam(), zombie.team);
+		}
+		MapLocation[] partLocations = rc.sensePartLocations(sensorRadiusSquared);
+		for(MapLocation partLocation : partLocations) {
+			double rubble = rc.senseRubble(partLocation);
+			if(rubble > Globals.RUBBLE_THRESHOLD_MAX()) {
+				continue;
+			}
+			
+			double parts = rc.senseParts(partLocation);
+			goodieTotal += (short) (parts * PARTS.getValue());
+		}
+		return goodieTotal;
 	}
 }
