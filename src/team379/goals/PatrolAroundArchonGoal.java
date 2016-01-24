@@ -21,7 +21,7 @@ public class PatrolAroundArchonGoal implements Goal {
 	
 	public PatrolAroundArchonGoal() {
 		if(orbiter == null) {
-			orbiter = new Orbiter(RobotMemory.getArchonLocation(), 10.0, 3);	//TODO: them magic numbers!
+			orbiter = new Orbiter(RobotMemory.getArchonLocation(), 5.0, 3);	//TODO: them magic numbers!
 		} else {
 			orbiter.setTarget(RobotMemory.getArchonLocation());
 		}

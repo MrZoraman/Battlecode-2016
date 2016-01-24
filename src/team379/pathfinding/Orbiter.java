@@ -116,8 +116,8 @@ public class Orbiter extends PathFinder {
 		if(compassDirection.isDiagonal()) {
 			radius *= 0.85;
 		}
-		//return radius + rand.nextInt(orbitRange) - (orbitRange / 2);
-		return radius;
+		return radius + rand.nextInt(orbitRange) - (orbitRange / 2);
+		//return radius;
 	}
 
 	/**
