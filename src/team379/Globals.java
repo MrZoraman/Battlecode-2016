@@ -14,7 +14,7 @@ public class Globals {
         Direction.NORTH_WEST
     };
 	
-	public static final int INITIAL_ORBIT_CONSTANT() { return 4; }
+	public static final int INITIAL_ORBIT_CONSTANT() { return 7; }
 	
 	public static final int GUARD_AGGRESSION_RANGE() { return 14; }
 	public static final int SOLDIER_AGGRESSION_RANGE() { return 14; }

@@ -41,7 +41,11 @@ public class PatrolAroundArchonGoal implements Goal {
 			RobotMemory.setArchonLocation(hai.getArchonLocation());
 		}
 		
-//		RobotInfo[] nearbyRobots = rc.senseNearbyRobots(rc.getType().sensorRadiusSquared);
+		RobotInfo[] nearbyRobots = rc.senseHostileRobots(rc.getLocation(), rc.getType().sensorRadiusSquared);
+		if(nearbyRobots.length > 0) {
+			//baddiesFound(nearbyRobots);
+		}
+		
 //		if(findBaddies(rc, nearbyRobots)) {
 //			return new DefenseGoal();
 //		}
@@ -50,6 +54,8 @@ public class PatrolAroundArchonGoal implements Goal {
 		
 		return nextGoal;
 	}
+	
+	//protected abstract Goal baddiesFound(RobotInfo[] baddies);
 
 	@Override
 	public String getName() {
@@ -114,7 +120,7 @@ public class PatrolAroundArchonGoal implements Goal {
 		for(int ii = 0; ii < dirs.length; ii++) {
 			double rubble = rc.senseRubble(myLocation.add(dirs[ii]));
 			
-			if(rubble > Globals.RUBBLE_THRESHOLD_MIN && rubble < Globals.RUBBLE_THRESHOLD_MAX) {
+			if(rubble > Globals.RUBBLE_THRESHOLD_MIN() && rubble < Globals.RUBBLE_THRESHOLD_MAX()) {
 				dir = dirs[ii];
 				break;
 			}

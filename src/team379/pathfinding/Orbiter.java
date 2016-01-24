@@ -11,6 +11,11 @@ import battlecode.common.RobotController;
  */
 public class Orbiter extends PathFinder {
 	/**
+	 * This is the constant for shortening the radius at the angles to make a more uniform circular shape.
+	 */
+	private static final double ANGLE_RADIUS_CONSTANT = 0.85;
+	
+	/**
 	 * The default direction the robot will move to to get in orbit.
 	 */
 	private static final Direction DEFAULT_DIRECTION = Direction.NORTH;
@@ -86,7 +91,6 @@ public class Orbiter extends PathFinder {
 		if(compassDirection == null || getTarget() == null) {
 			calculateNextTarget(true);
 		} else {
-			rc.setIndicatorLine(rc.getLocation(), getTarget(), 1, 1, 1);
 			//get the distance to target
 			int distanceSquared = getTarget().distanceSquaredTo(rc.getLocation());
 			double distance = Math.sqrt(distanceSquared);
@@ -107,7 +111,7 @@ public class Orbiter extends PathFinder {
 	private double calculateRadius() {
 		double radius = this.radius;
 		if(compassDirection.isDiagonal()) {
-			radius *= 0.85;
+			radius *= ANGLE_RADIUS_CONSTANT;
 		}
 		return radius;
 	}
