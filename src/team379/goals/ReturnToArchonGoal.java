@@ -29,7 +29,7 @@ public class ReturnToArchonGoal implements Goal {
 		
 		for(RobotInfo ri : nearbyRobots) {
 			if(ri.ID == RobotMemory.getArchonId()) {
-				return new PatrolAroundArchonGoal();
+				return GoalFactory.createPatrolGoal(rc);
 			}
 		}
 		

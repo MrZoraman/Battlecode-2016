@@ -21,13 +21,13 @@ public class GoalFactory {
 		case ARCHON:
 			break;
 		case GUARD:
-			RobotMemory.setAggressionRange(Globals.GUARD_AGGRESSION_RANGE);
-			return new PatrolAroundArchonGoal(rc);
+			RobotMemory.setAggressionRange(Globals.GUARD_AGGRESSION_RANGE());
+			return createPatrolGoal(rc);
 		case SCOUT:
 			break;
 		case SOLDIER:
-			RobotMemory.setAggressionRange(Globals.SOLDIER_AGGRESSION_RANGE);
-			return new PatrolAroundArchonGoal(rc);
+			RobotMemory.setAggressionRange(Globals.SOLDIER_AGGRESSION_RANGE());
+			return createPatrolGoal(rc);
 		case TTM:
 			break;
 		case TURRET:
@@ -38,5 +38,9 @@ public class GoalFactory {
 			break;
 		}
 		return new EmptyGoal();
+	}
+	
+	public static PatrolAroundArchonGoalBase createPatrolGoal(RobotController rc) {
+		return new PatrolAroundArchonPassively(rc);
 	}
 }
