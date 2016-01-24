@@ -75,7 +75,7 @@ public class PathFinder {
 	/**
 	 * The target location to go to.
 	 */
-	private MapLocation target;
+	private MapLocation target = null;
 	
 	/**
 	 * The direction of the rubble that has blocked the orbiter's path.

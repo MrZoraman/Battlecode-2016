@@ -15,8 +15,9 @@ import team379.signals.SignalType;
 
 public class ScoutPatrolGoal extends PatrolAroundArchonGoalBase {
 	
-	private int goodieTotal = 0;
-	private Direction goodiesDirection = null;
+	private short goodieTotal = 0;
+	private MapLocation goodieLocation = null;
+	//private Direction goodiesDirection = null;
 	
 	private int targetsMet = 0;
 	
@@ -30,44 +31,29 @@ public class ScoutPatrolGoal extends PatrolAroundArchonGoalBase {
 	public Goal achieveGoal(RobotController rc) throws Exception {
 		super.achieveGoal(rc);
 		
+		if(goodieLocation == null) {
+			goodieLocation = rc.getLocation();
+		}
+		
 		if(orbiter.isAtTarget()) {
 			targetsMet++;
-			int goodieTotal = 0;
-			int sensorRadiusSquared = rc.getType().sensorRadiusSquared;
-			RobotInfo[] neutrals = rc.senseNearbyRobots(sensorRadiusSquared, Team.NEUTRAL);
-			for(RobotInfo neutral : neutrals) {
-				goodieTotal += Goodies.getValue(neutral.type, rc.getTeam(), neutral.team);
-			}
-			RobotInfo[] zombies = rc.senseNearbyRobots(sensorRadiusSquared, Team.ZOMBIE);
-			for(RobotInfo zombie : zombies) {
-				goodieTotal += Goodies.getValue(zombie.type, rc.getTeam(), zombie.team);
-			}
-			MapLocation[] partLocations = rc.sensePartLocations(sensorRadiusSquared);
-			for(MapLocation partLocation : partLocations) {
-				double rubble = rc.senseRubble(partLocation);
-				if(rubble > Globals.RUBBLE_THRESHOLD_MAX()) {
-					continue;
-				}
-				
-				double parts = rc.senseParts(partLocation);
-				goodieTotal += (int) (parts * Goodies.PARTS.getValue());
-			}
-			
+			short goodieTotal = Goodies.scanGoodies(rc);
 			if(this.goodieTotal < goodieTotal) {
 				this.goodieTotal = goodieTotal;
-				this.goodiesDirection = RobotMemory.getArchonLocation().directionTo(rc.getLocation());
+				//this.goodiesDirection = RobotMemory.getArchonLocation().directionTo(rc.getLocation());
+				goodieLocation = rc.getLocation();
 			}
 		}
 		
 		if(targetsMet > 8) {
 			targetsMet = 0;
-			short goodiesDirectionInt = -1;
-			for(short ii = 0; ii < Globals.movableDirections.length; ii++) {
-				if(Globals.movableDirections[ii] == goodiesDirection) {
-					goodiesDirectionInt = ii;
-				}
-			}
-			SignalData sd = new SignalData(SignalType.FOUND_STUFF, rc.getLocation(), goodiesDirectionInt);
+//			short goodiesDirectionInt = -1;
+//			for(short ii = 0; ii < Globals.movableDirections.length; ii++) {
+//				if(Globals.movableDirections[ii] == goodiesDirection) {
+//					goodiesDirectionInt = ii;
+//				}
+//			}
+			SignalData sd = new SignalData(SignalType.FOUND_STUFF, goodieLocation, goodieTotal);
 			int[] data = sd.toInts();
 			rc.broadcastMessageSignal(data[0], data[1], rc.getLocation().distanceSquaredTo(RobotMemory.getArchonLocation()) + 10);//TODO: magic number!
 		}
