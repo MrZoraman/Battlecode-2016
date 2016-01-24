@@ -36,11 +36,11 @@ public class ScoutPatrolGoal extends PatrolAroundArchonGoalBase {
 			int sensorRadiusSquared = rc.getType().sensorRadiusSquared;
 			RobotInfo[] neutrals = rc.senseNearbyRobots(sensorRadiusSquared, Team.NEUTRAL);
 			for(RobotInfo neutral : neutrals) {
-				goodieTotal += Goodies.getValue(neutral.type);
+				goodieTotal += Goodies.getValue(neutral.type, rc.getTeam(), neutral.team);
 			}
 			RobotInfo[] zombies = rc.senseNearbyRobots(sensorRadiusSquared, Team.ZOMBIE);
 			for(RobotInfo zombie : zombies) {
-				goodieTotal += Goodies.getValue(zombie.type);
+				goodieTotal += Goodies.getValue(zombie.type, rc.getTeam(), zombie.team);
 			}
 			MapLocation[] partLocations = rc.sensePartLocations(sensorRadiusSquared);
 			for(MapLocation partLocation : partLocations) {
