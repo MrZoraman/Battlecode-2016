@@ -21,11 +21,12 @@ public class GoalFactory {
 			break;
 		case GUARD:
 			RobotMemory.setAggressionRange(Globals.GUARD_AGGRESSION_RANGE);
-			return new PatrolAroundArchonGoal();
+			return new PatrolAroundArchonGoal(rc);
 		case SCOUT:
 			break;
 		case SOLDIER:
-			break;
+			RobotMemory.setAggressionRange(Globals.SOLDIER_AGGRESSION_RANGE);
+			return new PatrolAroundArchonGoal(rc);
 		case TTM:
 			break;
 		case TURRET:

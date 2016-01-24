@@ -29,7 +29,7 @@ public class ClearRubbleGoal implements Goal {
         	return null;
         }
         rc.setIndicatorString(2, "Returning to Patrol");
-        return new PatrolAroundArchonGoal();
+        return new PatrolAroundArchonGoal(rc);
 	}
 
 	@Override

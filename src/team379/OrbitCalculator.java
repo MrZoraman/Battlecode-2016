@@ -11,7 +11,7 @@ public class OrbitCalculator {
 	
 	//these are percentage of the orbit constant each unit will orbit at or something, I dunno
 	private static final double GUARD_PATROL_RADIUS = 1.0;
-	private static final double SOLDIER_PATROL_RADIUS = 0.8;
+	private static final double SOLDIER_PATROL_RADIUS = 0.85;
 	private static final double SCOUT_PATROL_RADIUS = 3.0;
 	private static final double DEFAULT_PATROL_RADIUS = 0.6;
 

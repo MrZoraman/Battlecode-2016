@@ -7,6 +7,7 @@ import battlecode.common.RobotInfo;
 import battlecode.common.RobotType;
 import battlecode.common.Team;
 import team379.Globals;
+import team379.OrbitCalculator;
 import team379.RobotMemory;
 import team379.pathfinding.Orbiter;
 import team379.pathfinding.PathFindResult;
@@ -19,9 +20,10 @@ public class PatrolAroundArchonGoal implements Goal {
 	
 	private Goal nextGoal = null;
 	
-	public PatrolAroundArchonGoal() {
+	public PatrolAroundArchonGoal(RobotController rc) {
 		if(orbiter == null) {
-			orbiter = new Orbiter(RobotMemory.getArchonLocation(), 3.0);	//TODO: them magic numbers!
+			OrbitCalculator oc = new OrbitCalculator(7, rc.getType());
+			orbiter = new Orbiter(RobotMemory.getArchonLocation(), oc.calculateRadius());	//TODO: them magic numbers!
 		} else {
 			orbiter.setCenter(RobotMemory.getArchonLocation());
 		}
