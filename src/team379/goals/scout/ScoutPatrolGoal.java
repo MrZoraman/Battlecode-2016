@@ -69,7 +69,7 @@ public class ScoutPatrolGoal extends PatrolAroundArchonGoalBase {
 			}
 			SignalData sd = new SignalData(SignalType.FOUND_STUFF, rc.getLocation(), goodiesDirectionInt);
 			int[] data = sd.toInts();
-			rc.broadcastMessageSignal(data[0], data[1], rc.getLocation().distanceSquaredTo(RobotMemory.getArchonLocation()) + 10);
+			rc.broadcastMessageSignal(data[0], data[1], rc.getLocation().distanceSquaredTo(RobotMemory.getArchonLocation()) + 10);//TODO: magic number!
 		}
 		
 		return null;

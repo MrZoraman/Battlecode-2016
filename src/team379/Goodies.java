@@ -1,12 +1,16 @@
 package team379;
 
+import battlecode.common.RobotController;
 import battlecode.common.RobotType;
+import battlecode.common.Team;
 
 public enum Goodies {
 
 	PARTS(1),
 	
-	ARCHON(2000),
+	FRIENDLY_ARCHON(10000),
+	
+	NEUTRAL_ARCHON(2000),
 	ZOMBIE_DEN(1500),
 	
 	SCOUT(18),
@@ -25,9 +29,15 @@ public enum Goodies {
 		return value;
 	}
 	
-	public static int getValue(RobotType type) {
+	public static int getValue(RobotType type, Team myTeam, Team theirTeam) {
 		switch(type) {
-		case ARCHON: return ARCHON.getValue();
+		case ARCHON:
+			if(theirTeam == Team.NEUTRAL)
+				return NEUTRAL_ARCHON.getValue();
+			else if (theirTeam == myTeam)
+				return FRIENDLY_ARCHON.getValue();
+			else
+				return 0;
 		case GUARD: return GUARD.getValue();
 		case SCOUT: return SCOUT.getValue();
 		case SOLDIER: return SOLDIER.getValue();
