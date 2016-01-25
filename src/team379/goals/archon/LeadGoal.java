@@ -36,6 +36,7 @@ public class LeadGoal extends ArchonGoalBase implements SignalConsumer {
 		SignalReader.consume(rc, this);
 		
 		if(pf.getTarget() == null || pf.isAtTarget()) {
+			
 			pf.setTarget(calculateTarget());
 		}
 		
@@ -58,10 +59,13 @@ public class LeadGoal extends ArchonGoalBase implements SignalConsumer {
 		case RUBBLE_IN_WAY:
 			break;
 		case STUCK:
+			System.out.println("stuck");
 			break;
 		case SUCCESS:
+			System.out.println("success");
 			break;
 		case TRAPPED:
+			System.out.println("trapped");
 			break;
 		default:
 			break;
