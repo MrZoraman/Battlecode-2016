@@ -110,7 +110,7 @@ public abstract class PatrolAroundArchonGoalBase implements Goal, SignalConsumer
 				orbiter.setCenter(data.getLocation());
 			}
 		} else if (data.getType() == SignalType.NEW_LEADER) {
-			System.out.println("changing leaders.");
+			//System.out.println("changing leaders.");
 			if(data.getSenderId() == RobotMemory.getArchonId()) {
 				short archonId = data.getOtherInfo();
 				RobotMemory.setArchonId(archonId);

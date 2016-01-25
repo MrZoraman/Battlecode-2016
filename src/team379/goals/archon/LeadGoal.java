@@ -79,11 +79,13 @@ public class LeadGoal extends ArchonGoalBase implements SignalConsumer {
 		case SUCCESS:
 			break;
 		case TRAPPED:
+			System.out.println("I'm trapped!");
 			RobotInfo[] bots = rc.senseNearbyRobots(2, Team.NEUTRAL);
-			if(bots.length == 0 && rc.isCoreReady()) {
+			if(bots.length > 0 && rc.isCoreReady()) {
 				for(RobotInfo ri : bots) {
 					rc.activate(ri.location);
 				}
+				pf.setTarget(calculateTarget());
 			}
 			break;
 		default:
@@ -193,6 +195,8 @@ public class LeadGoal extends ArchonGoalBase implements SignalConsumer {
 			//System.out.println("found viper!");
 			return target;
 		}
+		
+		//there is nothing interesting around me..
 		
 		return null;
 	}
