@@ -37,7 +37,7 @@ public class TurretGoal implements Goal{
 		if(rc.getType() == RobotType.TTM) {
 			rc.unpack();
 		}
-RobotInfo[] robots = rc.senseHostileRobots(rc.getLocation(), rc.getType().sensorRadiusSquared);
+		RobotInfo[] robots = rc.senseHostileRobots(rc.getLocation(), rc.getType().sensorRadiusSquared);
 		
 		Team enemyTeam = rc.getTeam().opponent();
 		
