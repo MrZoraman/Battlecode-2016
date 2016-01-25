@@ -7,13 +7,13 @@ public class FollowGoal implements Goal {
 
 	@Override
 	public Goal achieveGoal(RobotController rc) throws Exception {
-		// TODO Auto-generated method stub
+		
 		return null;
 	}
 
 	@Override
 	public String getName() {
-		// TODO Auto-generated method stub
+		
 		return null;
 	}
 
