@@ -16,6 +16,9 @@ public class FollowGoal extends PatrolAroundArchonGoalBase {
 	private RobotType nextRobot = null;
 	private RobotFactory rf = new RobotFactory();
 
+	private final int babyThreshold = 15;
+	private int babyCoolDown = babyThreshold;
+
 	public FollowGoal(RobotController rc) {
 		super(rc);
 		orbiter.setRubbleThreshold(Globals.RUBBLE_THRESHOLD_MIN());
@@ -39,9 +42,13 @@ public class FollowGoal extends PatrolAroundArchonGoalBase {
 			nextRobot = rf.nextBot();
 		}
 		
-		if(ArchonUtils.findPlaceAndBuild(rc, Direction.NORTH, nextRobot) != null) {
+		if(babyCoolDown >= babyThreshold 
+				&& ArchonUtils.findPlaceAndBuild(rc, Direction.NORTH, nextRobot) != null) {
 			nextRobot = rf.nextBot();
+			babyCoolDown = 0;
 		}
+		
+		babyCoolDown++;
 		
 		super.achieveGoal(rc);
 		

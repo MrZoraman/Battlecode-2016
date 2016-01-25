@@ -28,7 +28,12 @@ public enum SignalType {
 	/**
 	 * Used to notify a change in leadership.
 	 */
-	NEW_LEADER(4);
+	NEW_LEADER(4),
+	
+	/**
+	 * Used to notify that it's time to increase the circle size.
+	 */
+	SPREAD_OUT(5);
 	
 	/**
 	 * Stores a map of signals to their short representation.

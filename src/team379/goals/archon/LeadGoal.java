@@ -23,6 +23,9 @@ public class LeadGoal extends ArchonGoalBase implements SignalConsumer {
 	
 	private short destinationGoodies = 0;
 	
+	private int newArchonId = 0;
+	private MapLocation newArchonLocation = null;
+	
 	private static final int MOVE_DELAY = 20;
 	private int moveCooldown = MOVE_DELAY;
 
@@ -31,12 +34,12 @@ public class LeadGoal extends ArchonGoalBase implements SignalConsumer {
 		super.achieveGoal(rc);
 		this.rc = rc;
 		
-		RobotInfo newArchon = findNewLeader();
-		if(newArchon != null) {
-			RobotMemory.setArchonId(newArchon.ID);
-			RobotMemory.setArchonLocation(newArchon.location);
+		findNewLeader();
+		if(newArchonLocation != null) {
+			RobotMemory.setArchonId(newArchonId);
+			RobotMemory.setArchonLocation(newArchonLocation);
 			//time to broadcast!
-			SignalData sd = new SignalData(SignalType.NEW_LEADER, newArchon.location, (short) newArchon.ID);
+			SignalData sd = new SignalData(SignalType.NEW_LEADER, newArchonLocation, (short) newArchonId);
 			int[] data = sd.toInts();
 			rc.broadcastMessageSignal(data[0], data[1], rc.getType().sensorRadiusSquared + 10);//TODO: magic number!
 			return new FollowGoal(rc);
@@ -57,12 +60,7 @@ public class LeadGoal extends ArchonGoalBase implements SignalConsumer {
 		
 		moveCooldown = 0;
 		
-//		short goodies = Goodies.scanGoodies(rc);
-//		//get sidetracked
-//		if(goodies > destinationGoodies) {
-//			destinationGoodies = goodies;
-//			pf.setTarget(calculateTarget());
-//		}
+		
 		
 		
 		PathFindResult result = pf.move(rc);
@@ -70,7 +68,7 @@ public class LeadGoal extends ArchonGoalBase implements SignalConsumer {
 		case CORE_DELAY:
 			break;
 		case COULD_NOT_FIND_ROUTE:
-			//boost rubble breaking threshold
+			//boost rubble breaking threshold //TODO: 
 			break;
 		case NO_TARGET:
 			break;
@@ -112,9 +110,9 @@ public class LeadGoal extends ArchonGoalBase implements SignalConsumer {
 		}
 	}
 	
-	private RobotInfo findNewLeader() throws Exception {
+	private void findNewLeader() throws Exception {
 		int lowestArchonId = rc.getID();
-		RobotInfo newArchon = null;
+		MapLocation lowestArchonLocation = null;
 		RobotInfo[] robots = rc.senseNearbyRobots(rc.getType().sensorRadiusSquared, rc.getTeam());
 		for(RobotInfo ri : robots) {
 			if(ri.type != RobotType.ARCHON) {
@@ -123,11 +121,26 @@ public class LeadGoal extends ArchonGoalBase implements SignalConsumer {
 			
 			if(ri.ID < lowestArchonId) {
 				lowestArchonId = ri.ID;
-				newArchon = ri;
+				lowestArchonLocation = ri.location;
 			}
 		}
 		
-		return newArchon;
+		
+		
+		if(lowestArchonLocation == null) {
+			SignalReader.consume(rc, data -> {
+				if(data.getType() == SignalType.THIS_IS_MY_ID) {
+					int archonId = data.getOtherInfo();
+					if(archonId < rc.getID()) {
+						newArchonId = archonId;
+						newArchonLocation = data.getLocation();
+					}
+				}
+			});
+		} else {
+			newArchonId = lowestArchonId;
+			newArchonLocation = lowestArchonLocation;
+		}
 	}
 	
 	private MapLocation calculateTarget() {
@@ -251,6 +264,11 @@ public class LeadGoal extends ArchonGoalBase implements SignalConsumer {
 		}
 		
 		return null;
+	}
+	
+	private int calculateOrbitConstant(RobotController rc) {
+		int robots = rc.getRobotCount();
+		return 0;
 	}
 
 	@Override
