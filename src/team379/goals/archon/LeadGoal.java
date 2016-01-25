@@ -49,13 +49,18 @@ public class LeadGoal extends ArchonGoalBase implements SignalConsumer {
 		case RUBBLE_IN_WAY:
 			break;
 		case STUCK:
-			System.out.println("stuck");
 			break;
 		case SUCCESS:
-			System.out.println("success");
 			break;
 		case TRAPPED:
-			System.out.println("trapped");
+			RobotInfo[] bots = rc.senseNearbyRobots(2, Team.NEUTRAL);
+			if(bots != null) {
+				if(rc.isCoreReady()) {
+					for(RobotInfo ri : bots) {
+						rc.activate(ri.location);
+					}
+				}	
+			}
 			break;
 		default:
 			break;
