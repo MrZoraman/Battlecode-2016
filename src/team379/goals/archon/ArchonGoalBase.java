@@ -14,6 +14,7 @@ public abstract class ArchonGoalBase implements Goal {
 		SignalData signalData = new SignalData(SignalType.THIS_IS_MY_ID, rc.getLocation(), (short) rc.getID());
 		int[] data = signalData.toInts();
 		int radiusSquared = (int) Math.pow(broadcastRadius, 2);
+		//System.out.println("broadcasting! " + radiusSquared);
 		rc.broadcastMessageSignal(data[0], data[1], radiusSquared);
 		return null;
 	}

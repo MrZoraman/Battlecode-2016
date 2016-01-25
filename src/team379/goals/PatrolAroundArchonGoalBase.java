@@ -40,8 +40,7 @@ public abstract class PatrolAroundArchonGoalBase implements Goal {
 		SignalReader.consume(rc, data -> {
 			if(data.getType() == SignalType.THIS_IS_MY_ID) {
 				short archonId = data.getOtherInfo();
-				if(archonId == RobotMemory.getAggressionRange()) {
-					System.out.println("got a signal from my archon! It's at " + data.getLocation() + " now.");
+				if(archonId == RobotMemory.getArchonId()) {
 					//al.updateArchonLocation(data.getLocation());
 					orbiter.setCenter(data.getLocation());
 				}

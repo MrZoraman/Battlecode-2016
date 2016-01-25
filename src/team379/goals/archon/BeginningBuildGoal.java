@@ -77,7 +77,9 @@ public class BeginningBuildGoal extends ArchonGoalBase {
 		int friendlyArchons = rc.getInitialArchonLocations(rc.getTeam()).length;
 		//buildQueue.setDelay(friendlyArchons);
 		
-		buildQueue.enqueue(RobotType.TURRET);
+		//buildQueue.enqueue(RobotType.TURRET);
+		
+		buildQueue.enqueue(RobotType.SCOUT);
 
 		int guardsToMake = calculateGuardsToMake(rc);
 		for(int ii = 0; ii < guardsToMake; ii++) {
