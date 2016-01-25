@@ -20,6 +20,9 @@ public class LeadGoal extends ArchonGoalBase implements SignalConsumer {
 
 	private ArchonPathFinder pf = new ArchonPathFinder();
 	private RobotController rc;
+	
+	private static final int MOVE_DELAY = 20;
+	private int moveCooldown = MOVE_DELAY;
 
 	@Override
 	public Goal achieveGoal(RobotController rc) throws Exception {
@@ -35,6 +38,13 @@ public class LeadGoal extends ArchonGoalBase implements SignalConsumer {
 		if(pf.getTarget() == null || pf.isAtTarget()) {
 			pf.setTarget(calculateTarget());
 		}
+		
+		if(moveCooldown < MOVE_DELAY) {
+			moveCooldown++;
+			return null;
+		}
+		
+		moveCooldown = 0;
 		
 		PathFindResult result = pf.move(rc);
 		switch(result) {
