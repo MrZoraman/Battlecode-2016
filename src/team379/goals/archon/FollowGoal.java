@@ -1,5 +1,6 @@
 package team379.goals.archon;
 
+import battlecode.common.Direction;
 import battlecode.common.RobotController;
 import battlecode.common.RobotInfo;
 import battlecode.common.RobotType;
@@ -11,6 +12,9 @@ import team379.signals.SignalData;
 import team379.signals.SignalType;
 
 public class FollowGoal extends PatrolAroundArchonGoalBase {
+	
+	private RobotType nextRobot = null;
+	private RobotFactory rf = new RobotFactory();
 
 	public FollowGoal(RobotController rc) {
 		super(rc);
@@ -29,6 +33,14 @@ public class FollowGoal extends PatrolAroundArchonGoalBase {
 			SignalData sd = new SignalData(SignalType.NEW_LEADER, newArchon.location, (short) newArchon.ID);
 			int[] data = sd.toInts();
 			rc.broadcastMessageSignal(data[0], data[1], rc.getType().sensorRadiusSquared + 10);//TODO: magic number!
+		}
+		
+		if(nextRobot == null) {
+			nextRobot = rf.nextBot();
+		}
+		
+		if(ArchonUtils.findPlaceAndBuild(rc, Direction.NORTH, nextRobot) != null) {
+			nextRobot = rf.nextBot();
 		}
 		
 		super.achieveGoal(rc);

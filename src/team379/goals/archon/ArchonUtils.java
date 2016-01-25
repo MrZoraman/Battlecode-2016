@@ -11,7 +11,7 @@ public class ArchonUtils {
 		if(type == null || dir == null) {
 			return true;
 		}
-		if(rc.hasBuildRequirements(type) && rc.canBuild(dir, type)) {
+		if(rc.hasBuildRequirements(type) && rc.canBuild(dir, type) && rc.isCoreReady()) {
 			rc.build(dir, type);
 			return true;
 		}
