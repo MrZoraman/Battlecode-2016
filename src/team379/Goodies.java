@@ -71,6 +71,15 @@ public enum Goodies {
 			double parts = rc.senseParts(partLocation);
 			goodieTotal += (short) (parts * PARTS.getValue());
 		}
+		RobotInfo[] friends = rc.senseNearbyRobots(sensorRadiusSquared, rc.getTeam());
+		int lowestArchonId = RobotMemory.getArchonId();
+		for(RobotInfo friend : friends) {
+			if(friend.type == RobotType.ARCHON) {
+				if(friend.ID < lowestArchonId) {
+					goodieTotal += Goodies.FRIENDLY_ARCHON.getValue();
+				}
+			}
+		}
 		return goodieTotal;
 	}
 }

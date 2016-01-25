@@ -32,6 +32,7 @@ public class LeadGoal extends ArchonGoalBase implements SignalConsumer {
 		this.rc = rc;
 		
 		if(findNewLeader()) {
+			System.out.println("found a new leader!");
 			return new FollowGoal();
 		}
 		
@@ -142,43 +143,43 @@ public class LeadGoal extends ArchonGoalBase implements SignalConsumer {
 		
 		target = findClosestZombieDen(robots);
 		if(target != null) {
-			System.out.println("found zombie den!");
+			//System.out.println("found zombie den!");
 			return target;
 		}
 		
 		target = findClosestNeutral(robots, RobotType.TURRET);
 		if(target != null) {
-			System.out.println("found turret!");
+			//System.out.println("found turret!");
 			return target;
 		}
 		
 		target = findClosestNeutral(robots, RobotType.SOLDIER);
 		if(target != null) {
-			System.out.println("found soldier!");
+			//System.out.println("found soldier!");
 			return target;
 		}
 		
 		target = findClosestNeutral(robots, RobotType.GUARD);
 		if(target != null) {
-			System.out.println("found guard!");
+			//System.out.println("found guard!");
 			return target;
 		}
 		
 		target = findClosestParts();
 		if(target != null) {
-			System.out.println("found parts!");
+			//System.out.println("found parts!");
 			return target;
 		}
 		
 		target = findClosestNeutral(robots, RobotType.SCOUT);
 		if(target != null) {
-			System.out.println("found scout!");
+			//System.out.println("found scout!");
 			return target;
 		}
 		
 		target = findClosestNeutral(robots, RobotType.VIPER);
 		if(target != null) {
-			System.out.println("found viper!");
+			//System.out.println("found viper!");
 			return target;
 		}
 		
