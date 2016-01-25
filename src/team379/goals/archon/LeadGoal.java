@@ -21,6 +21,8 @@ public class LeadGoal extends ArchonGoalBase implements SignalConsumer {
 	private ArchonPathFinder pf = new ArchonPathFinder();
 	private RobotController rc;
 	
+	private short destinationGoodies = 0;
+	
 	private static final int MOVE_DELAY = 20;
 	private int moveCooldown = MOVE_DELAY;
 
@@ -35,8 +37,9 @@ public class LeadGoal extends ArchonGoalBase implements SignalConsumer {
 		
 		SignalReader.consume(rc, this);
 		
-		if(pf.getTarget() == null || pf.isAtTarget()) {
-			
+		short goodies = Goodies.scanGoodies(rc);
+		if(pf.getTarget() == null || pf.isAtTarget() || goodies > destinationGoodies) {
+			destinationGoodies = goodies;
 			pf.setTarget(calculateTarget());
 		}
 		
@@ -46,6 +49,14 @@ public class LeadGoal extends ArchonGoalBase implements SignalConsumer {
 		}
 		
 		moveCooldown = 0;
+		
+//		short goodies = Goodies.scanGoodies(rc);
+//		//get sidetracked
+//		if(goodies > destinationGoodies) {
+//			destinationGoodies = goodies;
+//			pf.setTarget(calculateTarget());
+//		}
+		
 		
 		PathFindResult result = pf.move(rc);
 		switch(result) {
@@ -83,8 +94,10 @@ public class LeadGoal extends ArchonGoalBase implements SignalConsumer {
 			//System.out.println("my goodie count: " + myGoodieCount);
 			if(myGoodieCount > scoutGoodieCount) {
 				pf.setTarget(calculateTarget());
+				destinationGoodies = myGoodieCount;
 			} else {
 				pf.setTarget(data.getLocation());
+				destinationGoodies = scoutGoodieCount;
 			}
 		}
 	}

@@ -1,11 +1,8 @@
 package team379.goals.scout;
 
-import battlecode.common.Direction;
 import battlecode.common.MapLocation;
 import battlecode.common.RobotController;
 import battlecode.common.RobotInfo;
-import battlecode.common.Team;
-import team379.Globals;
 import team379.Goodies;
 import team379.RobotMemory;
 import team379.goals.Goal;
