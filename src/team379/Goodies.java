@@ -31,7 +31,7 @@ public enum Goodies {
 		return value;
 	}
 	
-	public static short getValue(RobotType type, Team myTeam, Team theirTeam) {
+	private static short getValue(RobotType type, Team myTeam, Team theirTeam) {
 		switch(type) {
 		case ARCHON:
 			if(theirTeam == Team.NEUTRAL)
@@ -52,7 +52,7 @@ public enum Goodies {
 	
 	public static short scanGoodies(RobotController rc) {
 		short goodieTotal = 0;
-		int sensorRadiusSquared = rc.getType().sensorRadiusSquared;
+		int sensorRadiusSquared = RobotType.ARCHON.sensorRadiusSquared;//rc.getType().sensorRadiusSquared;
 		RobotInfo[] neutrals = rc.senseNearbyRobots(sensorRadiusSquared, Team.NEUTRAL);
 		for(RobotInfo neutral : neutrals) {
 			goodieTotal += Goodies.getValue(neutral.type, rc.getTeam(), neutral.team);

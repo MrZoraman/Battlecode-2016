@@ -60,7 +60,7 @@ public class LeadGoal extends ArchonGoalBase implements SignalConsumer {
 		
 		moveCooldown = 0;
 		
-		
+		rc.setIndicatorString(1, "my target: " + pf.getTarget());
 		
 		
 		PathFindResult result = pf.move(rc);
@@ -79,7 +79,7 @@ public class LeadGoal extends ArchonGoalBase implements SignalConsumer {
 		case SUCCESS:
 			break;
 		case TRAPPED:
-			System.out.println("I'm trapped!");
+			//System.out.println("I'm trapped!");
 			RobotInfo[] bots = rc.senseNearbyRobots(2, Team.NEUTRAL);
 			if(bots.length > 0 && rc.isCoreReady()) {
 				for(RobotInfo ri : bots) {
@@ -99,15 +99,21 @@ public class LeadGoal extends ArchonGoalBase implements SignalConsumer {
 	public void consume(SignalData data) {
 		if(data.getType() == SignalType.FOUND_STUFF) {
 			short scoutGoodieCount = data.getOtherInfo();
-			//System.out.println("message from scout! (goodie count: " + scoutGoodieCount + ")");
+			System.out.println("message from scout! (goodie count: " + scoutGoodieCount + ") (location: " + data.getLocation());
 			short myGoodieCount = Goodies.scanGoodies(rc);
-			//System.out.println("my goodie count: " + myGoodieCount);
+			System.out.println("my goodie count: " + myGoodieCount);
 			if(myGoodieCount > scoutGoodieCount) {
 				pf.setTarget(calculateTarget());
 				destinationGoodies = myGoodieCount;
 			} else {
 				pf.setTarget(data.getLocation());
 				destinationGoodies = scoutGoodieCount;
+			}
+		} else if(newArchonLocation == null && data.getType() == SignalType.THIS_IS_MY_ID) {
+			int archonId = data.getOtherInfo();
+			if(archonId < rc.getID()) {
+				newArchonId = archonId;
+				newArchonLocation = data.getLocation();
 			}
 		}
 	}
@@ -127,22 +133,25 @@ public class LeadGoal extends ArchonGoalBase implements SignalConsumer {
 			}
 		}
 		
-		
-		
-		if(lowestArchonLocation == null) {
-			SignalReader.consume(rc, data -> {
-				if(data.getType() == SignalType.THIS_IS_MY_ID) {
-					int archonId = data.getOtherInfo();
-					if(archonId < rc.getID()) {
-						newArchonId = archonId;
-						newArchonLocation = data.getLocation();
-					}
-				}
-			});
-		} else {
+		if(lowestArchonLocation != null) {
 			newArchonId = lowestArchonId;
 			newArchonLocation = lowestArchonLocation;
 		}
+		
+//		if(lowestArchonLocation == null) {
+//			SignalReader.consume(rc, data -> {
+//				if(data.getType() == SignalType.THIS_IS_MY_ID) {
+//					int archonId = data.getOtherInfo();
+//					if(archonId < rc.getID()) {
+//						newArchonId = archonId;
+//						newArchonLocation = data.getLocation();
+//					}
+//				}
+//			});
+//		} else {
+//			newArchonId = lowestArchonId;
+//			newArchonLocation = lowestArchonLocation;
+//		}
 	}
 	
 	private MapLocation calculateTarget() {
@@ -156,43 +165,43 @@ public class LeadGoal extends ArchonGoalBase implements SignalConsumer {
 		
 		target = findClosestZombieDen(robots);
 		if(target != null) {
-			//System.out.println("found zombie den!");
+			System.out.println("found zombie den!");
 			return target;
 		}
 		
 		target = findClosestNeutral(robots, RobotType.TURRET);
 		if(target != null) {
-			//System.out.println("found turret!");
+			System.out.println("found turret!");
 			return target;
 		}
 		
 		target = findClosestNeutral(robots, RobotType.SOLDIER);
 		if(target != null) {
-			//System.out.println("found soldier!");
+			System.out.println("found soldier!");
 			return target;
 		}
 		
 		target = findClosestNeutral(robots, RobotType.GUARD);
 		if(target != null) {
-			//System.out.println("found guard!");
+			System.out.println("found guard!");
 			return target;
 		}
 		
 		target = findClosestParts();
 		if(target != null) {
-			//System.out.println("found parts!");
+			System.out.println("found parts!");
 			return target;
 		}
 		
 		target = findClosestNeutral(robots, RobotType.SCOUT);
 		if(target != null) {
-			//System.out.println("found scout!");
+			System.out.println("found scout!");
 			return target;
 		}
 		
 		target = findClosestNeutral(robots, RobotType.VIPER);
 		if(target != null) {
-			//System.out.println("found viper!");
+			System.out.println("found viper!");
 			return target;
 		}
 		
@@ -220,9 +229,9 @@ public class LeadGoal extends ArchonGoalBase implements SignalConsumer {
 		int closestDistanceSquared = Integer.MAX_VALUE;
 		RobotInfo closestDen = null;
 		for(RobotInfo ri : robots) {
-			if(ri.team == rc.getTeam()) {
-				continue;
-			}
+//			if(ri.team == rc.getTeam()) {
+//				continue;
+//			}
 			
 			if(ri.type != RobotType.ZOMBIEDEN) {
 				continue;
@@ -236,8 +245,9 @@ public class LeadGoal extends ArchonGoalBase implements SignalConsumer {
 		}
 		
 		if(closestDen != null) {
+			System.out.println("calculating stuff for zombie den.");
 			Direction dirToDen = rc.getLocation().directionTo(closestDen.location);
-			return closestDen.location.add(dirToDen.opposite(), RobotMemory.getOrbitConstant());
+			return closestDen.location.add(dirToDen.opposite(), RobotMemory.getOrbitConstant() - 10);
 		}
 		
 		return null;

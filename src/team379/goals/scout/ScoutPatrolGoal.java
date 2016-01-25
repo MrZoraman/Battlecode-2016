@@ -14,10 +14,8 @@ public class ScoutPatrolGoal extends PatrolAroundArchonGoalBase {
 	
 	private short goodieTotal = 0;
 	private MapLocation goodieLocation = null;
-	//private Direction goodiesDirection = null;
-	
-	private int targetsMet = 0;
-	
+	private int timeSinceLastBroadcast = 0;
+	private static final int MAX_BROADCAST_SILENCE = 30;
 	private int baddieCooldown = 0;
 
 	public ScoutPatrolGoal(RobotController rc) {
@@ -32,31 +30,45 @@ public class ScoutPatrolGoal extends PatrolAroundArchonGoalBase {
 			goodieLocation = rc.getLocation();
 		}
 		
-		if(orbiter.isAtTarget()) {
-			targetsMet++;
-			short goodieTotal = Goodies.scanGoodies(rc);
-			if(this.goodieTotal < goodieTotal) {
-				this.goodieTotal = goodieTotal;
-				//this.goodiesDirection = RobotMemory.getArchonLocation().directionTo(rc.getLocation());
-				goodieLocation = rc.getLocation();
-			}
+		goodieTotal = Goodies.scanGoodies(rc);
+		if(goodieTotal > Goodies.ZOMBIE_DEN.getValue() || timeSinceLastBroadcast >= MAX_BROADCAST_SILENCE) {
+			broadcast(rc);
+			timeSinceLastBroadcast = 0;
+		} else {
+			timeSinceLastBroadcast++;
 		}
 		
-		if(targetsMet > 8) {
-			targetsMet = 0;
-//			short goodiesDirectionInt = -1;
-//			for(short ii = 0; ii < Globals.movableDirections.length; ii++) {
-//				if(Globals.movableDirections[ii] == goodiesDirection) {
-//					goodiesDirectionInt = ii;
-//				}
+		
+		
+//		if(orbiter.isAtTarget()) {
+//			targetsMet++;
+//			short goodieTotal = Goodies.scanGoodies(rc);
+//			if(this.goodieTotal < goodieTotal) {
+//				this.goodieTotal = goodieTotal;
+//				//this.goodiesDirection = RobotMemory.getArchonLocation().directionTo(rc.getLocation());
+//				goodieLocation = rc.getLocation();
 //			}
-			//System.out.println("my best location is " + goodieLocation + " with " + goodieTotal);
-			SignalData sd = new SignalData(SignalType.FOUND_STUFF, goodieLocation, goodieTotal);
-			int[] data = sd.toInts();
-			rc.broadcastMessageSignal(data[0], data[1], rc.getLocation().distanceSquaredTo(RobotMemory.getArchonLocation()) + 10);//TODO: magic number!
-		}
+//		}
+		
+//		if(targetsMet > 8) {
+//			targetsMet = 0;
+////			short goodiesDirectionInt = -1;
+////			for(short ii = 0; ii < Globals.movableDirections.length; ii++) {
+////				if(Globals.movableDirections[ii] == goodiesDirection) {
+////					goodiesDirectionInt = ii;
+////				}
+////			}
+//			//System.out.println("my best location is " + goodieLocation + " with " + goodieTotal);
+//			broadcast(rc);
+//		}
 		
 		return null;
+	}
+	
+	private void broadcast(RobotController rc) throws Exception {
+		SignalData sd = new SignalData(SignalType.FOUND_STUFF, goodieLocation, goodieTotal);
+		int[] data = sd.toInts();
+		rc.broadcastMessageSignal(data[0], data[1], rc.getLocation().distanceSquaredTo(RobotMemory.getArchonLocation()) + 50);//TODO: magic number!
 	}
 
 	@Override

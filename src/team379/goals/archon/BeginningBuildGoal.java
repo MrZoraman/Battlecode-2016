@@ -3,6 +3,7 @@ package team379.goals.archon;
 import battlecode.common.Direction;
 import battlecode.common.MapLocation;
 import battlecode.common.RobotController;
+import battlecode.common.RobotInfo;
 import battlecode.common.RobotType;
 import team379.Robot;
 import team379.RobotMemory;
@@ -38,6 +39,25 @@ public class BeginningBuildGoal extends ArchonGoalBase {
 		
 		if(!init) {
 			init(rc);
+			
+			int newLeaderId = rc.getID();
+			MapLocation newLeader = null;
+			RobotInfo[] nearbyRobots = rc.senseNearbyRobots(rc.getType().sensorRadiusSquared, rc.getTeam());
+			for(RobotInfo robot : nearbyRobots) {
+				if(robot.type != RobotType.ARCHON) {
+					continue;
+				}
+				if(robot.ID < newLeaderId) {
+					newLeaderId = robot.ID;
+					newLeader = robot.location;
+				}
+			}
+			
+			if(newLeader != null) {
+				RobotMemory.setArchonId(newLeaderId);
+				RobotMemory.setArchonLocation(newLeader);
+				return new FollowGoal(rc);
+			}
 		}
 		
 		if(!bd.tryBuild()) {
