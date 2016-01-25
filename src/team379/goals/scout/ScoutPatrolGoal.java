@@ -50,6 +50,7 @@ public class ScoutPatrolGoal extends PatrolAroundArchonGoalBase {
 //					goodiesDirectionInt = ii;
 //				}
 //			}
+			System.out.println("my best location is " + goodieLocation + " with " + goodieTotal);
 			SignalData sd = new SignalData(SignalType.FOUND_STUFF, goodieLocation, goodieTotal);
 			int[] data = sd.toInts();
 			rc.broadcastMessageSignal(data[0], data[1], rc.getLocation().distanceSquaredTo(RobotMemory.getArchonLocation()) + 10);//TODO: magic number!
