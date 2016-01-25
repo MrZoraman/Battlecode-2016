@@ -46,6 +46,7 @@ public class PathFinder {
 		Direction dir;
 		boolean robotInWay = false;
 		boolean rubbleInWay = false;
+		boolean atTarget = false;
 	}
 	
 	private DirectionTranslator[] translators = null;
@@ -141,6 +142,11 @@ public class PathFinder {
 		//get the best direction to my target
 		DirectionResult result = getDirection(rc, myLocation, target);
 		
+		if(result.atTarget) {
+			atTarget = true;
+			return SUCCESS;
+		}
+		
 		if(result.rubbleInWay) {
 			return RUBBLE_IN_WAY;
 		}
@@ -207,6 +213,11 @@ public class PathFinder {
 		
 		//create the result to return
 		DirectionResult result = new DirectionResult();
+		
+		if(myLocation.equals(target)) {
+			result.atTarget = true;
+			return result;
+		}
 		
 		//what direction is the target?
 		Direction targetDir = myLocation.directionTo(target);

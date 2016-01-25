@@ -28,6 +28,11 @@ public class LeadGoal extends ArchonGoalBase implements SignalConsumer {
 	
 	private static final int MOVE_DELAY = 20;
 	private int moveCooldown = MOVE_DELAY;
+	
+	private int emptyScoutFinds = 0;
+	private static final int MAX_EMPTY_FINDS = 30;
+	
+	private boolean goingSomewhere = false;
 
 	@Override
 	public Goal achieveGoal(RobotController rc) throws Exception {
@@ -51,6 +56,9 @@ public class LeadGoal extends ArchonGoalBase implements SignalConsumer {
 		if(pf.getTarget() == null || pf.isAtTarget() || goodies > destinationGoodies) {
 			destinationGoodies = goodies;
 			pf.setTarget(calculateTarget());
+			if(pf.getTarget() != null) {
+				goingSomewhere = true;
+			}
 		}
 		
 		if(moveCooldown < MOVE_DELAY) {
@@ -60,7 +68,6 @@ public class LeadGoal extends ArchonGoalBase implements SignalConsumer {
 		
 		moveCooldown = 0;
 		
-		rc.setIndicatorString(1, "my target: " + pf.getTarget());
 		
 		
 		PathFindResult result = pf.move(rc);
@@ -92,6 +99,11 @@ public class LeadGoal extends ArchonGoalBase implements SignalConsumer {
 			break;
 		}
 		
+		if(pf.isAtTarget()) {
+			goingSomewhere = false;
+		}
+
+		rc.setIndicatorString(1, "going somewhere: " + goingSomewhere + ", target: " + pf.getTarget());
 		return null;
 	}
 
@@ -99,15 +111,30 @@ public class LeadGoal extends ArchonGoalBase implements SignalConsumer {
 	public void consume(SignalData data) {
 		if(data.getType() == SignalType.FOUND_STUFF) {
 			short scoutGoodieCount = data.getOtherInfo();
-			System.out.println("message from scout! (goodie count: " + scoutGoodieCount + ") (location: " + data.getLocation());
-			short myGoodieCount = Goodies.scanGoodies(rc);
-			System.out.println("my goodie count: " + myGoodieCount);
-			if(myGoodieCount > scoutGoodieCount) {
-				pf.setTarget(calculateTarget());
-				destinationGoodies = myGoodieCount;
+			if(!goingSomewhere || scoutGoodieCount > destinationGoodies) {
+				if(scoutGoodieCount <= 0) {
+					emptyScoutFinds++;
+					if(emptyScoutFinds >= MAX_EMPTY_FINDS) {
+						System.out.println("my scout isn't finding shit!");
+					}
+					return;
+				} else {
+					emptyScoutFinds = 0;
+				}
+				System.out.println("message from scout " + data.getSenderId() + "! (goodie count: " + scoutGoodieCount + ") (location: " + data.getLocation());
+				short myGoodieCount = Goodies.scanGoodies(rc);
+				System.out.println("my goodie count: " + myGoodieCount);
+				if(myGoodieCount > scoutGoodieCount) {
+					pf.setTarget(calculateTarget());
+					destinationGoodies = myGoodieCount;
+					goingSomewhere = true;
+				} else if(myGoodieCount < scoutGoodieCount) {
+					pf.setTarget(data.getLocation());
+					destinationGoodies = scoutGoodieCount;
+					goingSomewhere = true;
+				}
 			} else {
-				pf.setTarget(data.getLocation());
-				destinationGoodies = scoutGoodieCount;
+				System.out.println("discarding signal. The scout proposed " + scoutGoodieCount + " while I'm going towards " + destinationGoodies);
 			}
 		} else if(newArchonLocation == null && data.getType() == SignalType.THIS_IS_MY_ID) {
 			int archonId = data.getOtherInfo();

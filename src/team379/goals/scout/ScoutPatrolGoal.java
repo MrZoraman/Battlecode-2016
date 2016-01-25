@@ -30,7 +30,13 @@ public class ScoutPatrolGoal extends PatrolAroundArchonGoalBase {
 			goodieLocation = rc.getLocation();
 		}
 		
-		goodieTotal = Goodies.scanGoodies(rc);
+		short sensedGoodies = Goodies.scanGoodies(rc);
+		if(sensedGoodies > goodieTotal) {
+			goodieTotal = sensedGoodies;
+			goodieLocation = rc.getLocation();
+		}
+		
+		
 		if(goodieTotal > Goodies.ZOMBIE_DEN.getValue() || timeSinceLastBroadcast >= MAX_BROADCAST_SILENCE) {
 			broadcast(rc);
 			timeSinceLastBroadcast = 0;
@@ -66,7 +72,10 @@ public class ScoutPatrolGoal extends PatrolAroundArchonGoalBase {
 	}
 	
 	private void broadcast(RobotController rc) throws Exception {
+		System.out.println("broadcasting (with goodie count of " + goodieTotal + ".");
 		SignalData sd = new SignalData(SignalType.FOUND_STUFF, goodieLocation, goodieTotal);
+		goodieTotal = 0;
+		goodieLocation = null;
 		int[] data = sd.toInts();
 		rc.broadcastMessageSignal(data[0], data[1], rc.getLocation().distanceSquaredTo(RobotMemory.getArchonLocation()) + 50);//TODO: magic number!
 	}

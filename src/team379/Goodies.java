@@ -34,23 +34,27 @@ public enum Goodies {
 	private static short getValue(RobotType type, Team myTeam, Team theirTeam) {
 		switch(type) {
 		case ARCHON:
-			if(theirTeam == Team.NEUTRAL)
+			if(theirTeam == Team.NEUTRAL) {
+				System.out.println("found neutral archon");
 				return NEUTRAL_ARCHON.getValue();
-			else if (theirTeam == myTeam)
+			} else if (theirTeam == myTeam) {
+				System.out.println("found friendly archon");
 				return FRIENDLY_ARCHON.getValue();
-			else
+			} else {
 				return 0;
-		case GUARD: return GUARD.getValue();
-		case SCOUT: return SCOUT.getValue();
-		case SOLDIER: return SOLDIER.getValue();
-		case TURRET: return TURRET.getValue();
-		case VIPER: return VIPER.getValue();
-		case ZOMBIEDEN: return ZOMBIE_DEN.getValue();
+			}
+		case GUARD: System.out.println("found guard");return GUARD.getValue();
+		case SCOUT: System.out.println("found scout");return SCOUT.getValue();
+		case SOLDIER: System.out.println("found soldier");return SOLDIER.getValue();
+		case TURRET: System.out.println("found turret");return TURRET.getValue();
+		case VIPER: System.out.println("found viper");return VIPER.getValue();
+		case ZOMBIEDEN: System.out.println("found zombie den");return ZOMBIE_DEN.getValue();
 		default: return 0;
 		}
 	}
 	
 	public static short scanGoodies(RobotController rc) {
+		System.out.println("scanning goodies at " + rc.getLocation());
 		short goodieTotal = 0;
 		int sensorRadiusSquared = RobotType.ARCHON.sensorRadiusSquared;//rc.getType().sensorRadiusSquared;
 		RobotInfo[] neutrals = rc.senseNearbyRobots(sensorRadiusSquared, Team.NEUTRAL);
@@ -69,17 +73,18 @@ public enum Goodies {
 			}
 			
 			double parts = rc.senseParts(partLocation);
+			//System.out.println("found parts (" + parts + ")");
 			goodieTotal += (short) (parts * PARTS.getValue());
 		}
 		RobotInfo[] friends = rc.senseNearbyRobots(sensorRadiusSquared, rc.getTeam());
 		int lowestArchonId = RobotMemory.getArchonId();
-		for(RobotInfo friend : friends) {
-			if(friend.type == RobotType.ARCHON) {
-				if(friend.ID < lowestArchonId) {
-					goodieTotal += Goodies.FRIENDLY_ARCHON.getValue();
-				}
-			}
-		}
+//		for(RobotInfo friend : friends) {
+//			if(friend.type == RobotType.ARCHON) {
+//				if(friend.ID < lowestArchonId) {
+//					goodieTotal += Goodies.FRIENDLY_ARCHON.getValue();
+//				}
+//			}
+//		}
 		return goodieTotal;
 	}
 }
