@@ -31,9 +31,15 @@ public class LeadGoal extends ArchonGoalBase implements SignalConsumer {
 		super.achieveGoal(rc);
 		this.rc = rc;
 		
-		if(findNewLeader()) {
-			System.out.println("found a new leader!");
-			return new FollowGoal();
+		RobotInfo newArchon = findNewLeader();
+		if(newArchon != null) {
+			RobotMemory.setArchonId(newArchon.ID);
+			RobotMemory.setArchonLocation(newArchon.location);
+			//time to broadcast!
+			SignalData sd = new SignalData(SignalType.NEW_LEADER, newArchon.location, (short) newArchon.ID);
+			int[] data = sd.toInts();
+			rc.broadcastMessageSignal(data[0], data[1], rc.getType().sensorRadiusSquared + 10);//TODO: magic number!
+			return new FollowGoal(rc);
 		}
 		
 		SignalReader.consume(rc, this);
@@ -106,7 +112,7 @@ public class LeadGoal extends ArchonGoalBase implements SignalConsumer {
 		}
 	}
 	
-	private boolean findNewLeader() throws Exception {
+	private RobotInfo findNewLeader() throws Exception {
 		int lowestArchonId = rc.getID();
 		RobotInfo newArchon = null;
 		RobotInfo[] robots = rc.senseNearbyRobots(rc.getType().sensorRadiusSquared, rc.getTeam());
@@ -121,15 +127,7 @@ public class LeadGoal extends ArchonGoalBase implements SignalConsumer {
 			}
 		}
 		
-		if(newArchon != null) {
-			//time to broadcast!
-			SignalData sd = new SignalData(SignalType.NEW_LEADER, newArchon.location, (short) newArchon.ID);
-			int[] data = sd.toInts();
-			rc.broadcastMessageSignal(data[0], data[1], rc.getType().sensorRadiusSquared + 10);//TODO: magic number!
-			return true;
-		}
-		
-		return false;
+		return newArchon;
 	}
 	
 	private MapLocation calculateTarget() {

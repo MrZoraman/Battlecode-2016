@@ -16,6 +16,7 @@ public class RobotPlayer {
      * If this method returns, the robot dies!
      **/
     public static void run(RobotController rc) {
+    	RobotMemory.setOrbitConstant(Globals.INITIAL_ORBIT_CONSTANT());
     	Robot robot;
     	if(rc.getType() == RobotType.ARCHON) {
     		robot = new Robot(new BeginningBuildGoal());

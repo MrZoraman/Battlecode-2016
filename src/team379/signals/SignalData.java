@@ -28,6 +28,8 @@ public class SignalData {
 	 */
 	private final short otherInfo;
 	
+	private int senderId;
+	
 	/**
 	 * Constructs/parses the SignalData given two integers.
 	 * @param a First int
@@ -64,7 +66,7 @@ public class SignalData {
 	 * @return An array of two integers containing all of the data.
 	 */
 	public int[] toInts() {
-		int a = combine((short) type.getValue(), otherInfo);
+		int a = combine(type.getValue(), otherInfo);
 		int b = combine((short) location.x, (short) location.y);
 		return new int[]{a, b};
 	}
@@ -112,5 +114,13 @@ public class SignalData {
 		short s1 = (short)(num >> 16);
 		short s2 = (short)num;
 		return new short[]{s1, s2};
+	}
+	
+	void setSenderId(int id) {
+		this.senderId = id;
+	}
+	
+	public int getSenderId() {
+		return senderId;
 	}
 }

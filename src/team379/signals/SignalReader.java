@@ -37,6 +37,7 @@ public class SignalReader {
 			
 			//parse the data
 			SignalData data = new SignalData(message[0], message[1]);
+			data.setSenderId(signals[ii].getID());
 			//send the data to the consumers
 			for(SignalConsumer sc : consumers) {
 				sc.consume(data);

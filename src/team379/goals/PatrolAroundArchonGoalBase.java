@@ -1,5 +1,6 @@
 package team379.goals;
 
+import battlecode.common.MapLocation;
 import battlecode.common.RobotController;
 import battlecode.common.RobotInfo;
 import team379.OrbitCalculator;
@@ -7,11 +8,13 @@ import team379.RobotMemory;
 import team379.pathfinding.ArchonLocator;
 import team379.pathfinding.Orbiter;
 import team379.pathfinding.PathFindResult;
+import team379.signals.SignalConsumer;
+import team379.signals.SignalData;
 import team379.signals.SignalReader;
 import team379.signals.SignalType;
 import team379.signals.consumers.HeadArchonIdentifier;
 
-public abstract class PatrolAroundArchonGoalBase implements Goal {
+public abstract class PatrolAroundArchonGoalBase implements Goal, SignalConsumer {
 	
 	/**
 	 * How much to boost the rubble threshold if it must be raised due to being stuck.
@@ -37,15 +40,7 @@ public abstract class PatrolAroundArchonGoalBase implements Goal {
 //			al = new ArchonLocator(RobotMemory.getArchonLocation(), RobotMemory.getArchonId());
 //		}
 		//HeadArchonIdentifier hai = new HeadArchonIdentifier();
-		SignalReader.consume(rc, data -> {
-			if(data.getType() == SignalType.THIS_IS_MY_ID) {
-				short archonId = data.getOtherInfo();
-				if(archonId == RobotMemory.getArchonId()) {
-					//al.updateArchonLocation(data.getLocation());
-					orbiter.setCenter(data.getLocation());
-				}
-			}
-		});
+		SignalReader.consume(rc, this);
 		
 //		if(hai.getArchonId() < RobotMemory.getArchonId()) {
 //			orbiter.setCenter(hai.getArchonLocation());
@@ -104,5 +99,24 @@ public abstract class PatrolAroundArchonGoalBase implements Goal {
 		}
 		
 		return null;
+	}
+	
+	@Override
+	public void consume(SignalData data) {
+		if(data.getType() == SignalType.THIS_IS_MY_ID) {
+			short archonId = data.getOtherInfo();
+			if(archonId == RobotMemory.getArchonId()) {
+				//al.updateArchonLocation(data.getLocation());
+				orbiter.setCenter(data.getLocation());
+			}
+		} else if (data.getType() == SignalType.NEW_LEADER) {
+			if(data.getSenderId() == RobotMemory.getArchonId()) {
+				short archonId = data.getOtherInfo();
+				RobotMemory.setArchonId(archonId);
+				MapLocation archonLocation = data.getLocation();
+				RobotMemory.setArchonLocation(archonLocation);
+				orbiter.setCenter(archonLocation);
+			}
+		}
 	}
 }

@@ -3,6 +3,7 @@ package team379.pathfinding;
 import battlecode.common.Direction;
 import battlecode.common.MapLocation;
 import battlecode.common.RobotController;
+import team379.RobotMemory;
 
 /**
  * A special kind of path finder that "orbits" around a specific point.
@@ -128,6 +129,8 @@ public class Orbiter extends PathFinder {
 				atTarget = false;
 			}
 		}
+		
+		rc.setIndicatorString(1, "center: " + center + ", archonId I am circling: " + RobotMemory.getArchonId());
 		
 		//have the base class do the rest
 		return super.move(rc);
