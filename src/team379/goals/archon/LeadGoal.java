@@ -70,10 +70,20 @@ public class LeadGoal extends ArchonGoalBase implements SignalConsumer {
 			System.out.println("becomming a follower!");
 			RobotMemory.setArchonId(newArchonId);
 			RobotMemory.setArchonLocation(newArchonLocation);
-			//time to broadcast!
-			SignalData sd = new SignalData(SignalType.NEW_LEADER, newArchonLocation, (short) newArchonId);
-			int[] data = sd.toInts();
-			rc.broadcastMessageSignal(data[0], data[1], rc.getType().sensorRadiusSquared + 10);//TODO: magic number!
+//			//time to broadcast!
+//			SignalData sd = new SignalData(SignalType.NEW_LEADER, newArchonLocation, (short) newArchonId);
+//			int[] data = sd.toInts();
+//			System.out.println("BROADCASTING.... NEW LEADER------------- (" + rc.getID() + ")");
+//			rc.broadcastMessageSignal(data[0], data[1], 100);//TODO: magic number!
+			
+			SignalData signalData = new SignalData(SignalType.NEW_LEADER, RobotMemory.getArchonLocation(), (short) RobotMemory.getArchonId());
+			int[] data = signalData.toInts();
+			int radiusSquared = (int) Math.pow(25, 2);
+			//System.out.println("broadcasting! " + radiusSquared);
+			rc.broadcastMessageSignal(data[0], data[1], radiusSquared);
+			//return null;
+			
+			
 			//return new FollowGoal(rc);
 			return new FollowGoal(rc.getType());
 		}
@@ -112,6 +122,7 @@ public class LeadGoal extends ArchonGoalBase implements SignalConsumer {
 
 	@Override
 	public void consume(SignalData data) {
+		System.out.println("leader consume: " + data.getType() + " from " + data.getSenderId());
 		if(data.getType() == SignalType.FOUND_STUFF) {
 			trySwitchTargets(data.getOtherInfo(), data.getLocation());
 		} else if (data.getType() == SignalType.THIS_IS_MY_ID) {
@@ -119,6 +130,7 @@ public class LeadGoal extends ArchonGoalBase implements SignalConsumer {
 			if(archonId < rc.getID()) {
 				newArchonId = archonId;
 				newArchonLocation = data.getLocation();
+				System.out.println("|||||||||||||||Foomf");
 			}
 		}
 	}
@@ -190,6 +202,7 @@ public class LeadGoal extends ArchonGoalBase implements SignalConsumer {
 		if(lowestArchonLocation != null) {
 			newArchonId = lowestArchonId;
 			newArchonLocation = lowestArchonLocation;
+			System.out.println("+++++++++++++++++++++++++++++++++found new leader from search!");
 		}
 		
 //		if(lowestArchonLocation == null) {

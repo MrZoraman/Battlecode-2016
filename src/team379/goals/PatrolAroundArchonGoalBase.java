@@ -66,7 +66,7 @@ public abstract class PatrolAroundArchonGoalBase implements Goal, SignalConsumer
 		return "Patrollin'";
 	}
 	
-	private Goal move(RobotController rc) throws Exception {
+	protected Goal move(RobotController rc) throws Exception {
 		PathFindResult result = orbiter.move(rc);
 		
 		if(orbiter.isAtTarget()) {
@@ -102,7 +102,7 @@ public abstract class PatrolAroundArchonGoalBase implements Goal, SignalConsumer
 	
 	@Override
 	public void consume(SignalData data) {
-		System.out.println("consuming");
+		//System.out.println("consuming " + data.getType());
 		if(data.getType() == SignalType.THIS_IS_MY_ID) {
 			short archonId = data.getOtherInfo();
 			if(archonId == RobotMemory.getArchonId()) {
@@ -110,7 +110,7 @@ public abstract class PatrolAroundArchonGoalBase implements Goal, SignalConsumer
 				orbiter.setCenter(data.getLocation());
 			}
 		} else if (data.getType() == SignalType.NEW_LEADER) {
-			System.out.println("changing leaders.");
+			System.out.println("-------------------------changing leaders.");
 			if(data.getSenderId() == RobotMemory.getArchonId()) {
 				short archonId = data.getOtherInfo();
 				RobotMemory.setArchonId(archonId);

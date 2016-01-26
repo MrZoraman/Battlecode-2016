@@ -10,6 +10,7 @@ import team379.RobotMemory;
 import team379.goals.Goal;
 import team379.goals.PatrolAroundArchonGoalBase;
 import team379.signals.SignalData;
+import team379.signals.SignalReader;
 import team379.signals.SignalType;
 
 public class FollowGoal extends PatrolAroundArchonGoalBase {
@@ -41,6 +42,8 @@ public class FollowGoal extends PatrolAroundArchonGoalBase {
 //			rc.broadcastMessageSignal(data[0], data[1], rc.getType().sensorRadiusSquared + 10);//TODO: magic number!
 //		}
 		
+		SignalReader.consume(rc, this);
+		
 		if(nextRobot == null) {
 			nextRobot = rf.nextBot();
 		}
@@ -53,8 +56,7 @@ public class FollowGoal extends PatrolAroundArchonGoalBase {
 		
 		babyCoolDown++;
 		
-		super.achieveGoal(rc);
-		
+		move(rc);
 		return null;
 	}
 
@@ -85,6 +87,27 @@ public class FollowGoal extends PatrolAroundArchonGoalBase {
 //		
 //		return newArchon;
 //	}
+	
+	@Override
+	public void consume(SignalData data) {
+		System.out.println("follow consume: " + data.getType() + " from " + data.getSenderId());
+		if(data.getType() == SignalType.THIS_IS_MY_ID) {
+			short archonId = data.getOtherInfo();
+			if(archonId == RobotMemory.getArchonId()) {
+				//al.updateArchonLocation(data.getLocation());
+				orbiter.setCenter(data.getLocation());
+			}
+		} else if (data.getType() == SignalType.NEW_LEADER) {
+			System.out.println("-------------------------changing leaders.");
+			if(data.getSenderId() == RobotMemory.getArchonId()) {
+				short archonId = data.getOtherInfo();
+				RobotMemory.setArchonId(archonId);
+				MapLocation archonLocation = data.getLocation();
+				RobotMemory.setArchonLocation(archonLocation);
+				orbiter.setCenter(archonLocation);
+			}
+		}
+	}
 	
 //	@Override
 //	public void consume(SignalData data) {

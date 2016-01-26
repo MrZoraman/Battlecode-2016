@@ -8,6 +8,7 @@ import battlecode.common.RobotType;
 import team379.Robot;
 import team379.RobotMemory;
 import team379.goals.Goal;
+import team379.signals.SignalReader;
 import team379.signals.SignalType;
 
 public class BeginningBuildGoal extends ArchonGoalBase {
@@ -21,6 +22,8 @@ public class BeginningBuildGoal extends ArchonGoalBase {
 	@Override
 	public Goal achieveGoal(RobotController rc) throws Exception {
 		super.achieveGoal(rc);
+		
+		SignalReader.consume(rc, data -> System.out.println("ayo: " + data.getType() + " : " + data.getSenderId()));
 		
 		if(bd == null) {
 			int myIndex = 0;
@@ -99,7 +102,7 @@ public class BeginningBuildGoal extends ArchonGoalBase {
 		
 		//buildQueue.enqueue(RobotType.TURRET);
 		
-		buildQueue.enqueue(RobotType.SCOUT);
+		//buildQueue.enqueue(RobotType.SCOUT);
 
 		int guardsToMake = calculateGuardsToMake(rc);
 		for(int ii = 0; ii < guardsToMake; ii++) {
