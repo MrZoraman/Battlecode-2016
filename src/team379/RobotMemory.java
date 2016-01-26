@@ -17,6 +17,7 @@ public class RobotMemory {
 	private static MapLocation archonLocation = null;
 	private static int aggressionRange = 0;
 	private static int orbitConstant = 0;
+	private static double rubbleThreshold = Globals.RUBBLE_THRESHOLD_MAX();
 	
 	public static int getArchonId() {
 		return archonId;
@@ -48,5 +49,13 @@ public class RobotMemory {
 
 	public static void setOrbitConstant(int orbitConstant) {
 		RobotMemory.orbitConstant = orbitConstant;
+	}
+
+	public static double getRubbleThreshold() {
+		return rubbleThreshold;
+	}
+
+	public static void setRubbleThreshold(double rubbleThreshold) {
+		RobotMemory.rubbleThreshold = rubbleThreshold;
 	}
 }

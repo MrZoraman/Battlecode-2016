@@ -153,6 +153,7 @@ public class PathFinder {
 		
 		//did I find a way to go?
 		if(result.dir != null) {
+			
 			//go where I want to go
 			rc.move(result.dir);
 			
@@ -247,6 +248,7 @@ public class PathFinder {
 			//see if rubble is blocking my path
 			if(rc.onTheMap(loc)) {
 				double rubble = rc.senseRubble(loc);
+//				System.out.println("sensed " + rubble + " rubble!");
 				if(rubble >= minRubbleThreshold && rubble <= maxRubbleThreshold) {
 					result.rubbleInWay = true;
 					rubbleDir = targetDir;

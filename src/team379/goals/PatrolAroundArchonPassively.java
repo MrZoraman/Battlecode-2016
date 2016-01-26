@@ -1,5 +1,6 @@
 package team379.goals;
 
+import battlecode.common.Direction;
 import battlecode.common.MapLocation;
 import battlecode.common.RobotController;
 import battlecode.common.RobotInfo;
@@ -36,6 +37,11 @@ public class PatrolAroundArchonPassively extends PatrolAroundArchonGoalBase {
 		}
 		
 		return null;
+	}
+	
+	@Override
+	protected Goal onRubbleFound(Direction dir) {
+		return new ClearRubbleGoal(dir);
 	}
 
 }

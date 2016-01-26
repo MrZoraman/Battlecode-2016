@@ -1,9 +1,11 @@
 package team379.goals;
 
+import battlecode.common.Direction;
 import battlecode.common.MapLocation;
 import battlecode.common.RobotController;
 import battlecode.common.RobotInfo;
 import battlecode.common.RobotType;
+import team379.Globals;
 import team379.OrbitCalculator;
 import team379.RobotMemory;
 import team379.pathfinding.Orbiter;
@@ -75,6 +77,8 @@ public abstract class PatrolAroundArchonGoalBase implements Goal, SignalConsumer
 			orbiter.resetRubbleThreshold();
 		}
 		
+		rc.setIndicatorString(0, result.toString());
+		
 		switch(result) {
 		case CORE_DELAY:
 			break;
@@ -87,18 +91,35 @@ public abstract class PatrolAroundArchonGoalBase implements Goal, SignalConsumer
 			orbiter.calculateNextTarget(true);
 			break;
 		case STUCK:
-			orbiter.boostRubbleThreshold(RUBBLE_BOOST_AMOUNT);
+			RobotMemory.setRubbleThreshold(RobotMemory.getRubbleThreshold() + RUBBLE_BOOST_AMOUNT);
+//			orbiter.boostRubbleThreshold(RUBBLE_BOOST_AMOUNT);
+			orbiter.setRubbleThreshold(RobotMemory.getRubbleThreshold());
 			orbiter.reset();
 			break;
 		case SUCCESS:
 			break;
 		case RUBBLE_IN_WAY:
-			return new ClearRubbleGoal(orbiter.getRubbleDirection());
+			break;
+			//return new ClearRubbleGoal(orbiter.getRubbleDirection());
 		default:
 			break;
 		
 		}
 		
+//		MapLocation[] adjacents = MapLocation.getAllMapLocationsWithinRadiusSq(rc.getLocation(), 2);
+		for(int ii = 0; ii < Globals.movableDirections.length; ii++) {
+			Direction dir = Globals.movableDirections[ii];
+			MapLocation loc = rc.getLocation().add(dir);
+			double rubble = rc.senseRubble(loc);
+			if(rubble > Globals.RUBBLE_THRESHOLD_MIN() && rubble <= RobotMemory.getRubbleThreshold()) {
+				return onRubbleFound(dir);
+			}
+		}
+		
+		return null;
+	}
+	
+	protected Goal onRubbleFound(Direction dir) {
 		return null;
 	}
 	
