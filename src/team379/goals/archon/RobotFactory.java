@@ -19,12 +19,12 @@ public class RobotFactory {
 		case 2: return GUARD;
 		case 3: return SOLDIER;
 		case 4: return GUARD;
-		case 5: return SOLDIER;
+		case 5: return TURRET;
 		case 6: return GUARD;
 		case 7: return SOLDIER;
 		case 8: return GUARD;
 		case 9: return SOLDIER;
-		case 10: return SCOUT;
+		case 10: return TURRET;
 		default: return GUARD;
 		}
 	}
