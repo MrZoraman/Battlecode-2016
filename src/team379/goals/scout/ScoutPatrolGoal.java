@@ -3,6 +3,7 @@ package team379.goals.scout;
 import battlecode.common.MapLocation;
 import battlecode.common.RobotController;
 import battlecode.common.RobotInfo;
+import battlecode.common.RobotType;
 import team379.GoodieSearchResult;
 import team379.Goodies;
 import team379.RobotMemory;
@@ -19,8 +20,8 @@ public class ScoutPatrolGoal extends PatrolAroundArchonGoalBase {
 	private static final int MAX_BROADCAST_SILENCE = 30;
 	private int baddieCooldown = 0;
 
-	public ScoutPatrolGoal(RobotController rc) {
-		super(rc);
+	public ScoutPatrolGoal(RobotType type) {
+		super(type);
 	}
 
 	@Override
@@ -73,7 +74,7 @@ public class ScoutPatrolGoal extends PatrolAroundArchonGoalBase {
 	}
 	
 	private void broadcast(RobotController rc) throws Exception {
-		System.out.println("broadcasting (with goodie count of " + goodieTotal + ".");
+		//System.out.println("broadcasting (with goodie count of " + goodieTotal + ".");
 		SignalData sd = new SignalData(SignalType.FOUND_STUFF, goodieLocation, (short) goodieTotal);
 		goodieTotal = 0;
 		goodieLocation = null;

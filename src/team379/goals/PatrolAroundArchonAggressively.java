@@ -2,11 +2,12 @@ package team379.goals;
 
 import battlecode.common.RobotController;
 import battlecode.common.RobotInfo;
+import battlecode.common.RobotType;
 
 public class PatrolAroundArchonAggressively extends PatrolAroundArchonGoalBase {
 
-	public PatrolAroundArchonAggressively(RobotController rc) {
-		super(rc);
+	public PatrolAroundArchonAggressively(RobotType type) {
+		super(type);
 	}
 
 	@Override

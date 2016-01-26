@@ -67,13 +67,15 @@ public class LeadGoal extends ArchonGoalBase implements SignalConsumer {
 
 		findNewLeader();
 		if(newArchonLocation != null) {
+			System.out.println("becomming a follower!");
 			RobotMemory.setArchonId(newArchonId);
 			RobotMemory.setArchonLocation(newArchonLocation);
 			//time to broadcast!
 			SignalData sd = new SignalData(SignalType.NEW_LEADER, newArchonLocation, (short) newArchonId);
 			int[] data = sd.toInts();
 			rc.broadcastMessageSignal(data[0], data[1], rc.getType().sensorRadiusSquared + 10);//TODO: magic number!
-			return new FollowGoal(rc);
+			//return new FollowGoal(rc);
+			return new FollowGoal(rc.getType());
 		}
 		
 		//update zombie dens
@@ -135,11 +137,13 @@ public class LeadGoal extends ArchonGoalBase implements SignalConsumer {
 						|| (isVeryHighValueTarget(proposedTargetValue))) {
 					targetValue = proposedTargetValue;
 					pf.setTarget(proposedLocation);
+					System.out.println("target switched to: " + pf.getTarget() + " with a value of " + targetValue);
 				}
 			}
 		} else {
 			targetValue = proposedTargetValue;
 			pf.setTarget(proposedLocation);
+			System.out.println("target switched to: " + pf.getTarget() + " with a value of " + targetValue);
 		}
 	}
 	

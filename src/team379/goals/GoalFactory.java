@@ -26,7 +26,7 @@ public class GoalFactory {
 			RobotMemory.setAggressionRange(Globals.GUARD_AGGRESSION_RANGE());
 			return createPatrolGoal(rc);
 		case SCOUT:
-			return new ScoutPatrolGoal(rc);
+			return new ScoutPatrolGoal(rc.getType());
 		case SOLDIER:
 			return createPatrolGoal(rc);
 		case TTM:
@@ -42,6 +42,6 @@ public class GoalFactory {
 	}
 	
 	public static PatrolAroundArchonGoalBase createPatrolGoal(RobotController rc) {
-		return new PatrolAroundArchonPassively(rc);
+		return new PatrolAroundArchonPassively(rc.getType());
 	}
 }

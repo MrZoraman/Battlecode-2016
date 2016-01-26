@@ -3,16 +3,15 @@ package team379.goals;
 import battlecode.common.MapLocation;
 import battlecode.common.RobotController;
 import battlecode.common.RobotInfo;
+import battlecode.common.RobotType;
 import team379.OrbitCalculator;
 import team379.RobotMemory;
-import team379.pathfinding.ArchonLocator;
 import team379.pathfinding.Orbiter;
 import team379.pathfinding.PathFindResult;
 import team379.signals.SignalConsumer;
 import team379.signals.SignalData;
 import team379.signals.SignalReader;
 import team379.signals.SignalType;
-import team379.signals.consumers.HeadArchonIdentifier;
 
 public abstract class PatrolAroundArchonGoalBase implements Goal, SignalConsumer {
 	
@@ -24,8 +23,8 @@ public abstract class PatrolAroundArchonGoalBase implements Goal, SignalConsumer
 	protected static Orbiter orbiter;
 	//protected static ArchonLocator al;
 	
-	public PatrolAroundArchonGoalBase(RobotController rc) {
-		OrbitCalculator oc = new OrbitCalculator(RobotMemory.getOrbitConstant(), rc.getType());
+	public PatrolAroundArchonGoalBase(RobotType type) {
+		OrbitCalculator oc = new OrbitCalculator(RobotMemory.getOrbitConstant(), type);
 		if(orbiter == null) {
 			orbiter = new Orbiter(RobotMemory.getArchonLocation(), oc.calculateRadius());
 		} else {
@@ -103,6 +102,7 @@ public abstract class PatrolAroundArchonGoalBase implements Goal, SignalConsumer
 	
 	@Override
 	public void consume(SignalData data) {
+		System.out.println("consuming");
 		if(data.getType() == SignalType.THIS_IS_MY_ID) {
 			short archonId = data.getOtherInfo();
 			if(archonId == RobotMemory.getArchonId()) {
@@ -110,7 +110,7 @@ public abstract class PatrolAroundArchonGoalBase implements Goal, SignalConsumer
 				orbiter.setCenter(data.getLocation());
 			}
 		} else if (data.getType() == SignalType.NEW_LEADER) {
-			//System.out.println("changing leaders.");
+			System.out.println("changing leaders.");
 			if(data.getSenderId() == RobotMemory.getArchonId()) {
 				short archonId = data.getOtherInfo();
 				RobotMemory.setArchonId(archonId);

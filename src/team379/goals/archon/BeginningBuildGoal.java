@@ -56,7 +56,7 @@ public class BeginningBuildGoal extends ArchonGoalBase {
 			if(newLeader != null) {
 				RobotMemory.setArchonId(newLeaderId);
 				RobotMemory.setArchonLocation(newLeader);
-				return new FollowGoal(rc);
+				return new FollowGoal(rc.getType());
 			}
 		}
 		
@@ -103,7 +103,7 @@ public class BeginningBuildGoal extends ArchonGoalBase {
 
 		int guardsToMake = calculateGuardsToMake(rc);
 		for(int ii = 0; ii < guardsToMake; ii++) {
-			buildQueue.enqueue(RobotType.GUARD);
+			//buildQueue.enqueue(RobotType.GUARD);
 		}
 		
 //		int soldiersToMake = 25;
