@@ -82,7 +82,7 @@ public class LeadGoal extends ArchonGoalBase implements SignalConsumer {
 
 		findNewLeader();
 		if(newArchonLocation != null) {
-			System.out.println("becomming a follower!");
+//			System.out.println("becomming a follower!");
 			RobotMemory.setArchonId(newArchonId);
 			RobotMemory.setArchonLocation(newArchonLocation);
 //			//time to broadcast!
@@ -110,7 +110,7 @@ public class LeadGoal extends ArchonGoalBase implements SignalConsumer {
 			MapLocation zombieDen = findClosestZombieDen(rc);
 			if(zombieDen != null) {
 				MapLocation attackPosition = findZombieDenAttackPosition(rc, zombieDen);
-				System.out.println("found zombie den! My attack position is " + attackPosition);
+//				System.out.println("found zombie den! My attack position is " + attackPosition);
 				iSeeZombieDen = true;
 				pf.setTarget(attackPosition);
 				RobotMemory.setOrbitConstant((int) Math.sqrt(rc.getType().sensorRadiusSquared));
@@ -126,7 +126,7 @@ public class LeadGoal extends ArchonGoalBase implements SignalConsumer {
 		
 		//System.out.println("at target: " + pf.isAtTarget());
 		if(!iSeeZombieDen && (pf.getTarget() == null || pf.isAtTarget())) {
-			System.out.println("time to find something else to do.");
+//			System.out.println("time to find something else to do.");
 //			System.out.println("I see zombie den: " + iSeeZombieDen);
 //			System.out.println("target is null: " + (pf.getTarget() == null));
 //			System.out.println("at target: " + pf.isAtTarget());
@@ -135,7 +135,7 @@ public class LeadGoal extends ArchonGoalBase implements SignalConsumer {
 //			rc.setIndicatorString(1, "target: " + pf.getTarget());
 			GoodieSearchResult localGoodies = Goodies.scanGoodies(rc);
 			if(localGoodies.getGoodies() > 0) {
-				System.out.println("local goodies found: " + localGoodies.getLocation() + " (" + localGoodies.getGoodies() + ")");
+//				System.out.println("local goodies found: " + localGoodies.getLocation() + " (" + localGoodies.getGoodies() + ")");
 				trySwitchTargets(localGoodies.getGoodies(), localGoodies.getLocation());
 			}
 		}
@@ -143,20 +143,20 @@ public class LeadGoal extends ArchonGoalBase implements SignalConsumer {
 		if(movePacer.pace()) {
 			PathFindResult result = pf.move(rc);
 			//System.out.println(result);
-			if (result == PathFindResult.TRAPPED) {
+//			if (result == PathFindResult.TRAPPED) {
 				RobotInfo[] bots = rc.senseNearbyRobots(2, Team.NEUTRAL);
 				if(bots.length > 0 && rc.isCoreReady()) {
 					for(RobotInfo ri : bots) {
 						rc.activate(ri.location);
 					}
 				}
-			}
+//			}
 		}
 		
 		int newOrbitConstant = calculateOrbitConstant(rc);
 		//System.out.println("orbit constant: " + newOrbitConstant + "(" + rc.getRobotCount() + ") robots");
 		if(newOrbitConstant != orbitConstant) {
-			System.out.println("spreading out from " + orbitConstant + " to " + newOrbitConstant);
+//			System.out.println("spreading out from " + orbitConstant + " to " + newOrbitConstant);
 			orbitConstant = newOrbitConstant;
 			RobotMemory.setOrbitConstant(newOrbitConstant);
 			this.boostBroadcastRadius(2);
@@ -199,11 +199,11 @@ public class LeadGoal extends ArchonGoalBase implements SignalConsumer {
 		}
 		
 		if(destroyedDens.contains(proposedLocation)) {
-			System.out.println("...but it's just outdated zombieden info. discard!");
+//			System.out.println("...but it's just outdated zombieden info. discard!");
 			return;
 		}
 		
-		System.out.println("I'm being proposed somethign! My current target value is " + targetValue);
+//		System.out.println("I'm being proposed somethign! My current target value is " + targetValue);
 		
 		if(isHighValueTarget(targetValue)) {
 			if(isHighValueTarget(proposedTargetValue) && !isVeryHighValueTarget(targetValue)) {
@@ -214,14 +214,14 @@ public class LeadGoal extends ArchonGoalBase implements SignalConsumer {
 						|| (isVeryHighValueTarget(proposedTargetValue))) {
 					targetValue = proposedTargetValue;
 					pf.setTarget(proposedLocation);
-					System.out.println("target switched to: " + pf.getTarget() + " with a value of " + targetValue);
+//					System.out.println("target switched to: " + pf.getTarget() + " with a value of " + targetValue);
 //					rc.setIndicatorString(1, "target: " + pf.getTarget());
 				}
 			}
 		} else {
 			targetValue = proposedTargetValue;
 			pf.setTarget(proposedLocation);
-			System.out.println("target switched to: " + pf.getTarget() + " with a value of " + targetValue);
+//			System.out.println("target switched to: " + pf.getTarget() + " with a value of " + targetValue);
 //			rc.setIndicatorString(1, "target: " + pf.getTarget());
 		}
 	}

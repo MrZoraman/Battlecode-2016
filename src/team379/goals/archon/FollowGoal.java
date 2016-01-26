@@ -26,14 +26,14 @@ public class FollowGoal extends PatrolAroundArchonGoalBase {
 		//super(null);
 		//super(rc);
 		orbiter.setRubbleThreshold(Globals.RUBBLE_THRESHOLD_MIN());
-		System.out.println("following archon: " + RobotMemory.getArchonId());
+//		System.out.println("following archon: " + RobotMemory.getArchonId());
 	}
 
 	@Override
 	public Goal achieveGoal(RobotController rc) throws Exception {
 		RobotInfo newArchon = findNewLeader(rc);
 		if(newArchon != null) {
-			System.out.println("becomming a follower!");
+//			System.out.println("becomming a follower!");
 			RobotMemory.setArchonId(newArchon.ID);
 			RobotMemory.setArchonLocation(newArchon.location);
 //			//time to broadcast!
