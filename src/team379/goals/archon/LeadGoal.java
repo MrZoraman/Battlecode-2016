@@ -128,10 +128,7 @@ public class LeadGoal extends ArchonGoalBase implements SignalConsumer {
 			orbitConstant = newOrbitConstant;
 			RobotMemory.setOrbitConstant(newOrbitConstant);
 			this.boostBroadcastRadius(2);
-			SignalData signalData = new SignalData(SignalType.SPREAD_OUT, rc.getLocation(), (short) orbitConstant);
-			int[] data = signalData.toInts();
-			int radiusSquared = (int) Math.pow(broadcastRadius, 2);
-			rc.broadcastMessageSignal(data[0], data[1], radiusSquared);
+			
 		}
 		
 		return null;
