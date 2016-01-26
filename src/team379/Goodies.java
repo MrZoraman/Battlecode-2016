@@ -35,7 +35,7 @@ public enum Goodies {
 		switch(type) {
 		case ARCHON:
 			if(theirTeam == Team.NEUTRAL) {
-				System.out.println("found neutral archon");
+//				System.out.println("found neutral archon");
 				return NEUTRAL_ARCHON.getValue();
 			} else if (theirTeam == myTeam) {
 				//System.out.println("found friendly archon");

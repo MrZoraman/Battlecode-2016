@@ -97,9 +97,9 @@ public class TurretGoal implements Goal{
 //			return;
 //		}
 		
-		System.out.println("my type: " + rc.getType());
-		System.out.println("my location: " + rc.getLocation());
-		System.out.println("closest distance squared: " + closestbaddieSquared);
+//		System.out.println("my type: " + rc.getType());
+//		System.out.println("my location: " + rc.getLocation());
+//		System.out.println("closest distance squared: " + closestbaddieSquared);
 		if(closestbaddieSquared > 5 && closestbaddieSquared <= rc.getType().attackRadiusSquared) {
 			if(rc.isWeaponReady()) {
 				rc.attackLocation(closestBaddie.location);
