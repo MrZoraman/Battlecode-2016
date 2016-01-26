@@ -64,6 +64,13 @@ public class LeadGoal extends ArchonGoalBase implements SignalConsumer {
 	
 	private int orbitConstant = Globals.INITIAL_ORBIT_CONSTANT();
 	
+
+	private RobotType nextRobot = null;
+	private RobotFactory rf = new RobotFactory();
+
+	private final int babyThreshold = 15;
+	private int babyCoolDown = babyThreshold;
+	
 	@Override
 	public Goal achieveGoal(RobotController rc) throws Exception {
 		super.achieveGoal(rc);
@@ -120,9 +127,9 @@ public class LeadGoal extends ArchonGoalBase implements SignalConsumer {
 		//System.out.println("at target: " + pf.isAtTarget());
 		if(!iSeeZombieDen && (pf.getTarget() == null || pf.isAtTarget())) {
 			System.out.println("time to find something else to do.");
-			System.out.println("I see zombie den: " + iSeeZombieDen);
-			System.out.println("target is null: " + (pf.getTarget() == null));
-			System.out.println("at target: " + pf.isAtTarget());
+//			System.out.println("I see zombie den: " + iSeeZombieDen);
+//			System.out.println("target is null: " + (pf.getTarget() == null));
+//			System.out.println("at target: " + pf.isAtTarget());
 			targetValue = 0;
 			pf.setTarget(null);
 //			rc.setIndicatorString(1, "target: " + pf.getTarget());
@@ -135,7 +142,7 @@ public class LeadGoal extends ArchonGoalBase implements SignalConsumer {
 		
 		if(movePacer.pace()) {
 			PathFindResult result = pf.move(rc);
-			System.out.println(result);
+			//System.out.println(result);
 			if (result == PathFindResult.TRAPPED) {
 				RobotInfo[] bots = rc.senseNearbyRobots(2, Team.NEUTRAL);
 				if(bots.length > 0 && rc.isCoreReady()) {
@@ -155,6 +162,18 @@ public class LeadGoal extends ArchonGoalBase implements SignalConsumer {
 			this.boostBroadcastRadius(2);
 			
 		}
+		
+		if(nextRobot == null) {
+			nextRobot = rf.nextBot();
+		}
+		
+		if(babyCoolDown >= babyThreshold 
+				&& ArchonUtils.findPlaceAndBuild(rc, Direction.NORTH, nextRobot) != null) {
+			nextRobot = rf.nextBot();
+			babyCoolDown = 0;
+		}
+		
+		babyCoolDown++;
 		
 		return null;
 	}

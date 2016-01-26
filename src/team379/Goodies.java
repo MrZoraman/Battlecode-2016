@@ -160,6 +160,7 @@ public enum Goodies {
 		
 		//parts
 		int partsFound = scanParts(rc);
+		System.out.println("PARTS FOUND: " + partsFound);
 		goodieTotal += partsFound;
 		if(partsFound > highestGoodie) {
 			highestGoodie = partsFound;
