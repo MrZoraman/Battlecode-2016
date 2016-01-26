@@ -1,5 +1,9 @@
 package team379.goals.archon;
 
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Set;
+
 import battlecode.common.Direction;
 import battlecode.common.MapLocation;
 import battlecode.common.RobotController;
@@ -47,6 +51,7 @@ public class LeadGoal extends ArchonGoalBase implements SignalConsumer {
 	
 	private final Pacer movePacer = new Pacer(MOVE_PACE, true);
 	private final ArchonPathFinder pf = new ArchonPathFinder();
+	private final Set<MapLocation> destroyedDens = new HashSet<>();
 	
 	private int targetValue = 0;
 	
@@ -91,18 +96,36 @@ public class LeadGoal extends ArchonGoalBase implements SignalConsumer {
 			return new FollowGoal(rc.getType());
 		}
 		
-		//update zombie dens
-		MapLocation zombieDen = findZombieDenAttackPosition(rc);
-		if(zombieDen != null) {
-			iSeeZombieDen = true;
-			pf.setTarget(zombieDen);
-		} else {
-			iSeeZombieDen = false;
-		}
+		rc.setIndicatorString(2, "iSeeZombieDen: " + iSeeZombieDen);
 		
+		//if(!iSeeZombieDen) {
+			//update zombie dens
+			MapLocation zombieDen = findClosestZombieDen(rc);
+			if(zombieDen != null) {
+				MapLocation attackPosition = findZombieDenAttackPosition(rc, zombieDen);
+				System.out.println("found zombie den! My attack position is " + attackPosition);
+				iSeeZombieDen = true;
+				pf.setTarget(attackPosition);
+				RobotMemory.setOrbitConstant((int) Math.sqrt(rc.getType().sensorRadiusSquared));
+				destroyedDens.add(zombieDen);
+//				rc.setIndicatorString(1, "target: " + pf.getTarget());
+			} else {
+				//System.out.println("setting seezombieden to false");
+				iSeeZombieDen = false;
+				RobotMemory.setOrbitConstant(orbitConstant);
+				
+			}
+		//}
+		
+		//System.out.println("at target: " + pf.isAtTarget());
 		if(!iSeeZombieDen && (pf.getTarget() == null || pf.isAtTarget())) {
+			System.out.println("time to find something else to do.");
+			System.out.println("I see zombie den: " + iSeeZombieDen);
+			System.out.println("target is null: " + (pf.getTarget() == null));
+			System.out.println("at target: " + pf.isAtTarget());
 			targetValue = 0;
 			pf.setTarget(null);
+//			rc.setIndicatorString(1, "target: " + pf.getTarget());
 			GoodieSearchResult localGoodies = Goodies.scanGoodies(rc);
 			if(localGoodies.getGoodies() > 0) {
 				System.out.println("local goodies found: " + localGoodies.getLocation() + " (" + localGoodies.getGoodies() + ")");
@@ -111,7 +134,9 @@ public class LeadGoal extends ArchonGoalBase implements SignalConsumer {
 		}
 		
 		if(movePacer.pace()) {
-			if (pf.move(rc) == PathFindResult.TRAPPED) {
+			PathFindResult result = pf.move(rc);
+			System.out.println(result);
+			if (result == PathFindResult.TRAPPED) {
 				RobotInfo[] bots = rc.senseNearbyRobots(2, Team.NEUTRAL);
 				if(bots.length > 0 && rc.isCoreReady()) {
 					for(RobotInfo ri : bots) {
@@ -154,6 +179,13 @@ public class LeadGoal extends ArchonGoalBase implements SignalConsumer {
 			return;
 		}
 		
+		if(destroyedDens.contains(proposedLocation)) {
+			System.out.println("...but it's just outdated zombieden info. discard!");
+			return;
+		}
+		
+		System.out.println("I'm being proposed somethign! My current target value is " + targetValue);
+		
 		if(isHighValueTarget(targetValue)) {
 			if(isHighValueTarget(proposedTargetValue) && !isVeryHighValueTarget(targetValue)) {
 				MapLocation myLoc = rc.getLocation();
@@ -164,18 +196,18 @@ public class LeadGoal extends ArchonGoalBase implements SignalConsumer {
 					targetValue = proposedTargetValue;
 					pf.setTarget(proposedLocation);
 					System.out.println("target switched to: " + pf.getTarget() + " with a value of " + targetValue);
-					rc.setIndicatorString(1, "target: " + pf.getTarget());
+//					rc.setIndicatorString(1, "target: " + pf.getTarget());
 				}
 			}
 		} else {
 			targetValue = proposedTargetValue;
 			pf.setTarget(proposedLocation);
 			System.out.println("target switched to: " + pf.getTarget() + " with a value of " + targetValue);
-			rc.setIndicatorString(1, "target: " + pf.getTarget());
+//			rc.setIndicatorString(1, "target: " + pf.getTarget());
 		}
 	}
 	
-	private MapLocation findZombieDenAttackPosition(RobotController rc) {
+	private MapLocation findClosestZombieDen(RobotController rc) {
 		RobotInfo[] zombies = rc.senseNearbyRobots(rc.getType().sensorRadiusSquared, Team.ZOMBIE);
 		int closestDenSquared = Integer.MAX_VALUE;
 		MapLocation closestDen = null;
@@ -191,12 +223,12 @@ public class LeadGoal extends ArchonGoalBase implements SignalConsumer {
 			}
 		}
 		
-		if(closestDen == null) {
-			return null;
-		}
-		
-		Direction dirToDen = rc.getLocation().directionTo(closestDen);
-		MapLocation attackPosition = closestDen.add(dirToDen.opposite(), RobotMemory.getOrbitConstant());
+		return closestDen;
+	}
+	
+	private MapLocation findZombieDenAttackPosition(RobotController rc, MapLocation zombieDen) {
+		Direction dirToDen = rc.getLocation().directionTo(zombieDen);
+		MapLocation attackPosition = zombieDen.add(dirToDen.opposite(), RobotMemory.getOrbitConstant());
 		return attackPosition;
 	}
 	

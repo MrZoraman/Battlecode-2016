@@ -4,6 +4,7 @@ import battlecode.common.Direction;
 import battlecode.common.MapLocation;
 import battlecode.common.RobotController;
 import team379.Globals;
+import team379.pathfinding.PathFinder.DirectionTranslator;
 
 public class ArchonPathFinder extends PathFinder {
 	
@@ -15,6 +16,7 @@ public class ArchonPathFinder extends PathFinder {
 		}
 		target = validateTarget(rc, target);
 		setTarget(target);
+		rc.setIndicatorString(1, "-target: " + getTarget());
 		return super.move(rc);
 	}
 	
@@ -56,5 +58,16 @@ public class ArchonPathFinder extends PathFinder {
 		
 		//looks like this location is ok to go to!
 		return initialTarget;
+	}
+	
+	@Override
+	public DirectionTranslator[] generateTranslators() {
+		return new DirectionTranslator[] {
+			dir -> dir,								//north			assuming north, the following offsets are:
+			dir -> dir.rotateLeft(),				//north-west
+			dir -> dir.rotateRight().rotateRight(),	//north-east
+			dir -> dir.rotateRight(),				//east
+			dir -> dir.opposite()					//west
+		};
 	}
 }
