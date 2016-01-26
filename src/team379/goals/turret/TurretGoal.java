@@ -74,15 +74,16 @@ public class TurretGoal implements Goal{
 	}
 	
 	private void defend(RobotController rc, List<RobotInfo> baddies) throws Exception {
-		double closestBaddieDistance = Double.MAX_VALUE;
+//		double closestBaddieDistance = Double.MAX_VALUE;
+		int closestbaddieSquared = Integer.MAX_VALUE;
 		RobotInfo closestBaddie = null;
 		
 		MapLocation myLocation = rc.getLocation();
 		
 		for(RobotInfo ri : baddies) {
-			double distance = myLocation.distanceSquaredTo(ri.location);
-			if(distance < closestBaddieDistance) {
-				closestBaddieDistance = distance;
+			int distanceSquared = myLocation.distanceSquaredTo(ri.location);
+			if(distanceSquared < closestbaddieSquared) {
+				closestbaddieSquared = distanceSquared;
 				closestBaddie = ri;
 			}
 		}
@@ -92,7 +93,14 @@ public class TurretGoal implements Goal{
 			return;
 		}
 		
-		if(closestBaddieDistance <= rc.getType().attackRadiusSquared) {
+//		if(rc.getLocation().equals(closestBaddie.location)) {
+//			return;
+//		}
+		
+		System.out.println("my type: " + rc.getType());
+		System.out.println("my location: " + rc.getLocation());
+		System.out.println("closest distance squared: " + closestbaddieSquared);
+		if(closestbaddieSquared > 5 && closestbaddieSquared <= rc.getType().attackRadiusSquared) {
 			if(rc.isWeaponReady()) {
 				rc.attackLocation(closestBaddie.location);
 			}

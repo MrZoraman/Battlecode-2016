@@ -53,29 +53,29 @@ public class LeadGoal extends ArchonGoalBase implements SignalConsumer {
 	private final ArchonPathFinder pf = new ArchonPathFinder();
 	private final Set<MapLocation> destroyedDens = new HashSet<>();
 	
-	private int targetValue = 0;
+	private static int targetValue = 0;
 	
-	private boolean iSeeZombieDen = false;
+	private static boolean iSeeZombieDen = false;
 	
-	private RobotController rc = null;
+	private static RobotController rc = null;
 	
-	private int newArchonId;
-	private MapLocation newArchonLocation;
+	private static int newArchonId;
+	private static MapLocation newArchonLocation;
 	
-	private int orbitConstant = Globals.INITIAL_ORBIT_CONSTANT();
+	private static int orbitConstant = Globals.INITIAL_ORBIT_CONSTANT();
 	
 
-	private RobotType nextRobot = null;
-	private RobotFactory rf = new RobotFactory();
+	private static RobotType nextRobot = null;
+	private static RobotFactory rf = new RobotFactory();
 
-	private final int babyThreshold = 15;
-	private int babyCoolDown = babyThreshold;
+	private static final int babyThreshold = 15;
+	private static int babyCoolDown = babyThreshold;
 	
 	@Override
 	public Goal achieveGoal(RobotController rc) throws Exception {
 		super.achieveGoal(rc);
-		if(this.rc == null) {
-			this.rc = rc;
+		if(LeadGoal.rc == null) {
+			LeadGoal.rc = rc;
 		}
 
 		SignalReader.consume(rc, this);
@@ -140,16 +140,21 @@ public class LeadGoal extends ArchonGoalBase implements SignalConsumer {
 			}
 		}
 		
+		RobotInfo[] bots = rc.senseNearbyRobots(2, Team.NEUTRAL);
+		if(bots.length > 0) {
+			return new ActivateGoal(new LeadGoal());
+		}
+		
 		if(movePacer.pace()) {
 			PathFindResult result = pf.move(rc);
 			//System.out.println(result);
 //			if (result == PathFindResult.TRAPPED) {
-				RobotInfo[] bots = rc.senseNearbyRobots(2, Team.NEUTRAL);
-				if(bots.length > 0 && rc.isCoreReady()) {
-					for(RobotInfo ri : bots) {
-						rc.activate(ri.location);
-					}
-				}
+				
+//				if(bots.length > 0 && rc.isCoreReady()) {
+//					for(RobotInfo ri : bots) {
+//						rc.activate(ri.location);
+//					}
+//				}
 //			}
 		}
 		

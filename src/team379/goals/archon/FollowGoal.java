@@ -5,6 +5,7 @@ import battlecode.common.MapLocation;
 import battlecode.common.RobotController;
 import battlecode.common.RobotInfo;
 import battlecode.common.RobotType;
+import battlecode.common.Team;
 import team379.Globals;
 import team379.RobotMemory;
 import team379.goals.Goal;
@@ -15,11 +16,11 @@ import team379.signals.SignalType;
 
 public class FollowGoal extends PatrolAroundArchonGoalBase {
 	
-	private RobotType nextRobot = null;
-	private RobotFactory rf = new RobotFactory();
+	private static RobotType nextRobot = null;
+	private static RobotFactory rf = new RobotFactory();
 
-	private final int babyThreshold = 15;
-	private int babyCoolDown = babyThreshold;
+	private static final int babyThreshold = 15;
+	private static int babyCoolDown = babyThreshold;
 
 	public FollowGoal(RobotType type) {
 		super(type);
@@ -52,6 +53,11 @@ public class FollowGoal extends PatrolAroundArchonGoalBase {
 			
 			//return new FollowGoal(rc);
 			//return new FollowGoal(rc.getType());
+		}
+		
+		RobotInfo[] bots = rc.senseNearbyRobots(2, Team.NEUTRAL);
+		if(bots.length > 0) {
+			return new ActivateGoal(new FollowGoal(rc.getType()));
 		}
 		
 		SignalReader.consume(rc, this);
