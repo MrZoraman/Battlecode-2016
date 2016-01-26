@@ -110,17 +110,16 @@ public enum Goodies {
 		Team myTeam = rc.getTeam();
 		
 		//friendly archons
-//		RobotInfo[] nearbyRobots = rc.senseNearbyRobots(rc.getType().sensorRadiusSquared);
-//		GoodieSearchResult result = scanRobots(nearbyRobots, RobotType.ARCHON, myLoc, myTeam, myTeam);
-//		goodieTotal += result.getGoodies();
-//		if(result.getGoodies() > highestGoodie) {
-//			highestGoodie = result.getGoodies();
-//			mostImportantGoodie = result.getLocation();
-//		}
+		RobotInfo[] nearbyRobots = rc.senseNearbyRobots(rc.getType().sensorRadiusSquared);
+		GoodieSearchResult result = scanFriendlyArchons(nearbyRobots);
+		goodieTotal += result.getGoodies();
+		if(result.getGoodies() > highestGoodie) {
+			highestGoodie = result.getGoodies();
+			mostImportantGoodie = result.getLocation();
+		}
 		
 		//zombie dens
-		RobotInfo[] nearbyRobots = rc.senseNearbyRobots(rc.getType().sensorRadiusSquared);
-		GoodieSearchResult result = scanRobots(nearbyRobots, RobotType.ZOMBIEDEN, myLoc, myTeam, Team.ZOMBIE);
+		result = scanRobots(nearbyRobots, RobotType.ZOMBIEDEN, myLoc, myTeam, Team.ZOMBIE);
 		goodieTotal += result.getGoodies();
 		if(result.getGoodies() > highestGoodie) {
 			highestGoodie = result.getGoodies();
@@ -128,7 +127,6 @@ public enum Goodies {
 		}
 		
 		//neutral archons
-		nearbyRobots = rc.senseNearbyRobots(rc.getType().sensorRadiusSquared);
 		result = scanRobots(nearbyRobots, RobotType.ARCHON, myLoc, myTeam, Team.NEUTRAL);
 		goodieTotal += result.getGoodies();
 		if(result.getGoodies() > highestGoodie) {
@@ -137,7 +135,6 @@ public enum Goodies {
 		}
 		
 		//neutral turrets
-		nearbyRobots = rc.senseNearbyRobots(rc.getType().sensorRadiusSquared);
 		result = scanRobots(nearbyRobots, RobotType.TURRET, myLoc, myTeam, Team.NEUTRAL);
 		goodieTotal += result.getGoodies();
 		if(result.getGoodies() > highestGoodie) {
@@ -146,7 +143,6 @@ public enum Goodies {
 		}
 		
 		//neutral soldiers
-		nearbyRobots = rc.senseNearbyRobots(rc.getType().sensorRadiusSquared);
 		result = scanRobots(nearbyRobots, RobotType.SOLDIER, myLoc, myTeam, Team.NEUTRAL);
 		goodieTotal += result.getGoodies();
 		if(result.getGoodies() > highestGoodie) {
@@ -155,7 +151,6 @@ public enum Goodies {
 		}
 		
 		//neutral guards
-		nearbyRobots = rc.senseNearbyRobots(rc.getType().sensorRadiusSquared);
 		result = scanRobots(nearbyRobots, RobotType.GUARD, myLoc, myTeam, Team.NEUTRAL);
 		goodieTotal += result.getGoodies();
 		if(result.getGoodies() > highestGoodie) {
@@ -172,7 +167,6 @@ public enum Goodies {
 		}
 		
 		//neutral scouts
-		nearbyRobots = rc.senseNearbyRobots(rc.getType().sensorRadiusSquared);
 		result = scanRobots(nearbyRobots, RobotType.SCOUT, myLoc, myTeam, Team.NEUTRAL);
 		goodieTotal += result.getGoodies();
 		if(result.getGoodies() > highestGoodie) {
@@ -181,7 +175,6 @@ public enum Goodies {
 		}
 		
 		//neutral vipers
-		nearbyRobots = rc.senseNearbyRobots(rc.getType().sensorRadiusSquared);
 		result = scanRobots(nearbyRobots, RobotType.VIPER, myLoc, myTeam, Team.NEUTRAL);
 		goodieTotal += result.getGoodies();
 		if(result.getGoodies() > highestGoodie) {
@@ -224,5 +217,26 @@ public enum Goodies {
 			partsFound += rc.senseParts(partLocation);
 		}
 		return partsFound;
+	}
+	
+	private static GoodieSearchResult scanFriendlyArchons(RobotInfo[] robots) {
+		int lowestArchonId = RobotMemory.getArchonId();
+		MapLocation lowestArchonLocation = null;
+		for(RobotInfo robot : robots) {
+			if(robot.type != RobotType.ARCHON) {
+				continue;
+			}
+			
+			if(robot.ID < lowestArchonId) {
+				lowestArchonId = robot.ID;
+				lowestArchonLocation = robot.location;
+			}
+		}
+		
+		if(lowestArchonId < RobotMemory.getArchonId()) {
+			return new GoodieSearchResult(FRIENDLY_ARCHON.getValue(), lowestArchonLocation);
+		}
+		
+		return new GoodieSearchResult(0, null);
 	}
 }
