@@ -35,7 +35,7 @@ public enum Goodies {
 		switch(type) {
 		case ARCHON:
 			if(theirTeam == Team.NEUTRAL) {
-				//System.out.println("found neutral archon");
+				System.out.println("found neutral archon");
 				return NEUTRAL_ARCHON.getValue();
 			} else if (theirTeam == myTeam) {
 				//System.out.println("found friendly archon");
@@ -110,17 +110,17 @@ public enum Goodies {
 		Team myTeam = rc.getTeam();
 		
 		//friendly archons
-		RobotInfo[] nearbyRobots = rc.senseNearbyRobots(rc.getType().sensorRadiusSquared);
-		GoodieSearchResult result = scanRobots(nearbyRobots, RobotType.ARCHON, myLoc, myTeam, myTeam);
-		goodieTotal += result.getGoodies();
-		if(result.getGoodies() > highestGoodie) {
-			highestGoodie = result.getGoodies();
-			mostImportantGoodie = result.getLocation();
-		}
+//		RobotInfo[] nearbyRobots = rc.senseNearbyRobots(rc.getType().sensorRadiusSquared);
+//		GoodieSearchResult result = scanRobots(nearbyRobots, RobotType.ARCHON, myLoc, myTeam, myTeam);
+//		goodieTotal += result.getGoodies();
+//		if(result.getGoodies() > highestGoodie) {
+//			highestGoodie = result.getGoodies();
+//			mostImportantGoodie = result.getLocation();
+//		}
 		
 		//zombie dens
-		nearbyRobots = rc.senseNearbyRobots(rc.getType().sensorRadiusSquared);
-		result = scanRobots(nearbyRobots, RobotType.ZOMBIEDEN, myLoc, myTeam, Team.ZOMBIE);
+		RobotInfo[] nearbyRobots = rc.senseNearbyRobots(rc.getType().sensorRadiusSquared);
+		GoodieSearchResult result = scanRobots(nearbyRobots, RobotType.ZOMBIEDEN, myLoc, myTeam, Team.ZOMBIE);
 		goodieTotal += result.getGoodies();
 		if(result.getGoodies() > highestGoodie) {
 			highestGoodie = result.getGoodies();
