@@ -21,12 +21,14 @@ public abstract class PatrolAroundArchonGoalBase implements Goal, SignalConsumer
 	private static final int RUBBLE_BOOST_AMOUNT = 100;
 	
 	protected static Orbiter orbiter;
+	private static RobotType type;
 	//protected static ArchonLocator al;
 	
 	public PatrolAroundArchonGoalBase(RobotType type) {
 		OrbitCalculator oc = new OrbitCalculator(RobotMemory.getOrbitConstant(), type);
 		if(orbiter == null) {
 			orbiter = new Orbiter(RobotMemory.getArchonLocation(), oc.calculateRadius());
+			PatrolAroundArchonGoalBase.type = type;
 		} else {
 			orbiter.setCenter(RobotMemory.getArchonLocation());
 			orbiter.setRadius(oc.calculateRadius());
@@ -111,13 +113,17 @@ public abstract class PatrolAroundArchonGoalBase implements Goal, SignalConsumer
 			}
 		} else if (data.getType() == SignalType.NEW_LEADER) {
 			//if(data.getSenderId() == RobotMemory.getArchonId()) {
-				System.out.println("(my archon is " + RobotMemory.getArchonId() +")-------------------------changing leaders as requested by " + data.getSenderId() + " to " + data.getOtherInfo() + ".");
+				//System.out.println("(my archon is " + RobotMemory.getArchonId() +")-------------------------changing leaders as requested by " + data.getSenderId() + " to " + data.getOtherInfo() + ".");
 				short archonId = data.getOtherInfo();
 				RobotMemory.setArchonId(archonId);
 				MapLocation archonLocation = data.getLocation();
 				RobotMemory.setArchonLocation(archonLocation);
 				orbiter.setCenter(archonLocation);
 			//}
+		} else if (data.getType() == SignalType.SPREAD_OUT) {
+			OrbitCalculator oc = new OrbitCalculator(data.getOtherInfo(), type);
+			RobotMemory.setOrbitConstant(data.getOtherInfo());
+			orbiter.setRadius(oc.calculateRadius());
 		}
 	}
 }

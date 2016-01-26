@@ -6,6 +6,7 @@ import battlecode.common.RobotController;
 import battlecode.common.RobotInfo;
 import battlecode.common.RobotType;
 import battlecode.common.Team;
+import team379.Globals;
 import team379.GoodieSearchResult;
 import team379.Goodies;
 import team379.Pacer;
@@ -40,7 +41,7 @@ public class LeadGoal extends ArchonGoalBase implements SignalConsumer {
 	 * If the archon can see a zombie den, it will not change targets until the zombie den is gone.
 	 */
 	
-	private static final int MOVE_PACE = 1;
+	private static final int MOVE_PACE = 20;
 	private static final int HIGH_VALUE_TARGET = Goodies.ZOMBIE_DEN.getValue();
 	private static final int VERY_HIGH_VALUE_TARGET = Goodies.FRIENDLY_ARCHON.getValue();
 	
@@ -55,6 +56,8 @@ public class LeadGoal extends ArchonGoalBase implements SignalConsumer {
 	
 	private int newArchonId;
 	private MapLocation newArchonLocation;
+	
+	private int orbitConstant = Globals.INITIAL_ORBIT_CONSTANT();
 	
 	@Override
 	public Goal achieveGoal(RobotController rc) throws Exception {
@@ -118,6 +121,19 @@ public class LeadGoal extends ArchonGoalBase implements SignalConsumer {
 			}
 		}
 		
+		int newOrbitConstant = calculateOrbitConstant(rc);
+		//System.out.println("orbit constant: " + newOrbitConstant + "(" + rc.getRobotCount() + ") robots");
+		if(newOrbitConstant != orbitConstant) {
+			System.out.println("spreading out from " + orbitConstant + " to " + newOrbitConstant);
+			orbitConstant = newOrbitConstant;
+			RobotMemory.setOrbitConstant(newOrbitConstant);
+			this.boostBroadcastRadius(2);
+			SignalData signalData = new SignalData(SignalType.SPREAD_OUT, rc.getLocation(), (short) orbitConstant);
+			int[] data = signalData.toInts();
+			int radiusSquared = (int) Math.pow(broadcastRadius, 2);
+			rc.broadcastMessageSignal(data[0], data[1], radiusSquared);
+		}
+		
 		return null;
 	}
 
@@ -131,13 +147,13 @@ public class LeadGoal extends ArchonGoalBase implements SignalConsumer {
 			if(archonId < rc.getID()) {
 				newArchonId = archonId;
 				newArchonLocation = data.getLocation();
-				System.out.println("|||||||||||||||Foomf");
+				//System.out.println("|||||||||||||||Foomf");
 			}
 		}
 	}
 	
 	private void trySwitchTargets(int proposedTargetValue, MapLocation proposedLocation) {
-		if(iSeeZombieDen) {
+		if(iSeeZombieDen || proposedTargetValue <= 0) {
 			return;
 		}
 		
@@ -205,7 +221,7 @@ public class LeadGoal extends ArchonGoalBase implements SignalConsumer {
 		if(lowestArchonLocation != null) {
 			newArchonId = lowestArchonId;
 			newArchonLocation = lowestArchonLocation;
-			System.out.println("+++++++++++++++++++++++++++++++++found new leader from search!");
+			//System.out.println("+++++++++++++++++++++++++++++++++found new leader from search!");
 		}
 		
 //		if(lowestArchonLocation == null) {
@@ -235,5 +251,30 @@ public class LeadGoal extends ArchonGoalBase implements SignalConsumer {
 	
 	private boolean isVeryHighValueTarget(int value) {
 		return value >= VERY_HIGH_VALUE_TARGET;
+	}
+	
+	private int calculateOrbitConstant(RobotController rc) {
+		int robotCount = rc.getRobotCount();
+		if(robotCount > 100) {
+			return 14;
+		} else if(robotCount > 90) {
+			return 13;
+		} else if(robotCount > 80) {
+			return 12;
+		} else if(robotCount > 70) {
+			return 11;
+		} else if(robotCount > 60) {
+			return 10;
+		} else if(robotCount > 50) {
+			return 9;
+		} else if(robotCount > 40) {
+			return 8;
+		} else if (robotCount > 30) {
+			return 7;
+		} else if (robotCount > 20) {
+			return 6;
+		} else {
+			return Globals.INITIAL_ORBIT_CONSTANT();
+		}
 	}
 }
