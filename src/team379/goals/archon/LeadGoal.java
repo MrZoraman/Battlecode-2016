@@ -20,6 +20,26 @@ import team379.signals.SignalType;
 
 public class LeadGoal extends ArchonGoalBase implements SignalConsumer {
 	
+	/*
+	 * scouts look for interesting things. They send back the location and value of ONE important thing.
+	 * 
+	 * archons are constantly looking in their immediate area for interesting things. They recieve locations
+	 * from scouts for important things outside their range.
+	 * 
+	 * the archon steadily moves towards its target.
+	 * 
+	 * The archon has a threshold for what it considers "chump change", which is (less than) the value of a zombie den
+	 * 
+	 * If the archon's target value is below this threshold, then it is open to new targets suggested by the scouts.
+	 * 
+	 * If the archon has a high value target, it will only change targets if:
+	 * 		the new target is high value and is closer and the current target is not very high value
+	 * 		or
+	 * 		the target is a very high value target (greater than or equal to the value of a friendly archon)
+	 * 
+	 * If the archon can see a zombie den, it will not change targets until the zombie den is gone.
+	 */
+	
 	private static final int MOVE_PACE = 20;
 	private static final int HIGH_VALUE_TARGET = Goodies.ZOMBIE_DEN.getValue();
 	private static final int VERY_HIGH_VALUE_TARGET = Goodies.FRIENDLY_ARCHON.getValue();

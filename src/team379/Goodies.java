@@ -35,20 +35,32 @@ public enum Goodies {
 		switch(type) {
 		case ARCHON:
 			if(theirTeam == Team.NEUTRAL) {
-				System.out.println("found neutral archon");
+				//System.out.println("found neutral archon");
 				return NEUTRAL_ARCHON.getValue();
 			} else if (theirTeam == myTeam) {
-				System.out.println("found friendly archon");
+				//System.out.println("found friendly archon");
 				return FRIENDLY_ARCHON.getValue();
 			} else {
 				return 0;
 			}
-		case GUARD: System.out.println("found guard");return GUARD.getValue();
-		case SCOUT: System.out.println("found scout");return SCOUT.getValue();
-		case SOLDIER: System.out.println("found soldier");return SOLDIER.getValue();
-		case TURRET: System.out.println("found turret");return TURRET.getValue();
-		case VIPER: System.out.println("found viper");return VIPER.getValue();
-		case ZOMBIEDEN: System.out.println("found zombie den");return ZOMBIE_DEN.getValue();
+		case GUARD: 
+			//System.out.println("found guard");
+			return GUARD.getValue();
+		case SCOUT: 
+			//System.out.println("found scout");
+			return SCOUT.getValue();
+		case SOLDIER: 
+			//System.out.println("found soldier");
+			return SOLDIER.getValue();
+		case TURRET: 
+			//System.out.println("found turret");
+			return TURRET.getValue();
+		case VIPER: 
+			//System.out.println("found viper");
+			return VIPER.getValue();
+		case ZOMBIEDEN: 
+			//System.out.println("found zombie den");
+			return ZOMBIE_DEN.getValue();
 		default: return 0;
 		}
 	}
