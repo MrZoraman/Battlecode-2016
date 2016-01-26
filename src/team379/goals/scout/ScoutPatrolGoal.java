@@ -6,6 +6,7 @@ import battlecode.common.RobotInfo;
 import battlecode.common.RobotType;
 import team379.GoodieSearchResult;
 import team379.Goodies;
+import team379.Pacer;
 import team379.RobotMemory;
 import team379.goals.Goal;
 import team379.goals.PatrolAroundArchonGoalBase;
@@ -19,6 +20,7 @@ public class ScoutPatrolGoal extends PatrolAroundArchonGoalBase {
 	private int timeSinceLastBroadcast = 0;
 	private static final int MAX_BROADCAST_SILENCE = 30;
 	private int baddieCooldown = 0;
+	private final Pacer pacer = new Pacer(8, false);
 
 	public ScoutPatrolGoal(RobotType type) {
 		super(type);
@@ -39,12 +41,16 @@ public class ScoutPatrolGoal extends PatrolAroundArchonGoalBase {
 		}
 		
 		
-		if(goodieTotal >= Goodies.ZOMBIE_DEN.getValue() || timeSinceLastBroadcast >= MAX_BROADCAST_SILENCE) {
+		if(orbiter.isAtTarget() && pacer.pace()) {
 			broadcast(rc);
-			timeSinceLastBroadcast = 0;
-		} else {
-			timeSinceLastBroadcast++;
 		}
+		
+//		if(goodieTotal >= Goodies.ZOMBIE_DEN.getValue() || timeSinceLastBroadcast >= MAX_BROADCAST_SILENCE) {
+//			broadcast(rc);
+//			timeSinceLastBroadcast = 0;
+//		} else {
+//			timeSinceLastBroadcast++;
+//		}
 		
 		
 		

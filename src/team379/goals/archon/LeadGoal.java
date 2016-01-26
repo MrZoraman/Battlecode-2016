@@ -40,7 +40,7 @@ public class LeadGoal extends ArchonGoalBase implements SignalConsumer {
 	 * If the archon can see a zombie den, it will not change targets until the zombie den is gone.
 	 */
 	
-	private static final int MOVE_PACE = 20;
+	private static final int MOVE_PACE = 1;
 	private static final int HIGH_VALUE_TARGET = Goodies.ZOMBIE_DEN.getValue();
 	private static final int VERY_HIGH_VALUE_TARGET = Goodies.FRIENDLY_ARCHON.getValue();
 	
@@ -78,7 +78,7 @@ public class LeadGoal extends ArchonGoalBase implements SignalConsumer {
 			
 			SignalData signalData = new SignalData(SignalType.NEW_LEADER, RobotMemory.getArchonLocation(), (short) RobotMemory.getArchonId());
 			int[] data = signalData.toInts();
-			int radiusSquared = (int) Math.pow(25, 2);
+			int radiusSquared = (int) Math.pow(35, 2);
 			//System.out.println("broadcasting! " + radiusSquared);
 			rc.broadcastMessageSignal(data[0], data[1], radiusSquared);
 			//return null;
@@ -102,6 +102,7 @@ public class LeadGoal extends ArchonGoalBase implements SignalConsumer {
 			pf.setTarget(null);
 			GoodieSearchResult localGoodies = Goodies.scanGoodies(rc);
 			if(localGoodies.getGoodies() > 0) {
+				System.out.println("local goodies found: " + localGoodies.getLocation() + " (" + localGoodies.getGoodies() + ")");
 				trySwitchTargets(localGoodies.getGoodies(), localGoodies.getLocation());
 			}
 		}
@@ -122,7 +123,7 @@ public class LeadGoal extends ArchonGoalBase implements SignalConsumer {
 
 	@Override
 	public void consume(SignalData data) {
-		System.out.println("leader consume: " + data.getType() + " from " + data.getSenderId());
+		//System.out.println("leader consume: " + data.getType() + " from " + data.getSenderId());
 		if(data.getType() == SignalType.FOUND_STUFF) {
 			trySwitchTargets(data.getOtherInfo(), data.getLocation());
 		} else if (data.getType() == SignalType.THIS_IS_MY_ID) {
@@ -150,12 +151,14 @@ public class LeadGoal extends ArchonGoalBase implements SignalConsumer {
 					targetValue = proposedTargetValue;
 					pf.setTarget(proposedLocation);
 					System.out.println("target switched to: " + pf.getTarget() + " with a value of " + targetValue);
+					rc.setIndicatorString(1, "target: " + pf.getTarget());
 				}
 			}
 		} else {
 			targetValue = proposedTargetValue;
 			pf.setTarget(proposedLocation);
 			System.out.println("target switched to: " + pf.getTarget() + " with a value of " + targetValue);
+			rc.setIndicatorString(1, "target: " + pf.getTarget());
 		}
 	}
 	
@@ -189,7 +192,7 @@ public class LeadGoal extends ArchonGoalBase implements SignalConsumer {
 		MapLocation lowestArchonLocation = null;
 		RobotInfo[] robots = rc.senseNearbyRobots(rc.getType().sensorRadiusSquared, rc.getTeam());
 		for(RobotInfo ri : robots) {
-			if(ri.type != RobotType.ARCHON) {
+			if(ri.type != RobotType.ARCHON || ri.team != rc.getTeam()) {
 				continue;
 			}
 			

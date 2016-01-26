@@ -66,7 +66,6 @@ public class SignalData {
 	 * @return An array of two integers containing all of the data.
 	 */
 	public int[] toInts() {
-		System.out.println("signal data to ints: " + type.getValue());
 		int a = combine(type.getValue(), otherInfo);
 		int b = combine((short) location.x, (short) location.y);
 		return new int[]{a, b};

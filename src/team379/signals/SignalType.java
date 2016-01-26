@@ -46,7 +46,6 @@ public enum SignalType {
 	static {
 		SignalType[] arrayOfSignals = SignalType.values();
 		for(SignalType s : arrayOfSignals) {
-			System.out.println("added " + s.getValue() + ", " + s + " to the signal map");
 			signalsMap.put(s.getValue(), s);
 		}
 	}
@@ -57,7 +56,6 @@ public enum SignalType {
 	 * @return A SignalType, or null is the integer is out of range.
 	 */
 	public static SignalType toSignal(short value) {
-		System.out.println("toSignal: " + value);
 		return signalsMap.get(value);
 	}
 	

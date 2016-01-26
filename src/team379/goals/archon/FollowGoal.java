@@ -31,16 +31,28 @@ public class FollowGoal extends PatrolAroundArchonGoalBase {
 
 	@Override
 	public Goal achieveGoal(RobotController rc) throws Exception {
-//		RobotInfo newArchon = findNewLeader(rc);
-//		if(newArchon != null) {
-//			RobotMemory.setArchonId(newArchon.ID);
-//			RobotMemory.setArchonLocation(newArchon.location);
-//			orbiter.setCenter(newArchon.location);
+		RobotInfo newArchon = findNewLeader(rc);
+		if(newArchon != null) {
+			System.out.println("becomming a follower!");
+			RobotMemory.setArchonId(newArchon.ID);
+			RobotMemory.setArchonLocation(newArchon.location);
 //			//time to broadcast!
-//			SignalData sd = new SignalData(SignalType.NEW_LEADER, newArchon.location, (short) newArchon.ID);
+//			SignalData sd = new SignalData(SignalType.NEW_LEADER, newArchonLocation, (short) newArchonId);
 //			int[] data = sd.toInts();
-//			rc.broadcastMessageSignal(data[0], data[1], rc.getType().sensorRadiusSquared + 10);//TODO: magic number!
-//		}
+//			System.out.println("BROADCASTING.... NEW LEADER------------- (" + rc.getID() + ")");
+//			rc.broadcastMessageSignal(data[0], data[1], 100);//TODO: magic number!
+			
+			SignalData signalData = new SignalData(SignalType.NEW_LEADER, RobotMemory.getArchonLocation(), (short) RobotMemory.getArchonId());
+			int[] data = signalData.toInts();
+			int radiusSquared = (int) Math.pow(35, 2);
+			//System.out.println("broadcasting! " + radiusSquared);
+			rc.broadcastMessageSignal(data[0], data[1], radiusSquared);
+			//return null;
+			orbiter.setCenter(newArchon.location);
+			
+			//return new FollowGoal(rc);
+			//return new FollowGoal(rc.getType());
+		}
 		
 		SignalReader.consume(rc, this);
 		
@@ -48,11 +60,11 @@ public class FollowGoal extends PatrolAroundArchonGoalBase {
 			nextRobot = rf.nextBot();
 		}
 		
-//		if(babyCoolDown >= babyThreshold 
-//				&& ArchonUtils.findPlaceAndBuild(rc, Direction.NORTH, nextRobot) != null) {
-//			nextRobot = rf.nextBot();
-//			babyCoolDown = 0;
-//		}
+		if(babyCoolDown >= babyThreshold 
+				&& ArchonUtils.findPlaceAndBuild(rc, Direction.NORTH, nextRobot) != null) {
+			nextRobot = rf.nextBot();
+			babyCoolDown = 0;
+		}
 		
 		babyCoolDown++;
 		
@@ -70,27 +82,27 @@ public class FollowGoal extends PatrolAroundArchonGoalBase {
 		return null;
 	}
 
-//	private RobotInfo findNewLeader(RobotController rc) throws Exception {
-//		int lowestArchonId = RobotMemory.getArchonId();
-//		RobotInfo newArchon = null;
-//		RobotInfo[] robots = rc.senseNearbyRobots(rc.getType().sensorRadiusSquared, rc.getTeam());
-//		for(RobotInfo ri : robots) {
-//			if(ri.type != RobotType.ARCHON) {
-//				continue;
-//			}
-//			
-//			if(ri.ID < lowestArchonId) {
-//				lowestArchonId = ri.ID;
-//				newArchon = ri;
-//			}
-//		}
-//		
-//		return newArchon;
-//	}
+	private RobotInfo findNewLeader(RobotController rc) throws Exception {
+		int lowestArchonId = RobotMemory.getArchonId();
+		RobotInfo newArchon = null;
+		RobotInfo[] robots = rc.senseNearbyRobots(rc.getType().sensorRadiusSquared, rc.getTeam());
+		for(RobotInfo ri : robots) {
+			if(ri.type != RobotType.ARCHON) {
+				continue;
+			}
+			
+			if(ri.ID < lowestArchonId) {
+				lowestArchonId = ri.ID;
+				newArchon = ri;
+			}
+		}
+		
+		return newArchon;
+	}
 	
 	@Override
 	public void consume(SignalData data) {
-		System.out.println("follow consume: " + data.getType() + " from " + data.getSenderId());
+		//System.out.println("follow consume: " + data.getType() + " from " + data.getSenderId());
 		if(data.getType() == SignalType.THIS_IS_MY_ID) {
 			short archonId = data.getOtherInfo();
 			if(archonId == RobotMemory.getArchonId()) {

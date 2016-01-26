@@ -7,7 +7,7 @@ import team379.signals.SignalType;
 
 public abstract class ArchonGoalBase implements Goal {
 	
-	private static double broadcastRadius = 15;		//TODO: magic number!
+	private static double broadcastRadius = 5;		//TODO: magic number!
 
 	@Override
 	public Goal achieveGoal(RobotController rc) throws Exception {

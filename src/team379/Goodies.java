@@ -111,7 +111,7 @@ public enum Goodies {
 		
 		//friendly archons
 		RobotInfo[] nearbyRobots = rc.senseNearbyRobots(rc.getType().sensorRadiusSquared);
-		GoodieSearchResult result = scanFriendlyArchons(nearbyRobots);
+		GoodieSearchResult result = scanFriendlyArchons(nearbyRobots, myTeam);
 		goodieTotal += result.getGoodies();
 		if(result.getGoodies() > highestGoodie) {
 			highestGoodie = result.getGoodies();
@@ -219,11 +219,11 @@ public enum Goodies {
 		return partsFound;
 	}
 	
-	private static GoodieSearchResult scanFriendlyArchons(RobotInfo[] robots) {
+	private static GoodieSearchResult scanFriendlyArchons(RobotInfo[] robots, Team myTeam) {
 		int lowestArchonId = RobotMemory.getArchonId();
 		MapLocation lowestArchonLocation = null;
 		for(RobotInfo robot : robots) {
-			if(robot.type != RobotType.ARCHON) {
+			if(robot.type != RobotType.ARCHON || robot.team != myTeam) {
 				continue;
 			}
 			

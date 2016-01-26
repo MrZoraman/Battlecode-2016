@@ -23,7 +23,7 @@ public class BeginningBuildGoal extends ArchonGoalBase {
 	public Goal achieveGoal(RobotController rc) throws Exception {
 		super.achieveGoal(rc);
 		
-		SignalReader.consume(rc, data -> System.out.println("ayo: " + data.getType() + " : " + data.getSenderId()));
+		//SignalReader.consume(rc, data -> System.out.println("ayo: " + data.getType() + " : " + data.getSenderId()));
 		
 		if(bd == null) {
 			int myIndex = 0;
@@ -78,6 +78,8 @@ public class BeginningBuildGoal extends ArchonGoalBase {
 				lastPlacedDir = dir;
 				next = null;
 				rc.broadcastMessageSignal(SignalType.THIS_IS_MY_ID.getValue(), rc.getID(), 2);
+			} else {
+				return new LeadGoal();
 			}
 		}
 		
@@ -102,11 +104,11 @@ public class BeginningBuildGoal extends ArchonGoalBase {
 		
 		//buildQueue.enqueue(RobotType.TURRET);
 		
-		//buildQueue.enqueue(RobotType.SCOUT);
+		buildQueue.enqueue(RobotType.SCOUT);
 
 		int guardsToMake = calculateGuardsToMake(rc);
 		for(int ii = 0; ii < guardsToMake; ii++) {
-			//buildQueue.enqueue(RobotType.GUARD);
+			buildQueue.enqueue(RobotType.GUARD);
 		}
 		
 //		int soldiersToMake = 25;
