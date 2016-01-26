@@ -6,7 +6,9 @@ import battlecode.common.RobotController;
 import battlecode.common.RobotInfo;
 import battlecode.common.RobotType;
 import battlecode.common.Team;
+import team379.GoodieSearchResult;
 import team379.Goodies;
+import team379.Pacer;
 import team379.RobotMemory;
 import team379.goals.Goal;
 import team379.pathfinding.ArchonPathFinder;
@@ -17,28 +19,32 @@ import team379.signals.SignalReader;
 import team379.signals.SignalType;
 
 public class LeadGoal extends ArchonGoalBase implements SignalConsumer {
-
-	private ArchonPathFinder pf = new ArchonPathFinder();
-	private RobotController rc;
 	
-	private short destinationGoodies = 0;
+	private static final int MOVE_PACE = 20;
+	private static final int HIGH_VALUE_TARGET = Goodies.ZOMBIE_DEN.getValue();
+	private static final int VERY_HIGH_VALUE_TARGET = Goodies.FRIENDLY_ARCHON.getValue();
 	
-	private int newArchonId = 0;
-	private MapLocation newArchonLocation = null;
+	private final Pacer movePacer = new Pacer(MOVE_PACE, true);
+	private final ArchonPathFinder pf = new ArchonPathFinder();
 	
-	private static final int MOVE_DELAY = 20;
-	private int moveCooldown = MOVE_DELAY;
+	private int targetValue = 0;
 	
-	private int emptyScoutFinds = 0;
-	private static final int MAX_EMPTY_FINDS = 30;
+	private boolean iSeeZombieDen = false;
 	
-	private boolean goingSomewhere = false;
-
+	private RobotController rc = null;
+	
+	private int newArchonId;
+	private MapLocation newArchonLocation;
+	
 	@Override
 	public Goal achieveGoal(RobotController rc) throws Exception {
 		super.achieveGoal(rc);
-		this.rc = rc;
-		
+		if(this.rc == null) {
+			this.rc = rc;
+		}
+
+		SignalReader.consume(rc, this);
+
 		findNewLeader();
 		if(newArchonLocation != null) {
 			RobotMemory.setArchonId(newArchonId);
@@ -50,99 +56,96 @@ public class LeadGoal extends ArchonGoalBase implements SignalConsumer {
 			return new FollowGoal(rc);
 		}
 		
-		SignalReader.consume(rc, this);
+		//update zombie dens
+		MapLocation zombieDen = findZombieDenAttackPosition(rc);
+		if(zombieDen != null) {
+			iSeeZombieDen = true;
+			pf.setTarget(zombieDen);
+		} else {
+			iSeeZombieDen = false;
+		}
 		
-		short goodies = Goodies.scanGoodies(rc);
-		if(pf.getTarget() == null || pf.isAtTarget() || goodies > destinationGoodies) {
-			destinationGoodies = goodies;
-			pf.setTarget(calculateTarget());
-			if(pf.getTarget() != null) {
-				goingSomewhere = true;
+		if(!iSeeZombieDen && (pf.getTarget() == null || pf.isAtTarget())) {
+			targetValue = 0;
+			pf.setTarget(null);
+			GoodieSearchResult localGoodies = Goodies.scanGoodies(rc);
+			if(localGoodies.getGoodies() > 0) {
+				trySwitchTargets(localGoodies.getGoodies(), localGoodies.getLocation());
 			}
 		}
 		
-		if(moveCooldown < MOVE_DELAY) {
-			moveCooldown++;
-			return null;
-		}
-		
-		moveCooldown = 0;
-		
-		
-		
-		PathFindResult result = pf.move(rc);
-		switch(result) {
-		case CORE_DELAY:
-			break;
-		case COULD_NOT_FIND_ROUTE:
-			//boost rubble breaking threshold //TODO: 
-			break;
-		case NO_TARGET:
-			break;
-		case RUBBLE_IN_WAY:
-			break;
-		case STUCK:
-			break;
-		case SUCCESS:
-			break;
-		case TRAPPED:
-			//System.out.println("I'm trapped!");
-			RobotInfo[] bots = rc.senseNearbyRobots(2, Team.NEUTRAL);
-			if(bots.length > 0 && rc.isCoreReady()) {
-				for(RobotInfo ri : bots) {
-					rc.activate(ri.location);
+		if(movePacer.pace()) {
+			if (pf.move(rc) == PathFindResult.TRAPPED) {
+				RobotInfo[] bots = rc.senseNearbyRobots(2, Team.NEUTRAL);
+				if(bots.length > 0 && rc.isCoreReady()) {
+					for(RobotInfo ri : bots) {
+						rc.activate(ri.location);
+					}
 				}
-				pf.setTarget(calculateTarget());
 			}
-			break;
-		default:
-			break;
 		}
 		
-		if(pf.isAtTarget()) {
-			goingSomewhere = false;
-		}
-
-		rc.setIndicatorString(1, "going somewhere: " + goingSomewhere + ", target: " + pf.getTarget());
 		return null;
 	}
 
 	@Override
 	public void consume(SignalData data) {
 		if(data.getType() == SignalType.FOUND_STUFF) {
-			short scoutGoodieCount = data.getOtherInfo();
-			if(!goingSomewhere || scoutGoodieCount > destinationGoodies) {
-				if(scoutGoodieCount <= 0) {
-					emptyScoutFinds++;
-					if(emptyScoutFinds >= MAX_EMPTY_FINDS) {
-						System.out.println("my scout isn't finding shit!");
-					}
-					return;
-				} else {
-					emptyScoutFinds = 0;
-				}
-				System.out.println("message from scout " + data.getSenderId() + "! (goodie count: " + scoutGoodieCount + ") (location: " + data.getLocation());
-				short myGoodieCount = Goodies.scanGoodies(rc);
-				System.out.println("my goodie count: " + myGoodieCount);
-				if(myGoodieCount > scoutGoodieCount) {
-					pf.setTarget(calculateTarget());
-					destinationGoodies = myGoodieCount;
-					goingSomewhere = true;
-				} else if(myGoodieCount < scoutGoodieCount) {
-					pf.setTarget(data.getLocation());
-					destinationGoodies = scoutGoodieCount;
-					goingSomewhere = true;
-				}
-			} else {
-				System.out.println("discarding signal. The scout proposed " + scoutGoodieCount + " while I'm going towards " + destinationGoodies);
-			}
-		} else if(newArchonLocation == null && data.getType() == SignalType.THIS_IS_MY_ID) {
+			trySwitchTargets(data.getOtherInfo(), data.getLocation());
+		} else if (data.getType() == SignalType.THIS_IS_MY_ID) {
 			int archonId = data.getOtherInfo();
 			if(archonId < rc.getID()) {
 				newArchonId = archonId;
 				newArchonLocation = data.getLocation();
 			}
 		}
+	}
+	
+	private void trySwitchTargets(int proposedTargetValue, MapLocation proposedLocation) {
+		if(iSeeZombieDen) {
+			return;
+		}
+		
+		if(isHighValueTarget(targetValue)) {
+			if(isHighValueTarget(proposedTargetValue) && !isVeryHighValueTarget(targetValue)) {
+				MapLocation myLoc = rc.getLocation();
+				int distanceSquaredToCurrentTarget = myLoc.distanceSquaredTo(pf.getTarget());
+				int distanceSquaredToProposedTarget = myLoc.distanceSquaredTo(proposedLocation);
+				if((distanceSquaredToCurrentTarget > distanceSquaredToProposedTarget) 
+						|| (isVeryHighValueTarget(proposedTargetValue))) {
+					targetValue = proposedTargetValue;
+					pf.setTarget(proposedLocation);
+				}
+			}
+		} else {
+			targetValue = proposedTargetValue;
+			pf.setTarget(proposedLocation);
+		}
+	}
+	
+	private MapLocation findZombieDenAttackPosition(RobotController rc) {
+		RobotInfo[] zombies = rc.senseNearbyRobots(rc.getType().sensorRadiusSquared, Team.ZOMBIE);
+		int closestDenSquared = Integer.MAX_VALUE;
+		MapLocation closestDen = null;
+		for(RobotInfo zombie : zombies) {
+			if(zombie.type != RobotType.ZOMBIEDEN) {
+				continue;
+			}
+			
+			int distanceSquared = rc.getLocation().distanceSquaredTo(zombie.location);
+			if(distanceSquared < closestDenSquared) {
+				closestDenSquared = distanceSquared;
+				closestDen = zombie.location;
+			}
+		}
+		
+		if(closestDen == null) {
+			return null;
+		}
+		
+		Direction dirToDen = rc.getLocation().directionTo(closestDen);
+		MapLocation attackPosition = closestDen.add(dirToDen.opposite(), RobotMemory.getOrbitConstant());
+		return attackPosition;
 	}
 	
 	private void findNewLeader() throws Exception {
@@ -180,140 +183,17 @@ public class LeadGoal extends ArchonGoalBase implements SignalConsumer {
 //			newArchonLocation = lowestArchonLocation;
 //		}
 	}
-	
-	private MapLocation calculateTarget() {
-		RobotInfo[] robots = rc.senseNearbyRobots(rc.getType().sensorRadiusSquared);
-		//see if there are any neutral archons
-		MapLocation target = findClosestNeutral(robots, RobotType.ARCHON);
-		if(target != null) {
-			System.out.println("found neutral archon!");
-			return target;
-		}
-		
-		target = findClosestZombieDen(robots);
-		if(target != null) {
-			System.out.println("found zombie den!");
-			return target;
-		}
-		
-		target = findClosestNeutral(robots, RobotType.TURRET);
-		if(target != null) {
-			System.out.println("found turret!");
-			return target;
-		}
-		
-		target = findClosestNeutral(robots, RobotType.SOLDIER);
-		if(target != null) {
-			System.out.println("found soldier!");
-			return target;
-		}
-		
-		target = findClosestNeutral(robots, RobotType.GUARD);
-		if(target != null) {
-			System.out.println("found guard!");
-			return target;
-		}
-		
-		target = findClosestParts();
-		if(target != null) {
-			System.out.println("found parts!");
-			return target;
-		}
-		
-		target = findClosestNeutral(robots, RobotType.SCOUT);
-		if(target != null) {
-			System.out.println("found scout!");
-			return target;
-		}
-		
-		target = findClosestNeutral(robots, RobotType.VIPER);
-		if(target != null) {
-			System.out.println("found viper!");
-			return target;
-		}
-		
-		//there is nothing interesting around me..
-		
-		return null;
-	}
-	
-	private MapLocation findClosestParts() {
-		int closestDistanceSquared = Integer.MAX_VALUE;
-		MapLocation closestParts = null;
-		MapLocation[] partLocations = rc.sensePartLocations(rc.getType().sensorRadiusSquared);
-		for(MapLocation partsLocation : partLocations) {
-			int distanceSquared = rc.getLocation().distanceSquaredTo(partsLocation);
-			if(distanceSquared < closestDistanceSquared) {
-				closestDistanceSquared = distanceSquared;
-				closestParts = partsLocation;
-			}
-		}
-		
-		return closestParts;
-	}
-	
-	private MapLocation findClosestZombieDen(RobotInfo[] robots) {
-		int closestDistanceSquared = Integer.MAX_VALUE;
-		RobotInfo closestDen = null;
-		for(RobotInfo ri : robots) {
-//			if(ri.team == rc.getTeam()) {
-//				continue;
-//			}
-			
-			if(ri.type != RobotType.ZOMBIEDEN) {
-				continue;
-			}
-			
-			int distanceSquared = rc.getLocation().distanceSquaredTo(ri.location);
-			if(distanceSquared < closestDistanceSquared) {
-				closestDistanceSquared = distanceSquared;
-				closestDen = ri;
-			}
-		}
-		
-		if(closestDen != null) {
-			System.out.println("calculating stuff for zombie den.");
-			Direction dirToDen = rc.getLocation().directionTo(closestDen.location);
-			return closestDen.location.add(dirToDen.opposite(), RobotMemory.getOrbitConstant() - 10);
-		}
-		
-		return null;
-	}
-	
-	private MapLocation findClosestNeutral(RobotInfo[] robots, RobotType type) {
-		int closestDistanceSquared = Integer.MAX_VALUE;
-		RobotInfo closestNeutral = null;
-		for(RobotInfo ri : robots) {
-			if(ri.team == rc.getTeam()) {
-				continue;
-			}
-			
-			if(ri.team != Team.NEUTRAL || ri.type != type) {
-				continue;
-			}
-			
-			int distanceSquared = rc.getLocation().distanceSquaredTo(ri.location);
-			if(distanceSquared < closestDistanceSquared) {
-				closestDistanceSquared = distanceSquared;
-				closestNeutral = ri;
-			}
-		}
-		
-		if(closestNeutral != null) {
-			Direction dirToArchon = rc.getLocation().directionTo(closestNeutral.location);
-			return closestNeutral.location.subtract(dirToArchon);
-		}
-		
-		return null;
-	}
-	
-	private int calculateOrbitConstant(RobotController rc) {
-		int robots = rc.getRobotCount();
-		return 0;
-	}
 
 	@Override
 	public String getName() {
 		return "Leading";
+	}
+	
+	private boolean isHighValueTarget(int value) {
+		return value >= HIGH_VALUE_TARGET;
+	}
+	
+	private boolean isVeryHighValueTarget(int value) {
+		return value >= VERY_HIGH_VALUE_TARGET;
 	}
 }

@@ -3,6 +3,7 @@ package team379.goals.scout;
 import battlecode.common.MapLocation;
 import battlecode.common.RobotController;
 import battlecode.common.RobotInfo;
+import team379.GoodieSearchResult;
 import team379.Goodies;
 import team379.RobotMemory;
 import team379.goals.Goal;
@@ -12,7 +13,7 @@ import team379.signals.SignalType;
 
 public class ScoutPatrolGoal extends PatrolAroundArchonGoalBase {
 	
-	private short goodieTotal = 0;
+	private int goodieTotal = 0;
 	private MapLocation goodieLocation = null;
 	private int timeSinceLastBroadcast = 0;
 	private static final int MAX_BROADCAST_SILENCE = 30;
@@ -30,14 +31,14 @@ public class ScoutPatrolGoal extends PatrolAroundArchonGoalBase {
 			goodieLocation = rc.getLocation();
 		}
 		
-		short sensedGoodies = Goodies.scanGoodies(rc);
-		if(sensedGoodies > goodieTotal) {
-			goodieTotal = sensedGoodies;
-			goodieLocation = rc.getLocation();
+		GoodieSearchResult result = Goodies.scanGoodies(rc);
+		if(result.getGoodies() > goodieTotal) {
+			goodieTotal = result.getGoodies();
+			goodieLocation = result.getLocation();
 		}
 		
 		
-		if(goodieTotal > Goodies.ZOMBIE_DEN.getValue() || timeSinceLastBroadcast >= MAX_BROADCAST_SILENCE) {
+		if(goodieTotal >= Goodies.ZOMBIE_DEN.getValue() || timeSinceLastBroadcast >= MAX_BROADCAST_SILENCE) {
 			broadcast(rc);
 			timeSinceLastBroadcast = 0;
 		} else {
@@ -73,7 +74,7 @@ public class ScoutPatrolGoal extends PatrolAroundArchonGoalBase {
 	
 	private void broadcast(RobotController rc) throws Exception {
 		System.out.println("broadcasting (with goodie count of " + goodieTotal + ".");
-		SignalData sd = new SignalData(SignalType.FOUND_STUFF, goodieLocation, goodieTotal);
+		SignalData sd = new SignalData(SignalType.FOUND_STUFF, goodieLocation, (short) goodieTotal);
 		goodieTotal = 0;
 		goodieLocation = null;
 		int[] data = sd.toInts();
